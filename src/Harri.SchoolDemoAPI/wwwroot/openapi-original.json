@@ -1,0 +1,837 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Demo API about students, schools, and students applications to schools",
+    "title" : "Swagger School ADMIN - OpenAPI 3.0",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "tags" : [ {
+    "description" : "Operations about individual students",
+    "name" : "student"
+  }, {
+    "description" : "Operations about individual schools",
+    "name" : "school"
+  }, {
+    "description" : "Operations about individual student applications to schools",
+    "name" : "application"
+  }, {
+    "description" : "Operations about students",
+    "name" : "students"
+  }, {
+    "description" : "Operations about schools",
+    "name" : "schools"
+  }, {
+    "description" : "Operations about students applications to schools",
+    "name" : "applications"
+  } ],
+  "paths" : {
+    "/student/{sId}" : {
+      "delete" : {
+        "description" : "Delete a student by sId",
+        "operationId" : "deleteStudent",
+        "parameters" : [ {
+          "description" : "ID of student to delete",
+          "explode" : false,
+          "in" : "path",
+          "name" : "sId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/StudentId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "409" : {
+            "description" : "Conflict. Student has applications which must be deleted first"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Student not found"
+          }
+        },
+        "summary" : "Delete a student",
+        "tags" : [ "student" ]
+      },
+      "get" : {
+        "description" : "Get a student by sId",
+        "operationId" : "getStudent",
+        "parameters" : [ {
+          "description" : "ID of student to return",
+          "explode" : false,
+          "in" : "path",
+          "name" : "sId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/StudentId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Student"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Student not found"
+          }
+        },
+        "summary" : "Get a student",
+        "tags" : [ "student" ]
+      }
+    },
+    "/student" : {
+      "post" : {
+        "description" : "Add a new student",
+        "operationId" : "addStudent",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/StudentWithoutID"
+              }
+            }
+          },
+          "description" : "Create a new student",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/StudentId"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid input"
+          }
+        },
+        "summary" : "Add a new student",
+        "tags" : [ "student" ]
+      },
+      "put" : {
+        "description" : "Update an existing student by Id",
+        "operationId" : "updateStudent",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Student"
+              }
+            }
+          },
+          "description" : "Update an existent student",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Student not found"
+          }
+        },
+        "summary" : "Update an existing student",
+        "tags" : [ "student" ]
+      }
+    },
+    "/students" : {
+      "get" : {
+        "description" : "Get students by query",
+        "operationId" : "getStudents",
+        "parameters" : [ {
+          "description" : "Name partial of students to search on. Case insensitive",
+          "explode" : true,
+          "in" : "query",
+          "name" : "name",
+          "required" : false,
+          "schema" : {
+            "example" : "Gar",
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "query object to search by GPA (lt, gt, eq)",
+          "explode" : false,
+          "in" : "query",
+          "name" : "GPA",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/NumberQuery"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Student"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid query supplied"
+          },
+          "404" : {
+            "description" : "No students found"
+          }
+        },
+        "summary" : "Get students",
+        "tags" : [ "students" ]
+      }
+    },
+    "/school/{schoolId}" : {
+      "delete" : {
+        "description" : "Delete a school by schoolId",
+        "operationId" : "deleteSchool",
+        "parameters" : [ {
+          "description" : "ID of school to delete",
+          "explode" : false,
+          "in" : "path",
+          "name" : "schoolId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/SchoolId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "409" : {
+            "description" : "Conflict. School has applications which must be deleted first"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "School not found"
+          }
+        },
+        "summary" : "Delete a school",
+        "tags" : [ "school" ]
+      },
+      "get" : {
+        "description" : "Get a school by schoolId",
+        "operationId" : "getSchool",
+        "parameters" : [ {
+          "description" : "ID of school to return",
+          "explode" : false,
+          "in" : "path",
+          "name" : "schoolId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/SchoolId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/School"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "School not found"
+          }
+        },
+        "summary" : "Get a school",
+        "tags" : [ "school" ]
+      }
+    },
+    "/school" : {
+      "post" : {
+        "description" : "Add a new school",
+        "operationId" : "addSchool",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SchoolWithoutId"
+              }
+            }
+          },
+          "description" : "Create a new school",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SchoolId"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid input"
+          }
+        },
+        "summary" : "Add a new school",
+        "tags" : [ "school" ]
+      },
+      "put" : {
+        "description" : "Update an existing school by Id",
+        "operationId" : "updateSchool",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/School"
+              }
+            }
+          },
+          "description" : "Update an existent school",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid input"
+          },
+          "404" : {
+            "description" : "School not found"
+          }
+        },
+        "summary" : "Update an existing school",
+        "tags" : [ "school" ]
+      }
+    },
+    "/schools" : {
+      "get" : {
+        "description" : "Get schools by query",
+        "operationId" : "getSchools",
+        "parameters" : [ {
+          "description" : "Name partial of schools to search on. Case insensitive",
+          "explode" : true,
+          "in" : "query",
+          "name" : "name",
+          "required" : false,
+          "schema" : {
+            "example" : "Mel",
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "State to match on",
+          "explode" : true,
+          "in" : "query",
+          "name" : "state",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/State"
+          },
+          "style" : "form"
+        }, {
+          "description" : "query object to search by enrollment (lt, gt, eq)",
+          "explode" : true,
+          "in" : "query",
+          "name" : "enrollment",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/IntegerQuery"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/School"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid query supplied"
+          },
+          "404" : {
+            "description" : "No schools found"
+          }
+        },
+        "summary" : "Get schools",
+        "tags" : [ "schools" ]
+      }
+    },
+    "/application/{applicationId}" : {
+      "delete" : {
+        "description" : "Delete an application by applicationId",
+        "operationId" : "deleteApplication",
+        "parameters" : [ {
+          "description" : "ID of application to delete",
+          "explode" : false,
+          "in" : "path",
+          "name" : "applicationId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/ApplicationId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "summary" : "Delete an application",
+        "tags" : [ "application" ]
+      },
+      "get" : {
+        "description" : "Get an application by applicationId",
+        "operationId" : "getApplication",
+        "parameters" : [ {
+          "description" : "ID of application to return",
+          "explode" : false,
+          "in" : "path",
+          "name" : "applicationId",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/components/schemas/ApplicationId"
+          },
+          "style" : "simple"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Application"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "summary" : "Get an application",
+        "tags" : [ "application" ]
+      }
+    },
+    "/application" : {
+      "post" : {
+        "description" : "Add a new application",
+        "operationId" : "addApplication",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ApplicationWithoutId"
+              }
+            }
+          },
+          "description" : "Create a new application",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApplicationId"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid input"
+          }
+        },
+        "summary" : "Add a new application",
+        "tags" : [ "application" ]
+      },
+      "put" : {
+        "description" : "Update an existing application by Id",
+        "operationId" : "updateApplication",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Application"
+              }
+            }
+          },
+          "description" : "Update an existent application",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid input"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "summary" : "Update an existing application",
+        "tags" : [ "application" ]
+      }
+    },
+    "/applications" : {
+      "get" : {
+        "description" : "Get applications by query",
+        "operationId" : "getApplications",
+        "parameters" : [ {
+          "description" : "ID of student to match applications on",
+          "explode" : true,
+          "in" : "query",
+          "name" : "sId",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/StudentId"
+          },
+          "style" : "form"
+        }, {
+          "description" : "ID of school to match applications on",
+          "explode" : true,
+          "in" : "query",
+          "name" : "schoolId",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/SchoolId"
+          },
+          "style" : "form"
+        }, {
+          "description" : "Major to match exactly",
+          "explode" : true,
+          "in" : "query",
+          "name" : "major",
+          "required" : false,
+          "schema" : {
+            "example" : "Computer Science",
+            "type" : "string"
+          },
+          "style" : "form"
+        }, {
+          "description" : "decision to match on. May be 'Y', 'N' or null",
+          "explode" : true,
+          "in" : "query",
+          "name" : "decision",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/components/schemas/Decision"
+          },
+          "style" : "form"
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "items" : {
+                    "$ref" : "#/components/schemas/Application"
+                  },
+                  "type" : "array"
+                }
+              }
+            },
+            "description" : "Successful operation"
+          },
+          "400" : {
+            "description" : "Invalid query supplied"
+          },
+          "404" : {
+            "description" : "No applications found"
+          }
+        },
+        "summary" : "Get applications",
+        "tags" : [ "applications" ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Student" : {
+        "example" : {
+          "name" : "Garry Peterson",
+          "GPA" : 3.9,
+          "sId" : 1234
+        },
+        "properties" : {
+          "sId" : {
+            "example" : 1234,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "name" : {
+            "example" : "Garry Peterson",
+            "type" : "string"
+          },
+          "GPA" : {
+            "example" : 3.9,
+            "type" : "number"
+          }
+        },
+        "required" : [ "sId" ],
+        "type" : "object"
+      },
+      "StudentWithoutID" : {
+        "example" : {
+          "name" : "Garry Peterson",
+          "GPA" : 3.9
+        },
+        "properties" : {
+          "name" : {
+            "example" : "Garry Peterson",
+            "type" : "string"
+          },
+          "GPA" : {
+            "example" : 3.9,
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "School" : {
+        "example" : {
+          "schoolId" : 1001,
+          "state" : "VIC",
+          "schoolName" : "Melbourne Future School",
+          "enrollment" : 20000
+        },
+        "properties" : {
+          "schoolId" : {
+            "example" : 1001,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "schoolName" : {
+            "example" : "Melbourne Future School",
+            "type" : "string"
+          },
+          "state" : {
+            "$ref" : "#/components/schemas/State"
+          },
+          "enrollment" : {
+            "example" : 20000,
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "required" : [ "schoolId" ],
+        "type" : "object"
+      },
+      "SchoolWithoutId" : {
+        "example" : {
+          "state" : "VIC",
+          "schoolName" : "Melbourne Future School",
+          "enrollment" : 20000
+        },
+        "properties" : {
+          "schoolName" : {
+            "example" : "Melbourne Future School",
+            "type" : "string"
+          },
+          "state" : {
+            "$ref" : "#/components/schemas/State"
+          },
+          "enrollment" : {
+            "example" : 20000,
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "Application" : {
+        "example" : {
+          "major" : "Computer Science",
+          "decision" : "Y",
+          "schoolId" : 1001,
+          "applicationId" : 876581,
+          "sId" : 1234
+        },
+        "properties" : {
+          "applicationId" : {
+            "example" : 876581,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "sId" : {
+            "example" : 1234,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "schoolId" : {
+            "example" : 1001,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "major" : {
+            "example" : "Computer Science",
+            "type" : "string"
+          },
+          "decision" : {
+            "$ref" : "#/components/schemas/Decision"
+          }
+        },
+        "required" : [ "applicationId" ],
+        "type" : "object"
+      },
+      "ApplicationWithoutId" : {
+        "example" : {
+          "major" : "Computer Science",
+          "decision" : "Y",
+          "schoolId" : 1001,
+          "sId" : 1234
+        },
+        "properties" : {
+          "sId" : {
+            "example" : 1234,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "schoolId" : {
+            "example" : 1001,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "major" : {
+            "example" : "Computer Science",
+            "type" : "string"
+          },
+          "decision" : {
+            "$ref" : "#/components/schemas/Decision"
+          }
+        },
+        "type" : "object"
+      },
+      "NumberQuery" : {
+        "properties" : {
+          "lt" : {
+            "description" : "less than",
+            "example" : 3.5,
+            "type" : "number"
+          },
+          "gt" : {
+            "description" : "greater than",
+            "example" : 2.2,
+            "type" : "number"
+          },
+          "eq" : {
+            "description" : "equal to",
+            "example" : 4,
+            "type" : "number"
+          },
+          "isnull" : {
+            "description" : "is null",
+            "example" : true,
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "IntegerQuery" : {
+        "properties" : {
+          "lt" : {
+            "description" : "less than",
+            "example" : 300,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "gt" : {
+            "description" : "greater than",
+            "example" : 200,
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "eq" : {
+            "description" : "equal to",
+            "example" : 10123,
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "StudentId" : {
+        "example" : 1234,
+        "format" : "int64",
+        "type" : "integer"
+      },
+      "SchoolId" : {
+        "example" : 1001,
+        "format" : "int64",
+        "type" : "integer"
+      },
+      "ApplicationId" : {
+        "example" : 876581,
+        "format" : "int64",
+        "type" : "integer"
+      },
+      "State" : {
+        "description" : "List of valid states",
+        "enum" : [ "QLD", "NSW", "VIC", "ACT", "TAS", "WA", "NT", "SA" ],
+        "example" : "VIC",
+        "type" : "string"
+      },
+      "Decision" : {
+        "description" : "List of valid decisions a school can make on an application",
+        "enum" : [ "Y", "N" ],
+        "example" : "Y",
+        "nullable" : true,
+        "type" : "string"
+      }
+    }
+  }
+}
