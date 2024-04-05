@@ -18,7 +18,7 @@ namespace Harri.SchoolDemoAPI.Controllers
     [ApiController]
     [Produces("application/json")]
     public class SchoolApiController : ControllerBase
-    { 
+    {
         /// <summary>
         /// Add a new school
         /// </summary>

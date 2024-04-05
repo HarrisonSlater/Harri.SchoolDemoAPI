@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Newtonsoft.Json;
 using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Services;
 
 namespace Harri.SchoolDemoAPI.Controllers
 { 
@@ -18,7 +19,14 @@ namespace Harri.SchoolDemoAPI.Controllers
     [ApiController]
     [Produces("application/json")]
     public class StudentApiController : ControllerBase
-    { 
+    {
+        private readonly IStudentService studentService;
+
+        public StudentApiController(IStudentService studentService)
+        {
+            this.studentService = studentService;
+        }
+
         /// <summary>
         /// Add a new student
         /// </summary>
@@ -39,14 +47,9 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(200, default(int));
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(400);
-            string exampleJson = null;
-            exampleJson = "1234";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<int>(exampleJson)
-            : default(int);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var result = studentService.AddStudent(newStudent);
+
+            return new ObjectResult(result);
         }
 
         /// <summary>
@@ -71,14 +74,9 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-            string exampleJson = null;
-            exampleJson = "{\r\n  \"name\" : \"Garry Peterson\",\r\n  \"GPA\" : 3.9,\r\n  \"sId\" : 1234\r\n}";
+            var result = studentService.GetStudent(sId);
 
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<Student>(exampleJson)
-            : default(Student);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            return new ObjectResult(result);
         }
 
         /// <summary>
@@ -103,8 +101,9 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
+            studentService.UpdateStudent(student);
 
-            throw new NotImplementedException();
+            return Ok();
         }
 
         /// <summary>
@@ -131,7 +130,9 @@ namespace Harri.SchoolDemoAPI.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            throw new NotImplementedException();
+            studentService.DeleteStudent(sId);
+
+            return Ok();
         }
 
 

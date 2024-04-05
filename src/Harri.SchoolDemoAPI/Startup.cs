@@ -24,6 +24,7 @@ using Harri.SchoolDemoAPI.Authentication;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
 using Harri.SchoolDemoAPI.Formatters;
+using Harri.SchoolDemoAPI.Services;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -52,7 +53,6 @@ namespace Harri.SchoolDemoAPI
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-
             // Add framework services.
             services
                 // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
@@ -67,6 +67,7 @@ namespace Harri.SchoolDemoAPI
                         NamingStrategy = new CamelCaseNamingStrategy()
                     });
                 });
+
             services
                 .AddSwaggerGen(c =>
                 {
@@ -99,6 +100,9 @@ namespace Harri.SchoolDemoAPI
                 });
                 services
                     .AddSwaggerGenNewtonsoftSupport();
+
+            // Dependency Injection
+            services.AddScoped<IStudentService, StudentService>();
         }
 
         /// <summary>
@@ -134,11 +138,13 @@ namespace Harri.SchoolDemoAPI
                     //TODO: Or alternatively use the original OpenAPI contract that's included in the static files
                     // c.SwaggerEndpoint("/openapi-original.json", "Swagger School ADMIN - OpenAPI 3.0 Original");
                 });
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
                 });
+
         }
     }
 }
