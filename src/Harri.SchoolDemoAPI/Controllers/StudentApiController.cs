@@ -31,20 +31,20 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [ValidateModelState]
         [SwaggerOperation("AddStudent")]
-        [SwaggerResponse(statusCode: 200, type: typeof(long), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddStudent([FromBody]NewStudent newStudent)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(long));
+            // return StatusCode(200, default(int));
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(400);
             string exampleJson = null;
             exampleJson = "1234";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<long>(exampleJson)
-            : default(long);
+            ? JsonConvert.DeserializeObject<int>(exampleJson)
+            : default(int);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -62,7 +62,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student/{sId}")]
         [ValidateModelState]
         [SwaggerOperation("DeleteStudent")]
-        public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required]long sId)
+        public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required]int sId)
         {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);
@@ -89,7 +89,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
-        public virtual IActionResult GetStudent([FromRoute (Name = "sId")][Required]long sId)
+        public virtual IActionResult GetStudent([FromRoute (Name = "sId")][Required]int sId)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

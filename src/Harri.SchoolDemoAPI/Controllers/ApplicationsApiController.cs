@@ -35,7 +35,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetApplications")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Application>), description: "Successful operation")]
-        public virtual IActionResult GetApplications([FromQuery (Name = "sId")]long? sId, [FromQuery (Name = "schoolId")]long? schoolId, [FromQuery (Name = "major")]string? major, [FromQuery (Name = "decision")]Decision? decision)
+        public virtual IActionResult GetApplications([FromQuery (Name = "sId")]int? sId, [FromQuery (Name = "schoolId")]int? schoolId, [FromQuery (Name = "major")]string? major, [FromQuery (Name = "decision")]Decision? decision)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

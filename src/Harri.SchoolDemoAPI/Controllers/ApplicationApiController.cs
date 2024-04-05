@@ -31,20 +31,20 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [ValidateModelState]
         [SwaggerOperation("AddApplication")]
-        [SwaggerResponse(statusCode: 200, type: typeof(long), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddApplication([FromBody]NewApplication newApplication)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(long));
+            // return StatusCode(200, default(int));
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(400);
             string exampleJson = null;
             exampleJson = "876581";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<long>(exampleJson)
-            : default(long);
+            ? JsonConvert.DeserializeObject<int>(exampleJson)
+            : default(int);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -61,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/application/{applicationId}")]
         [ValidateModelState]
         [SwaggerOperation("DeleteApplication")]
-        public virtual IActionResult DeleteApplication([FromRoute (Name = "applicationId")][Required]long applicationId)
+        public virtual IActionResult DeleteApplication([FromRoute (Name = "applicationId")][Required]int applicationId)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -87,7 +87,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(Application), description: "Successful operation")]
-        public virtual IActionResult GetApplication([FromRoute (Name = "applicationId")][Required]long applicationId)
+        public virtual IActionResult GetApplication([FromRoute (Name = "applicationId")][Required]int applicationId)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
