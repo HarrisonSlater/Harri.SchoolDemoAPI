@@ -50,34 +50,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         }
 
         /// <summary>
-        /// Delete a school
-        /// </summary>
-        /// <remarks>Delete a school by schoolId</remarks>
-        /// <param name="schoolId">ID of school to delete</param>
-        /// <response code="200">Successful operation</response>
-        /// <response code="409">Conflict. School has applications which must be deleted first</response>
-        /// <response code="400">Invalid ID supplied</response>
-        /// <response code="404">School not found</response>
-        [HttpDelete]
-        [Route("/school/{schoolId}")]
-        [ValidateModelState]
-        [SwaggerOperation("DeleteSchool")]
-        public virtual IActionResult DeleteSchool([FromRoute (Name = "schoolId")][Required]int schoolId)
-        {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-            //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(409);
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Get a school
         /// </summary>
         /// <remarks>Get a school by schoolId</remarks>
@@ -90,7 +62,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("GetSchool")]
         [SwaggerResponse(statusCode: 200, type: typeof(School), description: "Successful operation")]
-        public virtual IActionResult GetSchool([FromRoute (Name = "schoolId")][Required]int schoolId)
+        public virtual IActionResult GetSchool([FromRoute(Name = "schoolId")][Required] int schoolId)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -101,7 +73,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(404);
             string exampleJson = null;
             exampleJson = "{\r\n  \"schoolId\" : 1001,\r\n  \"state\" : \"VIC\",\r\n  \"schoolName\" : \"Melbourne Future School\",\r\n  \"enrollment\" : 20000\r\n}";
-            
+
             var example = exampleJson != null
             ? JsonConvert.DeserializeObject<School>(exampleJson)
             : default(School);
@@ -122,11 +94,39 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [ValidateModelState]
         [SwaggerOperation("UpdateSchool")]
-        public virtual IActionResult UpdateSchool([FromBody]School school)
+        public virtual IActionResult UpdateSchool([FromBody] School school)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);
+            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
+            // return StatusCode(400);
+            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
+            // return StatusCode(404);
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Delete a school
+        /// </summary>
+        /// <remarks>Delete a school by schoolId</remarks>
+        /// <param name="schoolId">ID of school to delete</param>
+        /// <response code="200">Successful operation</response>
+        /// <response code="409">Conflict. School has applications which must be deleted first</response>
+        /// <response code="400">Invalid ID supplied</response>
+        /// <response code="404">School not found</response>
+        [HttpDelete]
+        [Route("/school/{schoolId}")]
+        [ValidateModelState]
+        [SwaggerOperation("DeleteSchool")]
+        public virtual IActionResult DeleteSchool([FromRoute (Name = "schoolId")][Required]int schoolId)
+        {
+
+            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
+            // return StatusCode(200);
+            //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
+            // return StatusCode(409);
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
