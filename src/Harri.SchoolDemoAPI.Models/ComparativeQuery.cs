@@ -10,12 +10,13 @@ using Harri.SchoolDemoAPI.Converters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Harri.SchoolDemoAPI.Models
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
+    /// 
     [DataContract]
-    public class ComparativeQuery<T>
+    public class ComparativeQuery<T> where T : struct // struct required to fix .net framework 4.8 warnings
     {
         /// <summary>
         /// less than
@@ -37,6 +38,5 @@ namespace Harri.SchoolDemoAPI.Models
         [DataMember(Name="eq", EmitDefaultValue=true)]
         [FromQuery(Name = "eq")]
         public T? Eq { get; set; }
-
     }
 }
