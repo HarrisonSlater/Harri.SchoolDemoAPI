@@ -32,7 +32,7 @@ namespace Harri.SchoolDemoAPI.Models
         /// <example>1234</example>
         [Required]
         [DataMember(Name="sId", EmitDefaultValue=true)]
-        public long SId { get; set; }
+        public int? SId { get; set; }
 
         /// <summary>
         /// Gets or Sets Name

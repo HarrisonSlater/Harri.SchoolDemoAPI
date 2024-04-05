@@ -37,14 +37,14 @@ namespace Harri.SchoolDemoAPI.Models
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=true)]
-        public State State { get; set; }
+        public State? State { get; set; }
 
         /// <summary>
         /// Gets or Sets Enrollment
         /// </summary>
         /// <example>20000</example>
         [DataMember(Name="enrollment", EmitDefaultValue=true)]
-        public long? Enrollment { get; set; }
+        public int? Enrollment { get; set; }
 
     }
 }

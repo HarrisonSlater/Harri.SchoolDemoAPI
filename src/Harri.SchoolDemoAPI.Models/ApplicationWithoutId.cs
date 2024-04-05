@@ -31,14 +31,14 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>1234</example>
         [DataMember(Name="sId", EmitDefaultValue=true)]
-        public long? SId { get; set; }
+        public int? SId { get; set; }
 
         /// <summary>
         /// Gets or Sets SchoolId
         /// </summary>
         /// <example>1001</example>
         [DataMember(Name="schoolId", EmitDefaultValue=true)]
-        public long? SchoolId { get; set; }
+        public int? SchoolId { get; set; }
 
         /// <summary>
         /// Gets or Sets Major
