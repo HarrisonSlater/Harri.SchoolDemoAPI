@@ -24,7 +24,7 @@ namespace Harri.SchoolDemoAPI.Models
     /// 
     /// </summary>
     [DataContract]
-    public class ApplicationWithoutId 
+    public class NewApplication 
     {
         /// <summary>
         /// Gets or Sets SId

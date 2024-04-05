@@ -24,7 +24,7 @@ namespace Harri.SchoolDemoAPI.Models
     /// 
     /// </summary>
     [DataContract]
-    public class StudentWithoutID 
+    public class NewStudent 
     {
         /// <summary>
         /// Gets or Sets Name

@@ -23,7 +23,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// Add a new school
         /// </summary>
         /// <remarks>Add a new school</remarks>
-        /// <param name="schoolWithoutId">Create a new school</param>
+        /// <param name="newSchool">Create a new school</param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid input</response>
         [HttpPost]
@@ -32,7 +32,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddSchool")]
         [SwaggerResponse(statusCode: 200, type: typeof(long), description: "Successful operation")]
-        public virtual IActionResult AddSchool([FromBody]SchoolWithoutId schoolWithoutId)
+        public virtual IActionResult AddSchool([FromBody]NewSchool newSchool)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

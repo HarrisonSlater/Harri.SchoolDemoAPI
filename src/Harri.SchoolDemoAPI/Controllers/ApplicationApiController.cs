@@ -18,12 +18,12 @@ namespace Harri.SchoolDemoAPI.Controllers
     [ApiController]
     [Produces("application/json")]
     public class ApplicationApiController : ControllerBase
-    { 
+    {
         /// <summary>
         /// Add a new application
         /// </summary>
         /// <remarks>Add a new application</remarks>
-        /// <param name="applicationWithoutId">Create a new application</param>
+        /// <param name="newApplication">Create a new application</param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid input</response>
         [HttpPost]
@@ -32,7 +32,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation("AddApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(long), description: "Successful operation")]
-        public virtual IActionResult AddApplication([FromBody]ApplicationWithoutId applicationWithoutId)
+        public virtual IActionResult AddApplication([FromBody]NewApplication newApplication)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

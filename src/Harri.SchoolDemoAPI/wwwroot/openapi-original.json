@@ -104,7 +104,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/StudentWithoutID"
+                "$ref" : "#/components/schemas/NewStudent"
               }
             }
           },
@@ -285,7 +285,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/SchoolWithoutId"
+                "$ref" : "#/components/schemas/NewSchool"
               }
             }
           },
@@ -473,7 +473,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/ApplicationWithoutId"
+                "$ref" : "#/components/schemas/NewApplication"
               }
             }
           },
@@ -625,7 +625,7 @@
         "required" : [ "sId" ],
         "type" : "object"
       },
-      "StudentWithoutID" : {
+      "NewStudent" : {
         "example" : {
           "name" : "Garry Peterson",
           "GPA" : 3.9
@@ -671,7 +671,7 @@
         "required" : [ "schoolId" ],
         "type" : "object"
       },
-      "SchoolWithoutId" : {
+      "NewSchool" : {
         "example" : {
           "state" : "VIC",
           "schoolName" : "Melbourne Future School",
@@ -728,7 +728,7 @@
         "required" : [ "applicationId" ],
         "type" : "object"
       },
-      "ApplicationWithoutId" : {
+      "NewApplication" : {
         "example" : {
           "major" : "Computer Science",
           "decision" : "Y",
