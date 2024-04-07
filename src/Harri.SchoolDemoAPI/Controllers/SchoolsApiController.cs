@@ -32,7 +32,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/schools")]
         [ValidateModelState]
-        [SwaggerOperation("GetSchools")]
+        [SwaggerOperation(OperationId = "GetSchools")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<School>), description: "Successful operation")]
         public virtual IActionResult GetSchools([FromQuery (Name = "name")]string? name, [FromQuery (Name = "state")]State? state, [FromQuery]EnrollmentQuery? enrollmentQuery)
         {

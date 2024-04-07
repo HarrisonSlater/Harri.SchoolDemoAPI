@@ -38,7 +38,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [SwaggerOperation("AddStudent")]
+        [SwaggerOperation(OperationId = "AddStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddStudent([FromBody]NewStudent newStudent)
         {
@@ -63,7 +63,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/student/{sId}")]
         [ValidateModelState]
-        [SwaggerOperation("GetStudent")]
+        [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
         public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required] int sId)
         {
@@ -74,8 +74,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
+            
             var result = studentService.GetStudent(sId);
-
             return new ObjectResult(result);
         }
 
@@ -91,7 +91,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [SwaggerOperation("UpdateStudent")]
+        [SwaggerOperation(OperationId = "UpdateStudent")]
         public virtual IActionResult UpdateStudent([FromBody] Student student)
         {
 
@@ -118,7 +118,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpDelete]
         [Route("/student/{sId}")]
         [ValidateModelState]
-        [SwaggerOperation("DeleteStudent")]
+        [SwaggerOperation(OperationId = "DeleteStudent")]
         public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required]int sId)
         {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

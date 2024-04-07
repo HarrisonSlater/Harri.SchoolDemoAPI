@@ -31,7 +31,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/students")]
         [ValidateModelState]
-        [SwaggerOperation("GetStudents")]
+        [SwaggerOperation(OperationId = "GetStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Student>), description: "Successful operation")]
         public virtual IActionResult GetStudents([FromQuery (Name = "name")]string? name, [FromQuery] GPAQuery? GPAQuery)
         {

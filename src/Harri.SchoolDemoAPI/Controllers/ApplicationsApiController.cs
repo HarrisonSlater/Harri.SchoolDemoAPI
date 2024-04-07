@@ -33,7 +33,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/applications")]
         [ValidateModelState]
-        [SwaggerOperation("GetApplications")]
+        [SwaggerOperation(OperationId = "GetApplications")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Application>), description: "Successful operation")]
         public virtual IActionResult GetApplications([FromQuery (Name = "sId")]int? sId, [FromQuery (Name = "schoolId")]int? schoolId, [FromQuery (Name = "major")]string? major, [FromQuery (Name = "decision")]Decision? decision)
         {

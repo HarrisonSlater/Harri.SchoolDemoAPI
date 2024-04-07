@@ -30,7 +30,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/application")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [SwaggerOperation("AddApplication")]
+        [SwaggerOperation(OperationId = "AddApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddApplication([FromBody]NewApplication newApplication)
         {
@@ -60,7 +60,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/application/{applicationId}")]
         [ValidateModelState]
-        [SwaggerOperation("GetApplication")]
+        [SwaggerOperation(OperationId = "GetApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(Application), description: "Successful operation")]
         public virtual IActionResult GetApplication([FromRoute (Name = "applicationId")][Required]int applicationId)
         {
@@ -93,7 +93,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/application")]
         [Consumes("application/json")]
         [ValidateModelState]
-        [SwaggerOperation("UpdateApplication")]
+        [SwaggerOperation(OperationId = "UpdateApplication")]
         public virtual IActionResult UpdateApplication([FromBody] Application application)
         {
 
@@ -118,7 +118,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpDelete]
         [Route("/application/{applicationId}")]
         [ValidateModelState]
-        [SwaggerOperation("DeleteApplication")]
+        [SwaggerOperation(OperationId = "DeleteApplication")]
         public virtual IActionResult DeleteApplication([FromRoute(Name = "applicationId")][Required] int applicationId)
         {
 
