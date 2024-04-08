@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
-using Harri.SchoolDemoAPI.Services;
+using Harri.SchoolDemoAPI.Repository;
 
 namespace Harri.SchoolDemoAPI.Controllers
 { 
@@ -19,9 +19,9 @@ namespace Harri.SchoolDemoAPI.Controllers
     [Produces("application/json")]
     public class StudentApiController : ControllerBase
     {
-        private readonly IStudentService studentService;
+        private readonly IStudentRepository studentService;
 
-        public StudentApiController(IStudentService studentService)
+        public StudentApiController(IStudentRepository studentService)
         {
             this.studentService = studentService;
         }

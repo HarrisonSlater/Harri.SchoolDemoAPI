@@ -1,11 +1,11 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using System.ComponentModel;
 
-namespace Harri.ApplicationDemoAPI.Services
+namespace Harri.ApplicationDemoAPI.Repository
 {
-    public class ApplicationService
+    public class ApplicationRepository
     {
-        public ApplicationService() { }
+        public ApplicationRepository() { }
         public int AddApplication(NewApplication newApplication) {
             return 1234;
         }

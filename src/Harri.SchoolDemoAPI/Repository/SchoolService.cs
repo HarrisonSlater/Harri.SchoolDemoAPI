@@ -1,11 +1,11 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using System.ComponentModel;
 
-namespace Harri.SchoolDemoAPI.Services
+namespace Harri.SchoolDemoAPI.Repository
 {
-    public class SchoolService
+    public class SchoolRepository
     {
-        public SchoolService() { }
+        public SchoolRepository() { }
         public int AddSchool(NewSchool newSchool) {
             return 1234;
         }

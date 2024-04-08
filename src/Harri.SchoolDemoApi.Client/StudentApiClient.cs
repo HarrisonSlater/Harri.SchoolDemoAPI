@@ -7,9 +7,9 @@ namespace Harri.SchoolDemoApi.Client
     {
         private readonly RestClient _restClient;
 
-        public StudentApiClient()
+        public StudentApiClient(string? uri)
         {
-            var options = new RestClientOptions("https://localhost:44301/");
+            var options = new RestClientOptions(uri is null ? "https://localhost:44301/" : uri);
             _restClient = new RestClient(options);
         }
 

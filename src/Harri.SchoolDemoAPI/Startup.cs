@@ -22,9 +22,9 @@ using Harri.SchoolDemoAPI.Authentication;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
 using Harri.SchoolDemoAPI.Formatters;
-using Harri.SchoolDemoAPI.Services;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Harri.SchoolDemoAPI.Repository;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -88,7 +88,7 @@ namespace Harri.SchoolDemoAPI
                         Version = "1.0.0",
                     });
                     c.CustomSchemaIds(type => type.FriendlyId(true));
-                    c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetEntryAssembly().GetName().Name}.xml");
+                    //c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetEntryAssembly().GetName().Name}.xml");
 
                     // Include DataAnnotation attributes on Controller Action parameters as OpenAPI validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
@@ -96,7 +96,7 @@ namespace Harri.SchoolDemoAPI
                 });
 
             // Dependency Injection
-            services.AddScoped<IStudentService, StudentService>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
         }
 
         /// <summary>

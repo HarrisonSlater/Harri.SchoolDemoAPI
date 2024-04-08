@@ -1,8 +1,8 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 
-namespace Harri.SchoolDemoAPI.Services
+namespace Harri.SchoolDemoAPI.Repository
 {
-    public interface IStudentService
+    public interface IStudentRepository
     {
         int AddStudent(NewStudent newStudent);
         void DeleteStudent(int id);
