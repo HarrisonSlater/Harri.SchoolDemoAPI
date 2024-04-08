@@ -1,0 +1,84 @@
+{
+  "consumer": {
+    "name": "SchoolDempApi.Client"
+  },
+  "interactions": [
+    {
+      "description": "a request to get a student with id 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists",
+          "params": {
+            "GPA": null,
+            "name": "Mocky McMockName",
+            "sId": 4567
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/student/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Mocky McMockName",
+            "sId": 4567
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.16",
+      "models": "1.1.19"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "SchoolDemoApi"
+  }
+}
