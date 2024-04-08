@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
-using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -21,7 +19,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>3.5</example>
         [DataMember(Name="enrollment", EmitDefaultValue=true)]
-        [FromQuery(Name = "enrollment")]
+        [JsonPropertyName("enrollment")]
+        //[FromQuery(Name = "enrollment")]
         public ComparativeQuery<int>? Enrollment { get; set; }
 
     }

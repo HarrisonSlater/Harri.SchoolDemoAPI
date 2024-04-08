@@ -2,11 +2,9 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
+using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -22,6 +20,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// <example>876581</example>
         [Required]
         [DataMember(Name="applicationId")]
+        [JsonPropertyName("applicationId")]
+
         public int? ApplicationId { get; set; }
 
         /// <summary>
@@ -29,6 +29,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>1234</example>
         [DataMember(Name="sId")]
+        [JsonPropertyName("sId")]
+
         public int? SId { get; set; }
 
         /// <summary>
@@ -36,6 +38,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>1001</example>
         [DataMember(Name="schoolId")]
+        [JsonPropertyName("schoolId")]
+
         public int? SchoolId { get; set; }
 
         /// <summary>
@@ -43,12 +47,15 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>Computer Science</example>
         [DataMember(Name="major")]
+        [JsonPropertyName("major")]
+
         public string? Major { get; set; }
 
         /// <summary>
         /// Gets or Sets Decision
         /// </summary>
         [DataMember(Name="decision")]
+        [JsonPropertyName("decision")]
         public Decision? Decision { get; set; }
 
     }

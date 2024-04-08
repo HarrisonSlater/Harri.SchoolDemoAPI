@@ -5,16 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
         /// <summary>
         /// List of valid states
         /// </summary>
-        [TypeConverter(typeof(CustomEnumConverter<State>))]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public enum State
         {
             

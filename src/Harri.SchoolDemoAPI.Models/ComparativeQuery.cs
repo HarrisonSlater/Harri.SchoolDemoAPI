@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
-using Microsoft.AspNetCore.Mvc;
+using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models
 {
@@ -22,21 +20,27 @@ namespace Harri.SchoolDemoAPI.Models
         /// less than
         /// </summary>
         [DataMember(Name="lt", EmitDefaultValue=true)]
-        [FromQuery(Name="lt")]
+        [JsonPropertyName("lt")]
+
+        //[FromQuery(Name="lt")]
         public T? Lt { get; set; }
 
         /// <summary>
         /// greater than
         /// </summary>
         [DataMember(Name="gt", EmitDefaultValue=true)]
-        [FromQuery(Name = "gt")]
+        [JsonPropertyName("gt")]
+
+        //[FromQuery(Name = "gt")]
         public T? Gt { get; set; }
 
         /// <summary>
         /// equal to
         /// </summary>
         [DataMember(Name="eq", EmitDefaultValue=true)]
-        [FromQuery(Name = "eq")]
+        [JsonPropertyName("eq")]
+
+        //[FromQuery(Name = "eq")]
         public T? Eq { get; set; }
     }
 }

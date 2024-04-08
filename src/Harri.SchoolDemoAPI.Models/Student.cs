@@ -15,8 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
+using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -32,6 +31,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// <example>1234</example>
         [Required]
         [DataMember(Name="sId", EmitDefaultValue=true)]
+        [JsonPropertyName("sId")]
+
         public int? SId { get; set; }
 
         /// <summary>
@@ -39,6 +40,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>Garry Peterson</example>
         [DataMember(Name="name", EmitDefaultValue=false)]
+        [JsonPropertyName("name")]
+
         public string? Name { get; set; }
 
         /// <summary>
@@ -46,6 +49,8 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>3.9</example>
         [DataMember(Name="GPA", EmitDefaultValue=true)]
+        [JsonPropertyName("GPA")]
+
         public decimal? GPA { get; set; }
 
     }

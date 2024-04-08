@@ -5,16 +5,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using Newtonsoft.Json;
-using Harri.SchoolDemoAPI.Converters;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
         /// <summary>
         /// List of valid decisions a school can make on an application
         /// </summary>
-        [TypeConverter(typeof(CustomEnumConverter<Decision>))]
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public enum Decision
         {
             
