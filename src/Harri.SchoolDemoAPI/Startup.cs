@@ -18,13 +18,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using Harri.SchoolDemoAPI.Authentication;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
 using Harri.SchoolDemoAPI.Formatters;
 using Harri.SchoolDemoAPI.Services;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -59,13 +59,10 @@ namespace Harri.SchoolDemoAPI
                 .AddControllers(options => {
                     options.InputFormatters.Insert(0, new InputFormatterStream());
                 })
-                .AddNewtonsoftJson(opts =>
+                .AddJsonOptions(options =>
                 {
-                    opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    opts.SerializerSettings.Converters.Add(new StringEnumConverter
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy()
-                    });
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
                 });
 
             services
@@ -82,7 +79,6 @@ namespace Harri.SchoolDemoAPI
                         {
                             Name = "OpenAPI-Generator Contributors",
                             Url = new Uri("https://github.com/openapitools/openapi-generator"),
-                            Email = ""
                         },
                         License = new OpenApiLicense
                         {
@@ -98,8 +94,6 @@ namespace Harri.SchoolDemoAPI
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
-                services
-                    .AddSwaggerGenNewtonsoftSupport();
 
             // Dependency Injection
             services.AddScoped<IStudentService, StudentService>();

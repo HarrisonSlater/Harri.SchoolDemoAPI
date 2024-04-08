@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <Description>A Demo RESTful API for a school admin system</Description>
     <Authors>Harrison Slater</Authors>
@@ -16,9 +16,9 @@
   <ItemGroup>
     <ProjectReference Include="../Harri.SchoolDemoAPI.Models/Harri.SchoolDemoAPI.Models.csproj" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0" />
-    <PackageReference Include="JsonSubTypes" Version="1.8.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
   </ItemGroup>
 </Project>

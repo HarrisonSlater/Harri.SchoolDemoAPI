@@ -13,7 +13,7 @@ namespace Harri.SchoolDemoAPI.Services
 
         public Student GetStudent(int sId)
         {
-            return new Student() { Name = "Test" };
+            return new Student() { SId= 1234, Name = "Test", GPA = 3.91m};
         }
 
 

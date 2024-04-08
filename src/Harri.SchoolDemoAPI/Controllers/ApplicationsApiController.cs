@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Newtonsoft.Json;
 using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
+using System.Text.Json;
 
 namespace Harri.SchoolDemoAPI.Controllers
 { 
@@ -48,7 +48,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "[ {\r\n  \"major\" : \"Computer Science\",\r\n  \"decision\" : \"Y\",\r\n  \"schoolId\" : 1001,\r\n  \"applicationId\" : 876581,\r\n  \"sId\" : 1234\r\n}, {\r\n  \"major\" : \"Computer Science\",\r\n  \"decision\" : \"Y\",\r\n  \"schoolId\" : 1001,\r\n  \"applicationId\" : 876581,\r\n  \"sId\" : 1234\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<Application>>(exampleJson)
+            ? JsonSerializer.Deserialize<List<Application>>(exampleJson)
             : default(List<Application>);
             //TODO: Change the data returned
             return new ObjectResult(example);
