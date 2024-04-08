@@ -13,13 +13,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
     {
         private IPactBuilderV4 _pact;
 
-
+        [OneTimeSetUp]
         [SetUp]
         public void Setup()
         {
             var config = new PactConfig()
             {
-                PactDir = "../../../pacts/",
+                PactDir = "../../../../pacts/",
                 DefaultJsonSettings = new JsonSerializerOptions
                 {
                 }

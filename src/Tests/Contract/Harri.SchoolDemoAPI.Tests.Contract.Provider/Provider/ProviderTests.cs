@@ -26,6 +26,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             string pactPath = Path.Combine("..",
                                        "..",
                                        "..",
+                                       "..",
                                        "pacts",
                                        "SchoolDempApi.Client-SchoolDemoApi.json");
 
