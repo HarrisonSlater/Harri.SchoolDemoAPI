@@ -15,6 +15,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Harri.SchoolDemoAPI.Models/Harri.SchoolDemoAPI.Models.csproj" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0">

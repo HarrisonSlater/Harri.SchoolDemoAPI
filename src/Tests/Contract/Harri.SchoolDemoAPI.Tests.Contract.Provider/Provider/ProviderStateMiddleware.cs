@@ -60,7 +60,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 Name = name?.GetString(),
                 GPA = gpa?.GetDecimal()
             };
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(studentToMock);
+            //Todo mock in memory db
+            //TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(studentToMock);
         }
 
         /// <summary>

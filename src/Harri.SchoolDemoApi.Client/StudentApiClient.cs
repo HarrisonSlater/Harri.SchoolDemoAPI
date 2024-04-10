@@ -38,6 +38,10 @@ namespace Harri.SchoolDemoApi.Client
         {
             var request = new RestRequest("student/{sId}").AddUrlSegment("sId", sId);
             var restResponse = await _restClient.ExecuteGetAsync<Student>(request);
+            if (!restResponse.IsSuccessStatusCode)
+            {
+                restResponse.Data = null;
+            }
             return restResponse;
         }
 

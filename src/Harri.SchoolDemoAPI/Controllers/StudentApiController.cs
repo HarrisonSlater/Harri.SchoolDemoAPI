@@ -9,6 +9,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Repository;
+using Harri.SchoolDemoAPI.Models.Attributes;
+using Microsoft.Extensions.Configuration;
 
 namespace Harri.SchoolDemoAPI.Controllers
 { 
@@ -64,17 +66,19 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
-        public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required] int sId)
+        public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required][NonNegativeInt] int sId)
         {
-
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(Student));
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-            
+
             var result = studentService.GetStudent(sId);
+            if (result == null) {
+                return NotFound();
+            }
             return new ObjectResult(result);
         }
 

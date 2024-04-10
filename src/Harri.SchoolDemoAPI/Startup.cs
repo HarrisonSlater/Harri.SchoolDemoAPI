@@ -97,6 +97,7 @@ namespace Harri.SchoolDemoAPI
 
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(Configuration["SQLConnectionString"]));
         }
 
         /// <summary>

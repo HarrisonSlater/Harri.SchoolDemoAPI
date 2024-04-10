@@ -1,21 +1,35 @@
-﻿using Harri.SchoolDemoAPI.Models;
+﻿using Dapper;
+using Harri.SchoolDemoAPI.Models;
+using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using System.Data.Common;
+using System.Linq;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
     public class StudentRepository : IStudentRepository
     {
-        public StudentRepository() { }
+        private readonly IDbConnectionFactory _dbConnectionFactory;
+
+        public StudentRepository(IDbConnectionFactory dbConnectionFactory)
+        {
+            _dbConnectionFactory = dbConnectionFactory;
+        }
+
         public int AddStudent(NewStudent newStudent)
         {
             throw new System.NotImplementedException();
             return 1234;
         }
 
-        public Student GetStudent(int sId)
+        public Student? GetStudent(int sId)
         {
-            throw new System.NotImplementedException();
-            return new Student() { SId= 1234, Name = "Test", GPA = 3.91m};
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var sql = $"SELECT sId, sName AS Name, GPA FROM SchoolDemo.Student WHERE sId = '{sId}'";
+                var student = connection.Query<Student>(sql);
+                return student?.FirstOrDefault();
+            }
         }
 
 

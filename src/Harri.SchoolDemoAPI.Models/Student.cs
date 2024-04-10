@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using Harri.SchoolDemoAPI.Models.Attributes;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -30,6 +31,7 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>1234</example>
         [Required]
+        [NonNegativeInt]
         [DataMember(Name="sId", EmitDefaultValue=true)]
         [JsonPropertyName("sId")]
 

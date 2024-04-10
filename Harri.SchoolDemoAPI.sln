@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B3534BA-F56A-4187-8EDE-59D852251B4F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json = src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoApi.Client", "src\Harri.SchoolDemoApi.Client\Harri.SchoolDemoApi.Client.csproj", "{32AAA739-922B-4D1F-BDBC-6BC79AD212E7}"
@@ -18,6 +17,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Contract.Provider", "src\Tests\Contract\Harri.SchoolDemoAPI.Tests.Contract.Provider\Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj", "{C91E9B08-8D27-43BE-83A4-CD9CE85F2C5D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoApi.Tests.Contract.Consumer", "src\Tests\Contract\Harri.SchoolDemoApi.Tests.Contract.Consumer\Harri.SchoolDemoApi.Tests.Contract.Consumer.csproj", "{F30B47F2-29F0-4939-A44E-AD5139268BDC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pacts", "pacts", "{CE982582-20D5-4C27-BFEA-5351F221C5B7}"
+	ProjectSection(SolutionItems) = preProject
+		src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json = src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A6A9243C-8FA3-4D27-9BDB-723520C62049}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harri.SchoolDempAPI.Tests.Common", "src\Tests\Harri.SchoolDempAPI.Tests.Common\Harri.SchoolDempAPI.Tests.Common.csproj", "{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +53,17 @@ Global
 		{F30B47F2-29F0-4939-A44E-AD5139268BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F30B47F2-29F0-4939-A44E-AD5139268BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F30B47F2-29F0-4939-A44E-AD5139268BDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE982582-20D5-4C27-BFEA-5351F221C5B7} = {A6A9243C-8FA3-4D27-9BDB-723520C62049}
+		{A6A9243C-8FA3-4D27-9BDB-723520C62049} = {4B3534BA-F56A-4187-8EDE-59D852251B4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49A5B443-5B70-4589-9543-77862ED9A1E4}
