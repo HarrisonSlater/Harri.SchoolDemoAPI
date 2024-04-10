@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
+using System.Data;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -26,9 +27,8 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var sql = $"SELECT sId, sName AS Name, GPA FROM SchoolDemo.Student WHERE sId = '{sId}'";
-                var student = connection.Query<Student>(sql);
-                return student?.FirstOrDefault();
+                var student = connection.Query<Student?>("[SchoolDemo].GetStudent", new {sId}, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                return student;
             }
         }
 

@@ -10,6 +10,11 @@ namespace Harri.SchoolDempAPI.Tests.Common
     {
         private readonly SqliteConnection _connection;
         public InMemorySQLiteTestDatabase() {
+            if (_connection is not null)
+            {
+                return;
+            }
+
             using (var connection2 = GetConnection())
             {
                 _connection = new SqliteConnection($"Data Source=InMemorySchoolDemoDatabase;Mode=Memory;Cache=Shared");
@@ -82,7 +87,6 @@ CREATE TABLE [SchoolDemo].[Application] (
 INSERT INTO [SchoolDemo].Application (sId, SchoolId, major, decision)
 VALUES (001, 1001, 'Computer Science', 'Y');
 ");
-
             }
 
         }
