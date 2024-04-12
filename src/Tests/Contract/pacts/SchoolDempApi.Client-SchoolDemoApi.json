@@ -4,6 +4,233 @@
   },
   "interactions": [
     {
+      "description": "a request to add a new student with name Mocky",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sIdNew} will be created",
+          "params": {
+            "GPA": null,
+            "name": "Mocky",
+            "sIdNew": 4567
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Mocky"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": 4567,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to add a new student with name Mocky McMockName",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sIdNew} will be created",
+          "params": {
+            "GPA": 3.81,
+            "name": "Mocky McMockName",
+            "sIdNew": 1234
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky McMockName"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": 1234,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to add a new student without a name",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "  \t\r\n   "
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to get a student with an invalid id",
       "pending": false,
       "request": {
@@ -192,6 +419,59 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to get a student with id 404",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} does not exist",
+          "params": {
+            "sId": 404
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/student/404"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "status": 404,
+            "title": "error title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
+        },
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to get a student with id 4567",
       "pending": false,
       "providerStates": [
@@ -253,6 +533,399 @@
           "header": {}
         },
         "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 123",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists and will be updated",
+          "params": {
+            "GPA": 3.81,
+            "name": "Mocky",
+            "sId": 123
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky",
+            "sId": 123
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": true,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 1234 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": null,
+            "sId": 1234
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists and will be updated",
+          "params": {
+            "GPA": null,
+            "name": "Mocky",
+            "sId": 4567
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Mocky",
+            "sId": 4567
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": true,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson",
+            "sId": 4567
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": false,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "",
+            "sId": 4567
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/student/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
       },
       "type": "Synchronous/HTTP"
     }

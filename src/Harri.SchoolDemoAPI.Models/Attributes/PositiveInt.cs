@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
-    public class NonNegativeInt : RangeAttribute
+    public class PositiveInt : RangeAttribute
     {
-        public NonNegativeInt() : base(0, int.MaxValue)
+        public PositiveInt() : base(0, int.MaxValue)
         {
-            ErrorMessage = "    ";
+            ErrorMessage = "int should be positive";
         }
     }
 }

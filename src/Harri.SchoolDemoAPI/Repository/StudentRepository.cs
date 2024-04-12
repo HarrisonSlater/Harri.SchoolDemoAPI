@@ -33,13 +33,13 @@ namespace Harri.SchoolDemoAPI.Repository
         }
 
 
-        public void UpdateStudent(Student newStudent)
+        public bool UpdateStudent(Student newStudent)
         {
-
+            return false;
         }
-        public void DeleteStudent(int id)
+        public bool DeleteStudent(int id)
         {
-
+            return false;
         }
     }
 }

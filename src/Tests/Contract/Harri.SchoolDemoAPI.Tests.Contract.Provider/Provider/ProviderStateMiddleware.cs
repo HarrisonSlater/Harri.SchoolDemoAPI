@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +41,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
-                ["a student with sId {sId} exists"] = this.EnsureStudentExists
+                ["a student with sId {sId} exists"] = this.EnsureStudentExists,
+                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
+                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
+                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated
             };
         }
 
@@ -60,9 +66,53 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 Name = name?.GetString(),
                 GPA = gpa?.GetDecimal()
             };
-            //Todo mock in memory db
-            //TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(studentToMock);
+
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(studentToMock);
         }
+
+        private async Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns((Student?)null);
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>())).Returns(false);
+        }
+
+        private async Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>())).Throws(new Exception("UpdateStudent should not be called"));
+        }
+        private async Task EnsureStudentWillBeUpdated(IDictionary<string, object> parameters)
+        {
+            var sId = (JsonElement?)parameters["sId"];
+            var name = (JsonElement?)parameters["name"];
+            var gpa = (JsonElement?)parameters["GPA"];
+
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>()))
+                .Returns(true)
+                .Callback<Student>(ns =>
+                {
+                    ns.SId.Should().Be(sId?.GetInt32());
+                    ns.Name.Should().Be(name?.ToString());
+                    ns.GPA.Should().Be(gpa?.GetDecimal());
+                });
+        }
+
+        private async Task EnsureStudentWillBeCreated(IDictionary<string, object> parameters)
+        {
+            var sIdNew = (JsonElement?)parameters["sIdNew"];
+            var name = (JsonElement?)parameters["name"];
+            var gpa = (JsonElement?)parameters["GPA"];
+
+            TestStartup.MockStudentRepo.Setup(s => s.AddStudent(It.IsAny<NewStudent>()))
+                .Returns(sIdNew.Value.GetInt32())
+                .Callback<NewStudent>(ns =>
+                {
+                    ns.Name.Should().Be(name.ToString());
+                    ns.GPA.Should().Be(gpa?.GetDecimal());
+                });
+
+        }
+
+
 
         /// <summary>
         /// Handle the request

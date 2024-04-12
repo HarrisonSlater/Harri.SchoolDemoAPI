@@ -66,7 +66,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [ValidateModelState]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
-        public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required][NonNegativeInt] int sId)
+        public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(Student));
@@ -104,9 +104,15 @@ namespace Harri.SchoolDemoAPI.Controllers
             // return StatusCode(400);
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-            studentService.UpdateStudent(student);
-
-            return Ok();
+            var success = studentService.UpdateStudent(student);
+            if (success)
+            {
+                return Ok(success);
+            }
+            else
+            {
+                return NotFound(success);
+            }
         }
 
         /// <summary>

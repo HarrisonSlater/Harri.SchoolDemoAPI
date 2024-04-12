@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Harri.SchoolDemoAPI.Models
 {
@@ -19,28 +20,28 @@ namespace Harri.SchoolDemoAPI.Models
         /// <summary>
         /// less than
         /// </summary>
-        [DataMember(Name="lt", EmitDefaultValue=true)]
-        [JsonPropertyName("lt")]
-
-        //[FromQuery(Name="lt")]
+        [DataMember(Name = APIConstants.Query.Lt)]
+        [JsonPropertyName(APIConstants.Query.Lt)]
+        [DisplayName(APIConstants.Query.Lt)]
+        [ModelBinder(Name = APIConstants.Query.Lt)]
         public T? Lt { get; set; }
 
         /// <summary>
         /// greater than
         /// </summary>
-        [DataMember(Name="gt", EmitDefaultValue=true)]
-        [JsonPropertyName("gt")]
-
-        //[FromQuery(Name = "gt")]
+        [DataMember(Name = APIConstants.Query.Gt)]
+        [JsonPropertyName(APIConstants.Query.Gt)]
+        [DisplayName(APIConstants.Query.Gt)]
+        [ModelBinder(Name = APIConstants.Query.Gt)]
         public T? Gt { get; set; }
 
         /// <summary>
         /// equal to
         /// </summary>
-        [DataMember(Name="eq", EmitDefaultValue=true)]
-        [JsonPropertyName("eq")]
-
-        //[FromQuery(Name = "eq")]
+        [DataMember(Name = APIConstants.Query.Eq)]
+        [JsonPropertyName(APIConstants.Query.Eq)]
+        [DisplayName(APIConstants.Query.Eq)]
+        [ModelBinder(Name = APIConstants.Query.Eq)]
         public T? Eq { get; set; }
     }
 }

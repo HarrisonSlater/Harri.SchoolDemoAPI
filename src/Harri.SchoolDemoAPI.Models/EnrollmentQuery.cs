@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -18,9 +19,10 @@ namespace Harri.SchoolDemoAPI.Models
         /// less than
         /// </summary>
         /// <example>3.5</example>
-        [DataMember(Name="enrollment", EmitDefaultValue=true)]
-        [JsonPropertyName("enrollment")]
-        //[FromQuery(Name = "enrollment")]
+        [DataMember(Name = APIConstants.School.Enrollment)]
+        [JsonPropertyName(APIConstants.School.Enrollment)]
+        [DisplayName(APIConstants.School.Enrollment)]
+        [ModelBinder(Name = APIConstants.School.Enrollment)]
         public ComparativeQuery<int>? Enrollment { get; set; }
 
     }

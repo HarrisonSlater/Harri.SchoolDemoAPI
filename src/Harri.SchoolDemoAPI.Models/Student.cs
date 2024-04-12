@@ -17,6 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Harri.SchoolDemoAPI.Models.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Harri.SchoolDemoAPI.Models
 { 
@@ -31,28 +32,32 @@ namespace Harri.SchoolDemoAPI.Models
         /// </summary>
         /// <example>1234</example>
         [Required]
-        [NonNegativeInt]
-        [DataMember(Name="sId", EmitDefaultValue=true)]
-        [JsonPropertyName("sId")]
-
+        [PositiveInt]
+        [DataMember(Name = APIConstants.Student.SId)]
+        [JsonPropertyName(APIConstants.Student.SId)]
+        [DisplayName(APIConstants.Student.SId)]
+        [ModelBinder(Name = APIConstants.Student.SId)]
         public int? SId { get; set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         /// <example>Garry Peterson</example>
-        [DataMember(Name="name", EmitDefaultValue=false)]
-        [JsonPropertyName("name")]
-
+        [Required]
+        [DataMember(Name = APIConstants.Student.Name)]
+        [JsonPropertyName(APIConstants.Student.Name)]
+        [DisplayName(APIConstants.Student.Name)]
+        [ModelBinder(Name = APIConstants.Student.Name)]
         public string? Name { get; set; }
 
         /// <summary>
         /// Gets or Sets GPA
         /// </summary>
         /// <example>3.9</example>
-        [DataMember(Name="GPA", EmitDefaultValue=true)]
-        [JsonPropertyName("GPA")]
-
+        [DataMember(Name = APIConstants.Student.GPA)]
+        [JsonPropertyName(APIConstants.Student.GPA)]
+        [DisplayName(APIConstants.Student.GPA)]
+        [ModelBinder(Name = APIConstants.Student.GPA)]
         public decimal? GPA { get; set; }
 
     }
