@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Xml.Linq;
 using Harri.SchoolDemoAPI.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Net.Http.Headers;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -47,7 +48,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         { "GPA", GPA is null ? "null" : GPA.ToString() },
                     })
                     .WithRequest(HttpMethod.Get, $"/student/{sId}")
-                 //.WithHeader("Accept", "application/json")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -305,8 +305,110 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         //DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent
-        //DeleteStudent_WhenCalledWithAnInvalidRequest_Returns400
+        [TestCase(123)]
+        [TestCase(456)]
+        public async Task DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent(int sId)
+        {
+            _pact.UponReceiving($"a request to delete a student with sId {sId}")
+                    .Given("a student with sId {sId} exists and will be deleted", new Dictionary<string, string>() {
+                        {"sId", sId.ToString() },
+                    })
+                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(Match.Equality(true));
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var student = await client.DeleteStudent(sId);
+
+                // Client Assertions
+                student.Should().Be(true);
+            });
+        }
+
         //DeleteStudent_WhenCalledWithANonExistantStudentId_Returns404
+        [TestCase(1122)]
+        public async Task DeleteStudent_WhenCalledWithANonExistantStudentId_Returns404(int sId)
+        {
+            _pact.UponReceiving($"a request to delete a student with sId {sId}")
+                    .Given("a student with sId {sId} does not exist and will not be deleted", new Dictionary<string, string>() {
+                        {"sId", sId.ToString() },
+                    })
+                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.NotFound)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(Match.Equality(false));
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var student = await client.DeleteStudent(sId);
+
+                // Client Assertions
+                student.Should().Be(false);
+            });
+        }
         //DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409
+        public async Task DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409(int sId)
+        {
+            _pact.UponReceiving($"a request to delete a student with sId {sId}")
+                    .Given("a student with sId { sId } exists but can not be deleted", new Dictionary<string, string>() {
+                        {"sId", sId.ToString() },
+                    })
+                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.Conflict)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(Match.Equality(false));
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var student = await client.DeleteStudent(sId);
+
+                // Client Assertions
+                student.Should().Be(false);
+            });
+        }
+
+
+        //DeleteStudent_WhenCalledWithAnInvalidRequest_Returns400
+
+        [TestCase(-1234)]
+        public async Task DeleteStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId)
+        {
+            _pact.UponReceiving($"a request to delete a student with invalid sId {sId}")
+                .Given("no student will be deleted")
+                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.BadRequest)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(new
+                 {
+                     title = Match.Type("title"),
+                     status = Match.Equality(400),
+                     errors = new
+                     {
+                         sId = new dynamic[] { Match.Type("error message") }
+                     }
+                 });
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.DeleteStudentRestResponse(sId);
+
+                // Client Assertions
+                response.Data.Should().BeFalse();
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+                response.ShouldContainErrorMessageForProperty("sId");
+            });
+        }
+
     }
 }

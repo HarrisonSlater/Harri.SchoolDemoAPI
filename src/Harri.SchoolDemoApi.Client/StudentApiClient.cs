@@ -64,15 +64,15 @@ namespace Harri.SchoolDemoApi.Client
         public async Task<bool> DeleteStudent(int sId)
         {
             var restResponse = await DeleteStudentRestResponse(sId);
-            return restResponse.IsSuccessful;
+            return restResponse.Data;
         }
 
-        public async Task<RestResponse> DeleteStudentRestResponse(int sId)
+        public async Task<RestResponse<bool>> DeleteStudentRestResponse(int sId)
         {
             var request = new RestRequest("student/{sId}").AddUrlSegment("sId", sId);
             request.Method = Method.Delete;
 
-            var restResponse = await _restClient.ExecuteAsync(request);
+            var restResponse = await _restClient.ExecuteAsync<bool>(request);
             return restResponse;
         }
     }

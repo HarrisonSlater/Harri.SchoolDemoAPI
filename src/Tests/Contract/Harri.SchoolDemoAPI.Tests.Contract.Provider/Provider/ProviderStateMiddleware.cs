@@ -45,7 +45,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
                 ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
                 ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated
+                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
+                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
+                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
+                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
+                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted
+
             };
         }
 
@@ -80,6 +85,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>())).Throws(new Exception("UpdateStudent should not be called"));
         }
+
+        private async Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(new Exception("DeleteStudent should not be called"));
+        }
+
         private async Task EnsureStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
@@ -110,6 +121,39 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     ns.GPA.Should().Be(gpa?.GetDecimal());
                 });
 
+        }
+
+        private async Task EnsureStudentWillBeDeleted(IDictionary<string, object> parameters)
+        {
+            var sId = (JsonElement?)parameters["sId"];
+            TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
+                .Returns(true)
+                .Callback<int>(sId =>
+                {
+                    sId.Should().Be(sId);
+                });
+        }
+
+        private async Task EnsureStudentDoesNotExistAndWillBeNotDeleted(IDictionary<string, object> parameters)
+        {
+            var sId = (JsonElement?)parameters["sId"];
+            TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
+                .Returns(false)
+                .Callback<int>(sId =>
+                {
+                    sId.Should().Be(sId);
+                });
+        }
+
+        private async Task EnsureStudentHasConflictAndCanNotNotDeleted(IDictionary<string, object> parameters)
+        {
+            var sId = (JsonElement?)parameters["sId"];
+            TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
+                .Returns((bool?)null)
+                .Callback<int>(sId =>
+                {
+                    sId.Should().Be(sId);
+                });
         }
 
 

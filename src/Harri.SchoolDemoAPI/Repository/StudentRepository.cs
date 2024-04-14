@@ -37,7 +37,7 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             return false;
         }
-        public bool DeleteStudent(int id)
+        public bool? DeleteStudent(int id)
         {
             return false;
         }

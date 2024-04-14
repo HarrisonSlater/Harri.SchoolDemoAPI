@@ -128,7 +128,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student/{sId}")]
         [ValidateModelState]
         [SwaggerOperation(OperationId = "DeleteStudent")]
-        public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required]int sId)
+        public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required][PositiveInt] int sId)
         {
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200);
@@ -139,11 +139,18 @@ namespace Harri.SchoolDemoAPI.Controllers
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
 
-            studentService.DeleteStudent(sId);
-
-            return Ok();
+            var success = studentService.DeleteStudent(sId);
+            if (success is null) {
+                return Conflict(success);
+            }
+            else if (success.Value)
+            {
+                return Ok(success);
+            }
+            else
+            {
+                return NotFound(success);
+            }
         }
-
-
     }
 }
