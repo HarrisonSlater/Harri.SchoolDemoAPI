@@ -274,7 +274,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        //UpdateStudent_WhenCalledWithNonExistantStudentId_Returns404
         [TestCase(4567, "Mocky Mockson", 3.81)]
         public async Task UpdateStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
         {
@@ -304,7 +303,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        //DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent
         [TestCase(123)]
         [TestCase(456)]
         public async Task DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent(int sId)
@@ -329,7 +327,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        //DeleteStudent_WhenCalledWithANonExistantStudentId_Returns404
         [TestCase(1122)]
         public async Task DeleteStudent_WhenCalledWithANonExistantStudentId_Returns404(int sId)
         {
@@ -352,7 +349,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 student.Should().Be(false);
             });
         }
-        //DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409
+
         public async Task DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409(int sId)
         {
             _pact.UponReceiving($"a request to delete a student with sId {sId}")
@@ -374,9 +371,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 student.Should().Be(false);
             });
         }
-
-
-        //DeleteStudent_WhenCalledWithAnInvalidRequest_Returns400
 
         [TestCase(-1234)]
         public async Task DeleteStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId)
