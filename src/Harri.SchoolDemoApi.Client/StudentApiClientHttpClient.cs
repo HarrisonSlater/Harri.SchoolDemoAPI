@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 
 namespace Harri.SchoolDemoApi.Client
 {
+    // UNUSED
     public class StudentApiClientHttpClient
     {
         private readonly HttpClient _client;

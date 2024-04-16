@@ -38,16 +38,10 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPost]
         [Route("/student")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "AddStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddStudent([FromBody]NewStudent newStudent)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(int));
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
             var result = studentService.AddStudent(newStudent);
 
             return new ObjectResult(result);
@@ -63,18 +57,10 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Student not found</response>
         [HttpGet]
         [Route("/student/{sId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
         public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Student));
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
             var result = studentService.GetStudent(sId);
             if (result == null) {
                 return NotFound();
@@ -93,17 +79,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPut]
         [Route("/student")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "UpdateStudent")]
         public virtual IActionResult UpdateStudent([FromBody] Student student)
         {
-
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
             var success = studentService.UpdateStudent(student);
             if (success)
             {
@@ -126,21 +104,12 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Student not found</response>
         [HttpDelete]
         [Route("/student/{sId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "DeleteStudent")]
         public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required][PositiveInt] int sId)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-            //TODO: Uncomment the next line to return response 409 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(409);
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-
             var success = studentService.DeleteStudent(sId);
             if (success is null) {
+                // Return conflict when student cannot be deleted due to foreign key references in other tables
                 return Conflict(success);
             }
             else if (success.Value)

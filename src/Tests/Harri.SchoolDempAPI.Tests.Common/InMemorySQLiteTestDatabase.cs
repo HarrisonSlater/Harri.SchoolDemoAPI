@@ -6,6 +6,7 @@ using System.Data;
 
 namespace Harri.SchoolDempAPI.Tests.Common
 {
+    // UNUSED
     public class InMemorySQLiteTestDatabase : IDbConnectionFactory, IDisposable
     {
         private readonly SqliteConnection _connection;

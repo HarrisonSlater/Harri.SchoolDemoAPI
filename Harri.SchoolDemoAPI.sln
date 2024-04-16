@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pacts", "pacts", "{CE982582
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A6A9243C-8FA3-4D27-9BDB-723520C62049}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harri.SchoolDempAPI.Tests.Common", "src\Tests\Harri.SchoolDempAPI.Tests.Common\Harri.SchoolDempAPI.Tests.Common.csproj", "{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDempAPI.Tests.Common", "src\Tests\Harri.SchoolDempAPI.Tests.Common\Harri.SchoolDempAPI.Tests.Common.csproj", "{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
