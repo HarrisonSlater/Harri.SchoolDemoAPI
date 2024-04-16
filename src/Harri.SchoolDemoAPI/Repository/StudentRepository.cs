@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Data;
+using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -19,8 +20,11 @@ namespace Harri.SchoolDemoAPI.Repository
 
         public int AddStudent(NewStudent newStudent)
         {
-            throw new System.NotImplementedException();
-            return 1234;
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var sId = connection.Query<int>("[SchoolDemo].CreateNewStudent", new { sName = newStudent.Name, newStudent.GPA }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                return sId;
+            }
         }
 
         public Student? GetStudent(int sId)
@@ -37,9 +41,13 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             return false;
         }
-        public bool? DeleteStudent(int id)
+        public bool? DeleteStudent(int sId)
         {
-            return false;
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var student = connection.Query<bool?>("[SchoolDemo].DeleteStudent", new { sId }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                return student;
+            }
         }
     }
 }
