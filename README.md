@@ -1,6 +1,9 @@
-# Harri.SchoolDemoAPI - ASP.NET Core 6.0 Server
+# Harri.SchoolDemoAPI - ASP.NET Core 8.0 Server
 
 Demo API about students, schools, and students applications to schools
+
+## See Contract Tests 
+https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md
 
 ## Upgrade NuGet Packages
 
