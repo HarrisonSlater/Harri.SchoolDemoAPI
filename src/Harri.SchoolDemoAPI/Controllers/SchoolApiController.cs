@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
 
@@ -29,7 +28,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPost]
         [Route("/school")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "AddSchool")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddSchool([FromBody]NewSchool newSchool)
@@ -59,7 +57,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">School not found</response>
         [HttpGet]
         [Route("/school/{schoolId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "GetSchool")]
         [SwaggerResponse(statusCode: 200, type: typeof(School), description: "Successful operation")]
         public virtual IActionResult GetSchool([FromRoute(Name = "schoolId")][Required] int schoolId)
@@ -92,7 +89,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPut]
         [Route("/school")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "UpdateSchool")]
         public virtual IActionResult UpdateSchool([FromBody] School school)
         {
@@ -118,7 +114,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">School not found</response>
         [HttpDelete]
         [Route("/school/{schoolId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "DeleteSchool")]
         public virtual IActionResult DeleteSchool([FromRoute (Name = "schoolId")][Required]int schoolId)
         {

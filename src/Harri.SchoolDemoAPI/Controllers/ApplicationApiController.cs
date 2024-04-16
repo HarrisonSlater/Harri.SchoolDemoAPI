@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
 
@@ -29,7 +28,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPost]
         [Route("/application")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "AddApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public virtual IActionResult AddApplication([FromBody]NewApplication newApplication)
@@ -59,7 +57,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Application not found</response>
         [HttpGet]
         [Route("/application/{applicationId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "GetApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(Application), description: "Successful operation")]
         public virtual IActionResult GetApplication([FromRoute (Name = "applicationId")][Required]int applicationId)
@@ -92,7 +89,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpPut]
         [Route("/application")]
         [Consumes("application/json")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "UpdateApplication")]
         public virtual IActionResult UpdateApplication([FromBody] Application application)
         {
@@ -117,7 +113,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Application not found</response>
         [HttpDelete]
         [Route("/application/{applicationId}")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "DeleteApplication")]
         public virtual IActionResult DeleteApplication([FromRoute(Name = "applicationId")][Required] int applicationId)
         {

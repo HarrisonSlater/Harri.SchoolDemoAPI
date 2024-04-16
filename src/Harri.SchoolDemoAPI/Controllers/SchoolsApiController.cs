@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
 
@@ -31,7 +30,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">No schools found</response>
         [HttpGet]
         [Route("/schools")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "GetSchools")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<School>), description: "Successful operation")]
         public virtual IActionResult GetSchools([FromQuery (Name = "name")]string? name, [FromQuery (Name = "state")]State? state, [FromQuery]EnrollmentQuery? enrollmentQuery)

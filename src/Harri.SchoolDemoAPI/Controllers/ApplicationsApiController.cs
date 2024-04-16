@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Harri.SchoolDemoAPI.Attributes;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
 
@@ -32,7 +31,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">No applications found</response>
         [HttpGet]
         [Route("/applications")]
-        [ValidateModelState]
         [SwaggerOperation(OperationId = "GetApplications")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<Application>), description: "Successful operation")]
         public virtual IActionResult GetApplications([FromQuery (Name = "sId")]int? sId, [FromQuery (Name = "schoolId")]int? schoolId, [FromQuery (Name = "major")]string? major, [FromQuery (Name = "decision")]Decision? decision)
