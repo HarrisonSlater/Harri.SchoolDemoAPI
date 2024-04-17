@@ -41,6 +41,12 @@ steps:
     testRunTitle: 'Run Contract Tests - Consumer'
     vsTestVersion: 'toolsInstaller'
 
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json'
+    artifact: 'Pact file'
+    publishLocation: 'pipeline'
+    
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
@@ -49,8 +55,3 @@ steps:
     testRunTitle: 'Run Provider Tests - Consumer'
     vsTestVersion: 'toolsInstaller'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json'
-    artifact: 'Pact file'
-    publishLocation: 'pipeline'
