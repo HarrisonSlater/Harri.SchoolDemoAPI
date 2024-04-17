@@ -30,5 +30,14 @@ steps:
 
 - task: VSTest@2
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.dll'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Run Contract Tests - Consumer'
+
+- task: VSTest@2
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Provider.dll'
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testRunTitle: 'Run Provider Tests - Consumer'
