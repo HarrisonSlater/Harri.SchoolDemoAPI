@@ -28,12 +28,17 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: VisualStudioTestPlatformInstaller@1
+  inputs:
+    packageFeedSelector: 'nugetOrg'
+    versionSelector: 'latestStable'
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
     testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.dll'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     testRunTitle: 'Run Contract Tests - Consumer'
+    vsTestVersion: 'toolsInstaller'
 
 - task: VSTest@2
   inputs:
@@ -41,3 +46,5 @@ steps:
     testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Provider.dll'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     testRunTitle: 'Run Provider Tests - Consumer'
+    vsTestVersion: 'toolsInstaller'
+
