@@ -23,6 +23,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         [Test]
         public void VerifySchoolDemoAPIHonoursPactsWithConsumer()
         {
+            var envVar = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH");
             string pactPath = Path.Combine("..",
                                        "..",
                                        "..",
@@ -34,7 +35,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             pactVerifier
                 .WithHttpEndpoint(_provider.ServerUri)
-                .WithFileSource(new FileInfo(pactPath))
+                .WithFileSource(new FileInfo(envVar == null ? pactPath : envVar))
                 .WithProviderStateUrl(new Uri(_provider.ServerUri, "/provider-states"))
                 .Verify();
         }
