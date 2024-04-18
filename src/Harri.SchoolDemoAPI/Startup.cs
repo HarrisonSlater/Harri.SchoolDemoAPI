@@ -14,6 +14,8 @@ using Harri.SchoolDemoAPI.OpenApi;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Harri.SchoolDemoAPI.Repository;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using Harri.SchoolDemoAPI.Services;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -45,11 +47,15 @@ namespace Harri.SchoolDemoAPI
             // Add framework services.
             services
                 // Don't need the full MVC stack for an API, see https://andrewlock.net/comparing-startup-between-the-asp-net-core-3-templates/
-                .AddControllers()
+                .AddControllers(options =>
+                {
+                    options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    //options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                    //options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 });
 
             services
@@ -84,6 +90,7 @@ namespace Harri.SchoolDemoAPI
 
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IStudentService, StudentService>();
             services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(Configuration["SQLConnectionString"]));
         }
 

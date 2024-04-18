@@ -1,5 +1,7 @@
 ﻿using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
+using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoApi.Client
 {
@@ -73,6 +75,26 @@ namespace Harri.SchoolDemoApi.Client
             request.Method = Method.Delete;
 
             var restResponse = await _restClient.ExecuteAsync<bool>(request);
+            return restResponse;
+        }
+
+        // Patch
+        public async Task<Student?> PatchStudent(int sId, StudentPatchDto student)
+        {
+            var restResponse = await PatchStudentRestResponse(sId, student);
+            return restResponse.Data;
+        }
+
+        public async Task<RestResponse<Student?>> PatchStudentRestResponse(int sId, StudentPatchDto student)
+        {
+            var request = new RestRequest("students/{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
+            request.Method = Method.Patch;
+
+            var restResponse = await _restClient.ExecuteAsync<Student?>(request);
+            if (!restResponse.IsSuccessStatusCode)
+            {
+                restResponse.Data = null;
+            }
             return restResponse;
         }
     }

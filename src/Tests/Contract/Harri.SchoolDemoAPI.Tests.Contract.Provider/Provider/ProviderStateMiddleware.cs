@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -45,11 +46,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
                 ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
                 ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,
                 ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
                 ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
                 ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
                 ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
-                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted
+                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
+                //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
         }
@@ -155,7 +158,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     sId.Should().Be(sId);
                 });
         }
-
 
 
         /// <summary>

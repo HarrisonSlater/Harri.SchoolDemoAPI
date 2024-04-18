@@ -10,44 +10,31 @@ using Harri.SchoolDemoAPI.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Harri.SchoolDemoAPI.Models
+namespace Harri.SchoolDemoAPI.Models.Dto
 { 
-    /// <summary>
-    /// 
-    /// </summary>
-    [DataContract]
-    public class Student 
+    public class StudentDto
     {
         /// <summary>
-        /// Gets or Sets SId
+        /// Student ID
         /// </summary>
         /// <example>1234</example>
-        /// 
-        [DataMember(Name = APIConstants.Student.SId)]
+        [Required]
         [JsonPropertyName(APIConstants.Student.SId)]
-        [DisplayName(APIConstants.Student.SId)]
-        [ModelBinder(Name = APIConstants.Student.SId)]
         public int? SId { get; set; }
 
         /// <summary>
-        /// Gets or Sets Name
+        /// Student name
         /// </summary>
         /// <example>Garry Peterson</example>
         [Required]
-        [DataMember(Name = APIConstants.Student.Name)]
         [JsonPropertyName(APIConstants.Student.Name)]
-        [DisplayName(APIConstants.Student.Name)]
-        [ModelBinder(Name = APIConstants.Student.Name)]
         public string? Name { get; set; }
 
         /// <summary>
-        /// Gets or Sets GPA
+        /// Student Grade Point Average
         /// </summary>
         /// <example>3.9</example>
-        [DataMember(Name = APIConstants.Student.GPA)]
         [JsonPropertyName(APIConstants.Student.GPA)]
-        [DisplayName(APIConstants.Student.GPA)]
-        [ModelBinder(Name = APIConstants.Student.GPA)]
         public decimal? GPA { get; set; }
 
     }

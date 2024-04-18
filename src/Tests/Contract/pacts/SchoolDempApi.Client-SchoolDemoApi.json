@@ -730,6 +730,425 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to patch a non-existant student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 123",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists",
+          "params": {
+            "GPA": 3.91,
+            "name": "EXISTING STUDENT NAME",
+            "sId": 123
+          }
+        },
+        {
+          "name": "a student with sId {sId} will be updated",
+          "params": {
+            "GPA": 3.91,
+            "name": "Mocky",
+            "sId": 123
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "name": "Mocky"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "GPA": 3.91,
+            "name": "Mocky",
+            "sId": 123
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 123",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists",
+          "params": {
+            "GPA": 3.91,
+            "name": "EXISTING STUDENT NAME",
+            "sId": 123
+          }
+        },
+        {
+          "name": "a student with sId {sId} will be updated",
+          "params": {
+            "GPA": 3.52,
+            "name": "EXISTING STUDENT NAME",
+            "sId": 123
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.52
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "GPA": 3.52,
+            "name": "EXISTING STUDENT NAME",
+            "sId": 123
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 1234 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/1234"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 4567 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": ""
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to update a student with sId 123",
       "pending": false,
       "providerStates": [
