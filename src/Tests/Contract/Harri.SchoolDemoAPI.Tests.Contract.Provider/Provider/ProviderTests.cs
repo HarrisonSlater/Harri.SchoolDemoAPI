@@ -23,7 +23,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         [Test]
         public void VerifySchoolDemoAPIHonoursPactsWithConsumer()
         {
-            var envVar = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH");
+            var envVar = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", EnvironmentVariableTarget.User);
             string pactPath = Path.Combine("..",
                                        "..",
                                        "..",
