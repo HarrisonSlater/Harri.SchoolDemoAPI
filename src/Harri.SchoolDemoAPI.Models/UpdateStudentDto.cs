@@ -13,7 +13,7 @@ namespace Harri.SchoolDemoAPI.Models
     /// <summary>
     /// 
     /// </summary>
-    public class NewStudentDto 
+    public class UpdateStudentDto 
     {
         /// <summary>
         /// Gets or Sets Name

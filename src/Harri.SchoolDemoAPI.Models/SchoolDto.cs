@@ -14,7 +14,6 @@ namespace Harri.SchoolDemoAPI.Models
     /// <summary>
     /// 
     /// </summary>
-    [DataContract]
     public class SchoolDto 
     {
         /// <summary>
