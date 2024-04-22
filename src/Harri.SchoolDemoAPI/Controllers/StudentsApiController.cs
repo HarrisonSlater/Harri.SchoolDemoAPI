@@ -30,8 +30,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/students")]
         [SwaggerOperation(OperationId = "GetStudents")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Student>), description: "Successful operation")]
-        public virtual IActionResult GetStudents([FromQuery (Name = "name")]string? name, [FromQuery] GPAQuery? GPAQuery)
+        [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
+        public virtual IActionResult GetStudents([FromQuery (Name = "name")]string? name, [FromQuery] GPAQueryDto? GPAQuery)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -44,8 +44,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "[ {\r\n  \"name\" : \"Garry Peterson\",\r\n  \"GPA\" : 3.9,\r\n  \"sId\" : 1234\r\n}, {\r\n  \"name\" : \"Garry Peterson\",\r\n  \"GPA\" : 3.9,\r\n  \"sId\" : 1234\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonSerializer.Deserialize<List<Student>>(exampleJson)
-            : default(List<Student>);
+            ? JsonSerializer.Deserialize<List<StudentDto>>(exampleJson)
+            : default(List<StudentDto>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }

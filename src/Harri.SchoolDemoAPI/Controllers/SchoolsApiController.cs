@@ -8,9 +8,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
+using Harri.SchoolDemoAPI.Models.Enums;
 
 namespace Harri.SchoolDemoAPI.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -31,8 +32,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/schools")]
         [SwaggerOperation(OperationId = "GetSchools")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<School>), description: "Successful operation")]
-        public virtual IActionResult GetSchools([FromQuery (Name = "name")]string? name, [FromQuery (Name = "state")]State? state, [FromQuery]EnrollmentQuery? enrollmentQuery)
+        [SwaggerResponse(statusCode: 200, type: typeof(List<SchoolDto>), description: "Successful operation")]
+        public virtual IActionResult GetSchools([FromQuery (Name = "name")]string? name, [FromQuery (Name = "state")]State? state, [FromQuery]EnrollmentQueryDto? enrollmentQuery)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -45,8 +46,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "[ {\r\n  \"schoolId\" : 1001,\r\n  \"state\" : \"VIC\",\r\n  \"schoolName\" : \"Melbourne Future School\",\r\n  \"enrollment\" : 20000\r\n}, {\r\n  \"schoolId\" : 1001,\r\n  \"state\" : \"VIC\",\r\n  \"schoolName\" : \"Melbourne Future School\",\r\n  \"enrollment\" : 20000\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonSerializer.Deserialize<List<School>>(exampleJson)
-            : default(List<School>);
+            ? JsonSerializer.Deserialize<List<SchoolDto>>(exampleJson)
+            : default(List<SchoolDto>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }

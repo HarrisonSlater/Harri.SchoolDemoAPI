@@ -16,14 +16,14 @@ namespace Harri.SchoolDemoApi.Client
         }
 
         // Add
-        public async Task<int?> AddStudent(NewStudent student)
+        public async Task<int?> AddStudent(NewStudentDto student)
         {
             var restResponse = await AddStudentRestResponse(student);
             return await restResponse.Content.ReadFromJsonAsync<int?>();
         }
 
         //RestResponse<int?>
-        public async Task<HttpResponseMessage> AddStudentRestResponse(NewStudent student)
+        public async Task<HttpResponseMessage> AddStudentRestResponse(NewStudentDto student)
         {
             //var request = new RestRequest("student/").AddBody(student);
             //var restResponse = await _restClient.ExecutePostAsync<int?>(request);
@@ -33,10 +33,10 @@ namespace Harri.SchoolDemoApi.Client
 
         
         // Get
-        public async Task<Student?> GetStudent(int sId)
+        public async Task<StudentDto?> GetStudent(int sId)
         {
             var restResponse = await GetStudentRestResponse(sId);
-            return await restResponse.Content.ReadFromJsonAsync<Student?>();
+            return await restResponse.Content.ReadFromJsonAsync<StudentDto?>();
         }
 
         public async Task<HttpResponseMessage> GetStudentRestResponse(int sId)

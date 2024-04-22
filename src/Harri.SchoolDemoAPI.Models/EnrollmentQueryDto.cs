@@ -13,17 +13,14 @@ namespace Harri.SchoolDemoAPI.Models
     /// <summary>
     /// TODO
     /// </summary>
-    public class EnrollmentQuery
+    public class EnrollmentQueryDto
     {
         /// <summary>
         /// less than
         /// </summary>
         /// <example>3.5</example>
-        [DataMember(Name = APIConstants.School.Enrollment)]
         [JsonPropertyName(APIConstants.School.Enrollment)]
-        [DisplayName(APIConstants.School.Enrollment)]
-        [ModelBinder(Name = APIConstants.School.Enrollment)]
-        public ComparativeQuery<int>? Enrollment { get; set; }
+        public ComparativeQueryDto<int>? Enrollment { get; set; }
 
     }
 }

@@ -6,9 +6,9 @@ namespace Harri.SchoolDemoAPI.Repository
 {
     public interface IStudentRepository
     {
-        Task<int> AddStudent(NewStudent newStudent);
+        Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
-        Task<Student?> GetStudent(int sId);
-        Task<bool> UpdateStudent(Student newStudent);
+        Task<Models.StudentDto?> GetStudent(int sId);
+        Task<bool> UpdateStudent(Models.StudentDto newStudent);
     }
 }

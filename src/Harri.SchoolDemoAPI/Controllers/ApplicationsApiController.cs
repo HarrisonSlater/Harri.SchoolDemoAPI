@@ -8,9 +8,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Harri.SchoolDemoAPI.Models;
 using System.Text.Json;
+using Harri.SchoolDemoAPI.Models.Enums;
 
 namespace Harri.SchoolDemoAPI.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -32,7 +33,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/applications")]
         [SwaggerOperation(OperationId = "GetApplications")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<Application>), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<ApplicationDto>), description: "Successful operation")]
         public virtual IActionResult GetApplications([FromQuery (Name = "sId")]int? sId, [FromQuery (Name = "schoolId")]int? schoolId, [FromQuery (Name = "major")]string? major, [FromQuery (Name = "decision")]Decision? decision)
         {
 
@@ -46,8 +47,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "[ {\r\n  \"major\" : \"Computer Science\",\r\n  \"decision\" : \"Y\",\r\n  \"schoolId\" : 1001,\r\n  \"applicationId\" : 876581,\r\n  \"sId\" : 1234\r\n}, {\r\n  \"major\" : \"Computer Science\",\r\n  \"decision\" : \"Y\",\r\n  \"schoolId\" : 1001,\r\n  \"applicationId\" : 876581,\r\n  \"sId\" : 1234\r\n} ]";
             
             var example = exampleJson != null
-            ? JsonSerializer.Deserialize<List<Application>>(exampleJson)
-            : default(List<Application>);
+            ? JsonSerializer.Deserialize<List<ApplicationDto>>(exampleJson)
+            : default(List<ApplicationDto>);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }

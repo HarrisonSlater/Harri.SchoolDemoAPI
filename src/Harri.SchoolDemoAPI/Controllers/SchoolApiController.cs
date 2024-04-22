@@ -30,7 +30,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "AddSchool")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
-        public virtual IActionResult AddSchool([FromBody]NewSchool newSchool)
+        public virtual IActionResult AddSchool([FromBody]NewSchoolDto newSchool)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -58,7 +58,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/school/{schoolId}")]
         [SwaggerOperation(OperationId = "GetSchool")]
-        [SwaggerResponse(statusCode: 200, type: typeof(School), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(SchoolDto), description: "Successful operation")]
         public virtual IActionResult GetSchool([FromRoute(Name = "schoolId")][Required] int schoolId)
         {
 
@@ -72,8 +72,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "{\r\n  \"schoolId\" : 1001,\r\n  \"state\" : \"VIC\",\r\n  \"schoolName\" : \"Melbourne Future School\",\r\n  \"enrollment\" : 20000\r\n}";
 
             var example = exampleJson != null
-            ? JsonSerializer.Deserialize<School>(exampleJson)
-            : default(School);
+            ? JsonSerializer.Deserialize<SchoolDto>(exampleJson)
+            : default(SchoolDto);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -90,7 +90,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/school")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "UpdateSchool")]
-        public virtual IActionResult UpdateSchool([FromBody] School school)
+        public virtual IActionResult UpdateSchool([FromBody] SchoolDto school)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...

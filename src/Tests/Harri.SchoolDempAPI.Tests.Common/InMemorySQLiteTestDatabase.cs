@@ -105,7 +105,7 @@ VALUES (001, 1001, 'Computer Science', 'Y');
 
             if( _connection != null )
             {
-                var testQuery = sqliteConnection.Query<Student>("SELECT * FROM [SchoolDemo].Student");
+                var testQuery = sqliteConnection.Query<StudentDto>("SELECT * FROM [SchoolDemo].Student");
             }
             return sqliteConnection;
         }

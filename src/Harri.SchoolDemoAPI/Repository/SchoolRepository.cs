@@ -6,17 +6,17 @@ namespace Harri.SchoolDemoAPI.Repository
     public class SchoolRepository
     {
         public SchoolRepository() { }
-        public int AddSchool(NewSchool newSchool) {
+        public int AddSchool(NewSchoolDto newSchool) {
             return 1234;
         }
 
-        public School GetSchool(int schoolId)
+        public SchoolDto GetSchool(int schoolId)
         {
-            return new School() { SchoolName = "Test School"};
+            return new SchoolDto() { SchoolName = "Test School"};
         }
 
 
-        public void UpdateSchool(School school) { 
+        public void UpdateSchool(SchoolDto school) { 
             
         }
         public void DeleteSchool(int schoolId)

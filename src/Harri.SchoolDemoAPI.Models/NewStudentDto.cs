@@ -13,17 +13,23 @@ namespace Harri.SchoolDemoAPI.Models
     /// <summary>
     /// 
     /// </summary>
-    public class GPAQuery 
+    [DataContract]
+    public class NewStudentDto 
     {
         /// <summary>
-        /// less than
+        /// Gets or Sets Name
         /// </summary>
-        /// <example>3.5</example>
-        [DataMember(Name = APIConstants.Student.GPA)]
+        /// <example>Garry Peterson</example>
+        [Required]
+        [JsonPropertyName(APIConstants.Student.Name)]
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Gets or Sets GPA
+        /// </summary>
+        /// <example>3.9</example>
         [JsonPropertyName(APIConstants.Student.GPA)]
-        [DisplayName(APIConstants.Student.GPA)]
-        [ModelBinder(Name = APIConstants.Student.GPA)]
-        public ComparativeQuery<decimal>? GPA { get; set; }
+        public decimal? GPA { get; set; }
 
     }
 }

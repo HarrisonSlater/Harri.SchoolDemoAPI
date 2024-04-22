@@ -156,7 +156,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.AddStudent(new NewStudent() { Name = name, GPA = GPA });
+                var student = await client.AddStudent(new NewStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 student.Should().NotBeNull().And.Be(sIdNew);
@@ -192,7 +192,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.AddStudentRestResponse(new NewStudent() { Name = name, GPA = GPA });
+                var response = await client.AddStudentRestResponse(new NewStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -228,7 +228,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.UpdateStudent(new Student() { SId = sId, Name = name, GPA = GPA });
+                var student = await client.UpdateStudent(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
 
                 // Client Assertions
                 student.Should().Be(true);
@@ -265,7 +265,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(new Student() { SId = sId, Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -296,7 +296,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(new Student() { SId = sId, Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeFalse();
@@ -445,7 +445,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var student = await client.PatchStudent(sId, new StudentPatchDto() { Name = newName });
 
                 // Client Assertions
-                student.Should().BeEquivalentTo(new Student()
+                student.Should().BeEquivalentTo(new Models.StudentDto()
                 {
                     SId = sId,
                     Name = newName,
@@ -492,7 +492,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var student = await client.PatchStudent(sId, new StudentPatchDto() { GPA = gpa });
 
                 // Client Assertions
-                student.Should().BeEquivalentTo(new Student()
+                student.Should().BeEquivalentTo(new Models.StudentDto()
                 {
                     SId = sId,
                     Name = existingName,

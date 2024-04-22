@@ -43,7 +43,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "AddStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
-        public async Task<IActionResult> AddStudent([FromBody]NewStudent newStudent)
+        public async Task<IActionResult> AddStudent([FromBody]NewStudentDto newStudent)
         {
             var result = await _studentService.AddStudent(newStudent);
 
@@ -61,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/student/{sId}")]
         [SwaggerOperation(OperationId = "GetStudent")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(Models.StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
             var result = await _studentService.GetStudent(sId);
@@ -83,7 +83,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
-        public async Task<IActionResult> UpdateStudent([FromBody] Student student)
+        public async Task<IActionResult> UpdateStudent([FromBody] Models.StudentDto student)
         {
             var success = await _studentService.UpdateStudent(student);
             if (success)

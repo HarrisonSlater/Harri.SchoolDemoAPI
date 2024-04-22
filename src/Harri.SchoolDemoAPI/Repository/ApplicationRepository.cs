@@ -6,17 +6,17 @@ namespace Harri.ApplicationDemoAPI.Repository
     public class ApplicationRepository
     {
         public ApplicationRepository() { }
-        public int AddApplication(NewApplication newApplication) {
+        public int AddApplication(NewApplicationDto newApplication) {
             return 1234;
         }
 
-        public Application GetApplication(int applicationId)
+        public ApplicationDto GetApplication(int applicationId)
         {
-            return new Application() { Major = "Test Major"};
+            return new ApplicationDto() { Major = "Test Major"};
         }
 
 
-        public void UpdateApplication(Application application) { 
+        public void UpdateApplication(ApplicationDto application) { 
             
         }
         public void DeleteApplication(int applicationId)

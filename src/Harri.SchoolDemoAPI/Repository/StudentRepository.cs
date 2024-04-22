@@ -18,7 +18,7 @@ namespace Harri.SchoolDemoAPI.Repository
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public async Task<int> AddStudent(NewStudent newStudent)
+        public async Task<int> AddStudent(NewStudentDto newStudent)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
@@ -27,17 +27,17 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<Student?> GetStudent(int sId)
+        public async Task<Models.StudentDto?> GetStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var student = (await connection.QueryAsync<Student?>("[SchoolDemo].GetStudent", new {sId}, commandType: CommandType.StoredProcedure)).FirstOrDefault();
+                var student = (await connection.QueryAsync<Models.StudentDto?>("[SchoolDemo].GetStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault<Models.StudentDto>();
                 return student;
             }
         }
 
 
-        public async Task<bool> UpdateStudent(Student student)
+        public async Task<bool> UpdateStudent(Models.StudentDto student)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {

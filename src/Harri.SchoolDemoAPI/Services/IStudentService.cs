@@ -6,10 +6,10 @@ namespace Harri.SchoolDemoAPI.Services
 {
     public interface IStudentService
     {
-        Task<int> AddStudent(NewStudent newStudent);
+        Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
-        Task<Student?> GetStudent(int sId);
-        Task<Student?> PatchStudent(int sId, StudentPatchDto student);
-        Task<bool> UpdateStudent(Student student);
+        Task<Models.StudentDto?> GetStudent(int sId);
+        Task<Models.StudentDto?> PatchStudent(int sId, StudentPatchDto student);
+        Task<bool> UpdateStudent(Models.StudentDto student);
     }
 }

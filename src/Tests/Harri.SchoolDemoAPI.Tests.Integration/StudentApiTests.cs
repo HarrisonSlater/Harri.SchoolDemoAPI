@@ -46,7 +46,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [Test]
         public async Task AddStudent_ShouldAddNewStudent()
         {
-            var newStudent = new NewStudent()
+            var newStudent = new NewStudentDto()
             {
                 Name = "New Test Student",
                 GPA = 3.81m

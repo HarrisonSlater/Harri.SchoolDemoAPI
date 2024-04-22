@@ -30,7 +30,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "AddApplication")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
-        public virtual IActionResult AddApplication([FromBody]NewApplication newApplication)
+        public virtual IActionResult AddApplication([FromBody]NewApplicationDto newApplication)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
@@ -58,7 +58,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/application/{applicationId}")]
         [SwaggerOperation(OperationId = "GetApplication")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Application), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(ApplicationDto), description: "Successful operation")]
         public virtual IActionResult GetApplication([FromRoute (Name = "applicationId")][Required]int applicationId)
         {
 
@@ -72,8 +72,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             exampleJson = "{\r\n  \"major\" : \"Computer Science\",\r\n  \"decision\" : \"Y\",\r\n  \"schoolId\" : 1001,\r\n  \"applicationId\" : 876581,\r\n  \"sId\" : 1234\r\n}";
             
             var example = exampleJson != null
-            ? JsonSerializer.Deserialize<Application>(exampleJson)
-            : default(Application);
+            ? JsonSerializer.Deserialize<ApplicationDto>(exampleJson)
+            : default(ApplicationDto);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -90,7 +90,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/application")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "UpdateApplication")]
-        public virtual IActionResult UpdateApplication([FromBody] Application application)
+        public virtual IActionResult UpdateApplication([FromBody] ApplicationDto application)
         {
 
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
