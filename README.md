@@ -2,6 +2,9 @@
 
 Demo API about students, schools, and students applications to schools
 
+## WIP - API
+So far the /students/ api is complete: https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentApiController.cs
+
 ## See Contract Tests 
 https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md
 
