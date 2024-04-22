@@ -1,5 +1,4 @@
-﻿using Harri.SchoolDemoAPI.Models;
-using Harri.SchoolDemoAPI.Models.Dto;
+﻿using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
 using System.Security.Cryptography;
 
@@ -48,7 +47,7 @@ namespace Harri.SchoolDemoApi.Client
         }
 
         // Update
-        public async Task<bool?> UpdateStudent(SchoolDemoAPI.Models.StudentDto student)
+        public async Task<bool?> UpdateStudent(StudentDto student)
         {
             var restResponse = await UpdateStudentRestResponse(student);
             return restResponse.Data;

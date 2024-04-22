@@ -1,5 +1,4 @@
-﻿using Harri.SchoolDemoAPI.Models;
-using Harri.SchoolDemoAPI.Models.Dto;
+﻿using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Repository

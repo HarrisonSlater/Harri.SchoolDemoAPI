@@ -1,4 +1,4 @@
-﻿using Harri.SchoolDemoAPI.Models;
+﻿using Harri.SchoolDemoAPI.Models.Dto;
 using System.ComponentModel;
 
 namespace Harri.ApplicationDemoAPI.Repository

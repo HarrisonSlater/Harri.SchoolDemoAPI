@@ -6,25 +6,15 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using Harri.SchoolDemoAPI.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Harri.SchoolDemoAPI.Models
-{ 
+namespace Harri.SchoolDemoAPI.Models.Dto
+{
     /// <summary>
     /// 
     /// </summary>
-    public class StudentDto 
+    public class UpdateStudentDto
     {
-        /// <summary>
-        /// Gets or Sets SId
-        /// </summary>
-        /// <example>1234</example>
-        /// 
-        [JsonPropertyName(APIConstants.Student.SId)]
-        public int? SId { get; set; }
-
         /// <summary>
         /// Gets or Sets Name
         /// </summary>

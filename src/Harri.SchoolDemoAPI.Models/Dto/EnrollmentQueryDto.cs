@@ -8,8 +8,8 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harri.SchoolDemoAPI.Models
-{ 
+namespace Harri.SchoolDemoAPI.Models.Dto
+{
     /// <summary>
     /// TODO
     /// </summary>

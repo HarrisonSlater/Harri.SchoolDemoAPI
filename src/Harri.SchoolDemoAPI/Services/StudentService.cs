@@ -1,5 +1,4 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Repository;
 using System.Data;
 using System.Threading.Tasks;

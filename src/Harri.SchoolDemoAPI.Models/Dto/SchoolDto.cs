@@ -9,13 +9,21 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Harri.SchoolDemoAPI.Models.Enums;
 
-namespace Harri.SchoolDemoAPI.Models
+namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
     /// 
     /// </summary>
-    public class NewSchoolDto 
+    public class SchoolDto
     {
+        /// <summary>
+        /// Gets or Sets SchoolId
+        /// </summary>
+        /// <example>1001</example>
+        [Required]
+        [JsonPropertyName(APIConstants.School.SchoolId)]
+        public int? SchoolId { get; set; }
+
         /// <summary>
         /// Gets or Sets SchoolName
         /// </summary>

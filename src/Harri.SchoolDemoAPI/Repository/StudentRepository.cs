@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Harri.SchoolDemoAPI.Models;
 using System.Linq;
 using System.Data;
 using System.Security.Cryptography;

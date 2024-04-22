@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -15,7 +14,7 @@ using Harri.SchoolDemoAPI.Services;
 using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Controllers
-{ 
+{
     /// <summary>
     /// 
     /// </summary>

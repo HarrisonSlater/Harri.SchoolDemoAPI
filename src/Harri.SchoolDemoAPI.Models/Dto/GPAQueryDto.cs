@@ -8,27 +8,19 @@ using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Harri.SchoolDemoAPI.Models
-{ 
+namespace Harri.SchoolDemoAPI.Models.Dto
+{
     /// <summary>
     /// 
     /// </summary>
-    public class UpdateStudentDto 
+    public class GPAQueryDto
     {
         /// <summary>
-        /// Gets or Sets Name
+        /// less than
         /// </summary>
-        /// <example>Garry Peterson</example>
-        [Required]
-        [JsonPropertyName(APIConstants.Student.Name)]
-        public string? Name { get; set; }
-
-        /// <summary>
-        /// Gets or Sets GPA
-        /// </summary>
-        /// <example>3.9</example>
+        /// <example>3.5</example>
         [JsonPropertyName(APIConstants.Student.GPA)]
-        public decimal? GPA { get; set; }
+        public ComparativeQueryDto<decimal>? GPA { get; set; }
 
     }
 }

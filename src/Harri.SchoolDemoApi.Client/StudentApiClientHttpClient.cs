@@ -1,4 +1,4 @@
-﻿using Harri.SchoolDemoAPI.Models;
+﻿using Harri.SchoolDemoAPI.Models.Dto;
 using System.Net.Http.Json;
 
 namespace Harri.SchoolDemoApi.Client

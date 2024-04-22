@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
 using Harri.SchoolDemoAPI.Models.Enums;
 
-namespace Harri.SchoolDemoAPI.Models
+namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ApplicationDto 
+    public class ApplicationDto
     {
         /// <summary>
         /// Gets or Sets ApplicationId
