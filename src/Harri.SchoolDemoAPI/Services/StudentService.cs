@@ -2,6 +2,7 @@
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Repository;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Services
 {
@@ -14,34 +15,34 @@ namespace Harri.SchoolDemoAPI.Services
             _studentRepository = studentRepository;
         }
 
-        public int AddStudent(NewStudent newStudent)
+        public async Task<int> AddStudent(NewStudent newStudent)
         {
-            return _studentRepository.AddStudent(newStudent);
+            return await _studentRepository.AddStudent(newStudent);
         }
 
-        public Student? GetStudent(int sId)
+        public async Task<Student?> GetStudent(int sId)
         {
-            return _studentRepository.GetStudent(sId);
+            return await _studentRepository.GetStudent(sId);
         }
 
 
-        public bool UpdateStudent(Student student)
+        public async Task<bool> UpdateStudent(Student student)
         {
-            return _studentRepository.UpdateStudent(student);
+            return await _studentRepository.UpdateStudent(student);
         }
 
-        public bool? DeleteStudent(int sId)
+        public async Task<bool?> DeleteStudent(int sId)
         {
-            return _studentRepository.DeleteStudent(sId);
+            return await _studentRepository.DeleteStudent(sId);
         }
 
-        public Student? PatchStudent(int sId, StudentPatchDto student)
+        public async Task<Student?> PatchStudent(int sId, StudentPatchDto student)
         {
-            var existingStudent = _studentRepository.GetStudent(sId);
+            var existingStudent = await _studentRepository.GetStudent(sId);
             if (existingStudent != null)
             {
                 student.ApplyChangesTo(existingStudent);
-                _studentRepository.UpdateStudent(existingStudent);
+                await _studentRepository.UpdateStudent(existingStudent);
                 return existingStudent;
             }
             else

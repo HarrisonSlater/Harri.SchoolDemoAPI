@@ -1,13 +1,14 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
+using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
     public interface IStudentRepository
     {
-        int AddStudent(NewStudent newStudent);
-        bool? DeleteStudent(int sId);
-        Student? GetStudent(int sId);
-        bool UpdateStudent(Student newStudent);
+        Task<int> AddStudent(NewStudent newStudent);
+        Task<bool?> DeleteStudent(int sId);
+        Task<Student?> GetStudent(int sId);
+        Task<bool> UpdateStudent(Student newStudent);
     }
 }

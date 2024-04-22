@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
+using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Controllers
 { 
@@ -42,9 +43,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "AddStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
-        public virtual IActionResult AddStudent([FromBody]NewStudent newStudent)
+        public async Task<IActionResult> AddStudent([FromBody]NewStudent newStudent)
         {
-            var result = _studentService.AddStudent(newStudent);
+            var result = await _studentService.AddStudent(newStudent);
 
             return new ObjectResult(result);
         }
@@ -61,9 +62,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student/{sId}")]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(Student), description: "Successful operation")]
-        public virtual IActionResult GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
+        public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
-            var result = _studentService.GetStudent(sId);
+            var result = await _studentService.GetStudent(sId);
             if (result == null) {
                 return NotFound();
             }
@@ -82,9 +83,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/student")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
-        public virtual IActionResult UpdateStudent([FromBody] Student student)
+        public async Task<IActionResult> UpdateStudent([FromBody] Student student)
         {
-            var success = _studentService.UpdateStudent(student);
+            var success = await _studentService.UpdateStudent(student);
             if (success)
             {
                 return Ok(success);
@@ -108,17 +109,14 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Route("/students/{sId}")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "PatchStudent")]
-        public virtual IActionResult PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
+        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
         {
             if (!student.OptionalName.HasValue && !student.OptionalGPA.HasValue)
             {
                 return BadRequest();
             }
 
-            var r = TryValidateModel(student);
-            //var m = ModelState;
-
-            var patchedStudent = _studentService.PatchStudent(sId, student);
+            var patchedStudent = await _studentService.PatchStudent(sId, student);
             if (patchedStudent is not null)
             {
                 return Ok(patchedStudent);
@@ -141,9 +139,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpDelete]
         [Route("/student/{sId}")]
         [SwaggerOperation(OperationId = "DeleteStudent")]
-        public virtual IActionResult DeleteStudent([FromRoute (Name = "sId")][Required][PositiveInt] int sId)
+        public async Task<IActionResult> DeleteStudent([FromRoute (Name = "sId")][Required][PositiveInt] int sId)
         {
-            var success = _studentService.DeleteStudent(sId);
+            var success = await _studentService.DeleteStudent(sId);
             if (success is null) {
                 // Return conflict when student cannot be deleted due to applications referencing that student exist
                 return Conflict(success);

@@ -75,13 +75,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 GPA = gpa?.GetDecimal()
             };
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(studentToMock);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((Student?)studentToMock));
         }
 
         private async Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns((Student?)null);
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>())).Returns(false);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((Student?)null));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>())).Returns(Task.FromResult(false));
         }
 
         private async Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
@@ -101,7 +101,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var gpa = (JsonElement?)parameters["GPA"];
 
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Student>()))
-                .Returns(true)
+                .Returns(Task.FromResult(true))
                 .Callback<Student>(ns =>
                 {
                     ns.SId.Should().Be(sId?.GetInt32());
@@ -117,7 +117,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var gpa = (JsonElement?)parameters["GPA"];
 
             TestStartup.MockStudentRepo.Setup(s => s.AddStudent(It.IsAny<NewStudent>()))
-                .Returns(sIdNew.Value.GetInt32())
+                .Returns(Task.FromResult(sIdNew.Value.GetInt32()))
                 .Callback<NewStudent>(ns =>
                 {
                     ns.Name.Should().Be(name.ToString());
@@ -130,7 +130,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(true)
+                .Returns(Task.FromResult((bool?)true))
                 .Callback<int>(sId =>
                 {
                     sId.Should().Be(sId);
@@ -141,7 +141,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(false)
+                .Returns(Task.FromResult((bool?)false))
                 .Callback<int>(sId =>
                 {
                     sId.Should().Be(sId);
@@ -152,7 +152,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns((bool?)null)
+                .Returns(Task.FromResult((bool?)null))
                 .Callback<int>(sId =>
                 {
                     sId.Should().Be(sId);

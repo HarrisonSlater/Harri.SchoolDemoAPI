@@ -4,6 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Security.Cryptography;
 using Harri.SchoolDemoAPI.Models.Dto;
+using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -17,39 +18,39 @@ namespace Harri.SchoolDemoAPI.Repository
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public int AddStudent(NewStudent newStudent)
+        public async Task<int> AddStudent(NewStudent newStudent)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var sId = connection.Query<int>("[SchoolDemo].CreateNewStudent", new { sName = newStudent.Name, newStudent.GPA }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                var sId = (await connection.QueryAsync<int>("[SchoolDemo].CreateNewStudent", new { sName = newStudent.Name, newStudent.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return sId;
             }
         }
 
-        public Student? GetStudent(int sId)
+        public async Task<Student?> GetStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var student = connection.Query<Student?>("[SchoolDemo].GetStudent", new {sId}, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                var student = (await connection.QueryAsync<Student?>("[SchoolDemo].GetStudent", new {sId}, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return student;
             }
         }
 
 
-        public bool UpdateStudent(Student student)
+        public async Task<bool> UpdateStudent(Student student)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var success = connection.Query<bool>("[SchoolDemo].UpdateStudent", new { sId = student.SId, sName = student.Name, student.GPA }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                var success = (await connection.QueryAsync<bool>("[SchoolDemo].UpdateStudent", new { sId = student.SId, sName = student.Name, student.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return success;
             }
         }
 
-        public bool? DeleteStudent(int sId)
+        public async Task<bool?> DeleteStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var success = connection.Query<bool?>("[SchoolDemo].DeleteStudent", new { sId }, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                var success = (await connection.QueryAsync<bool?>("[SchoolDemo].DeleteStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return success;
             }
         }
