@@ -7,7 +7,7 @@ namespace Harri.SchoolDemoAPI.Repository
     {
         Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
-        Task<Models.StudentDto?> GetStudent(int sId);
-        Task<bool> UpdateStudent(Models.StudentDto newStudent);
+        Task<StudentDto?> GetStudent(int sId);
+        Task<bool> UpdateStudent(int sId, UpdateStudentDto newStudent);
     }
 }

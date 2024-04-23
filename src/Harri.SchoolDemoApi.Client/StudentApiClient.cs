@@ -29,16 +29,16 @@ namespace Harri.SchoolDemoApi.Client
         }
 
         // Get
-        public async Task<SchoolDemoAPI.Models.StudentDto?> GetStudent(int sId)
+        public async Task<StudentDto?> GetStudent(int sId)
         {
             var restResponse = await GetStudentRestResponse(sId);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<SchoolDemoAPI.Models.StudentDto>> GetStudentRestResponse(int sId)
+        public async Task<RestResponse<StudentDto>> GetStudentRestResponse(int sId)
         {
             var request = new RestRequest("student/{sId}").AddUrlSegment("sId", sId);
-            var restResponse = await _restClient.ExecuteGetAsync<SchoolDemoAPI.Models.StudentDto>(request);
+            var restResponse = await _restClient.ExecuteGetAsync<StudentDto>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
                 restResponse.Data = null;
@@ -47,15 +47,15 @@ namespace Harri.SchoolDemoApi.Client
         }
 
         // Update
-        public async Task<bool?> UpdateStudent(StudentDto student)
+        public async Task<bool?> UpdateStudent(int sId, UpdateStudentDto student)
         {
-            var restResponse = await UpdateStudentRestResponse(student);
+            var restResponse = await UpdateStudentRestResponse(sId, student);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<bool?>> UpdateStudentRestResponse(SchoolDemoAPI.Models.StudentDto student)
+        public async Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student)
         {
-            var request = new RestRequest("student/").AddBody(student);
+            var request = new RestRequest("students/{sId}").AddUrlSegment("sId", sId).AddBody(student);
             var restResponse = await _restClient.ExecutePutAsync<bool?>(request);
             return restResponse;
         }
@@ -78,18 +78,18 @@ namespace Harri.SchoolDemoApi.Client
         }
 
         // Patch
-        public async Task<SchoolDemoAPI.Models.StudentDto?> PatchStudent(int sId, StudentPatchDto student)
+        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
         {
             var restResponse = await PatchStudentRestResponse(sId, student);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<SchoolDemoAPI.Models.StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student)
+        public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student)
         {
             var request = new RestRequest("students/{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
             request.Method = Method.Patch;
 
-            var restResponse = await _restClient.ExecuteAsync<SchoolDemoAPI.Models.StudentDto?>(request);
+            var restResponse = await _restClient.ExecuteAsync<StudentDto?>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
                 restResponse.Data = null;

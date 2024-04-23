@@ -60,11 +60,11 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/student/{sId}")]
         [SwaggerOperation(OperationId = "GetStudent")]
-        [SwaggerResponse(statusCode: 200, type: typeof(Models.StudentDto), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
             var result = await _studentService.GetStudent(sId);
-            if (result == null) {
+            if (result is null) {
                 return NotFound();
             }
             return new ObjectResult(result);
@@ -79,12 +79,12 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
         [HttpPut]
-        [Route("/student")]
+        [Route("/students/{sId}")]
         [Consumes("application/json")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
-        public async Task<IActionResult> UpdateStudent([FromBody] Models.StudentDto student)
+        public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
-            var success = await _studentService.UpdateStudent(student);
+            var success = await _studentService.UpdateStudent(sId, student);
             if (success)
             {
                 return Ok(success);
@@ -138,7 +138,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpDelete]
         [Route("/student/{sId}")]
         [SwaggerOperation(OperationId = "DeleteStudent")]
-        public async Task<IActionResult> DeleteStudent([FromRoute (Name = "sId")][Required][PositiveInt] int sId)
+        public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveInt] int sId)
         {
             var success = await _studentService.DeleteStudent(sId);
             if (success is null) {

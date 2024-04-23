@@ -212,11 +212,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         { "name", name },
                         { "GPA", GPA is null ? "null" : GPA.ToString() },
                     })
-                    .WithRequest(HttpMethod.Put, $"/student/")
+                    .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
-                        sId = sId,
                         name = name,
                         GPA = GPA
                     }))
@@ -228,7 +227,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.UpdateStudent(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
+                var student = await client.UpdateStudent(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 student.Should().Be(true);
@@ -241,11 +240,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             _pact.UponReceiving($"a request to update a student with sId {sId} and invalid name")
                 .Given("no student will be updated")
-                    .WithRequest(HttpMethod.Put, $"/student/")
+                    .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
-                        sId = sId,
                         name = name,
                         GPA = GPA
                     }))
@@ -265,7 +263,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -280,11 +278,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             _pact.UponReceiving($"a request to update a student with sId {sId} and invalid name")
                 .Given("a student with sId {sId} does not exist")
-                    .WithRequest(HttpMethod.Put, $"/student/")
+                    .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
-                        sId = sId,
                         name = name,
                         GPA = GPA
                     }))
@@ -296,7 +293,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(new Models.StudentDto() { SId = sId, Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(sId,new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeFalse();
@@ -445,7 +442,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var student = await client.PatchStudent(sId, new StudentPatchDto() { Name = newName });
 
                 // Client Assertions
-                student.Should().BeEquivalentTo(new Models.StudentDto()
+                student.Should().BeEquivalentTo(new StudentDto()
                 {
                     SId = sId,
                     Name = newName,
@@ -492,7 +489,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var student = await client.PatchStudent(sId, new StudentPatchDto() { GPA = gpa });
 
                 // Client Assertions
-                student.Should().BeEquivalentTo(new Models.StudentDto()
+                student.Should().BeEquivalentTo(new StudentDto()
                 {
                     SId = sId,
                     Name = existingName,

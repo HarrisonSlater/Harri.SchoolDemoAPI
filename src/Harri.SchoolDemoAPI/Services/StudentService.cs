@@ -19,15 +19,15 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.AddStudent(newStudent);
         }
 
-        public async Task<Models.StudentDto?> GetStudent(int sId)
+        public async Task<StudentDto?> GetStudent(int sId)
         {
             return await _studentRepository.GetStudent(sId);
         }
 
 
-        public async Task<bool> UpdateStudent(Models.StudentDto student)
+        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
         {
-            return await _studentRepository.UpdateStudent(student);
+            return await _studentRepository.UpdateStudent(sId, student);
         }
 
         public async Task<bool?> DeleteStudent(int sId)
@@ -35,13 +35,13 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.DeleteStudent(sId);
         }
 
-        public async Task<Models.StudentDto?> PatchStudent(int sId, StudentPatchDto student)
+        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
         {
             var existingStudent = await _studentRepository.GetStudent(sId);
-            if (existingStudent != null)
+            if (existingStudent is not null)
             {
                 student.ApplyChangesTo(existingStudent);
-                await _studentRepository.UpdateStudent(existingStudent);
+                await _studentRepository.UpdateStudent(sId, existingStudent.AsUpdateStudentDto());
                 return existingStudent;
             }
             else

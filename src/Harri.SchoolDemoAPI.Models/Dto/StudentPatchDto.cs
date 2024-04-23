@@ -41,7 +41,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
             set => OptionalGPA = value;
         }
 
-        public void ApplyChangesTo(Models.StudentDto student)
+        public void ApplyChangesTo(StudentDto student)
         {
             if (OptionalName.HasValue) 
             {

@@ -1165,8 +1165,7 @@
         "body": {
           "content": {
             "GPA": 3.81,
-            "name": "Mocky",
-            "sId": 123
+            "name": "Mocky"
           },
           "contentType": "application/json",
           "encoded": false
@@ -1190,7 +1189,7 @@
           "header": {}
         },
         "method": "PUT",
-        "path": "/student/"
+        "path": "/students/123"
       },
       "response": {
         "body": {
@@ -1232,8 +1231,7 @@
         "body": {
           "content": {
             "GPA": 3.81,
-            "name": null,
-            "sId": 1234
+            "name": null
           },
           "contentType": "application/json",
           "encoded": false
@@ -1257,7 +1255,7 @@
           "header": {}
         },
         "method": "PUT",
-        "path": "/student/"
+        "path": "/students/1234"
       },
       "response": {
         "body": {
@@ -1328,8 +1326,7 @@
         "body": {
           "content": {
             "GPA": null,
-            "name": "Mocky",
-            "sId": 4567
+            "name": "Mocky"
           },
           "contentType": "application/json",
           "encoded": false
@@ -1353,7 +1350,7 @@
           "header": {}
         },
         "method": "PUT",
-        "path": "/student/"
+        "path": "/students/4567"
       },
       "response": {
         "body": {
@@ -1395,8 +1392,7 @@
         "body": {
           "content": {
             "GPA": 3.81,
-            "name": "Mocky Mockson",
-            "sId": 4567
+            "name": "Mocky Mockson"
           },
           "contentType": "application/json",
           "encoded": false
@@ -1420,7 +1416,7 @@
           "header": {}
         },
         "method": "PUT",
-        "path": "/student/"
+        "path": "/students/4567"
       },
       "response": {
         "body": {
@@ -1462,8 +1458,7 @@
         "body": {
           "content": {
             "GPA": 3.81,
-            "name": "",
-            "sId": 4567
+            "name": ""
           },
           "contentType": "application/json",
           "encoded": false
@@ -1487,7 +1482,7 @@
           "header": {}
         },
         "method": "PUT",
-        "path": "/student/"
+        "path": "/students/4567"
       },
       "response": {
         "body": {

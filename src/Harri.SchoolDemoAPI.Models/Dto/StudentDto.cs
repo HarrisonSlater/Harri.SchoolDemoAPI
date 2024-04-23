@@ -37,5 +37,13 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         [JsonPropertyName(APIConstants.Student.GPA)]
         public decimal? GPA { get; set; }
 
+        public UpdateStudentDto AsUpdateStudentDto()
+        {
+            return new UpdateStudentDto()
+            {
+                Name = Name,
+                GPA = GPA,
+            };
+        }
     }
 }

@@ -1,7 +1,8 @@
 using Harri.SchoolDemoApi.Client;
 using FluentAssertions;
-using Harri.SchoolDemoAPI.Models;
 using System.Runtime.CompilerServices;
+using Harri.SchoolDemoAPI.Models.Dto;
+using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
@@ -46,6 +47,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [Test]
         public async Task AddStudent_ShouldAddNewStudent()
         {
+            // Arrange
             var newStudent = new NewStudentDto()
             {
                 Name = "New Test Student",
@@ -61,8 +63,82 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             var student = await _client.GetStudent(id.Value);
             student.Should().NotBeNull();
+            student.SId.Should().NotBeNull().And.Be(id.Value);
             student.Name.Should().Be(newStudent.Name);
             student.GPA.Should().Be(newStudent.GPA);
+
+            await CleanUpTestStudent(student.SId.Value);
+        }
+
+        [Test]
+        public async Task UpdateStudent_ShouldUpdateExistingStudent()
+        {
+            // Arrange 
+            var newStudent = new NewStudentDto()
+            {
+                Name = "New Test Student 2",
+                GPA = 3.71m
+            };
+            var sId = await _client.AddStudent(newStudent);
+            sId.Should().NotBeNull();
+
+            var studentUpdateDto = new UpdateStudentDto()
+            {
+                Name = "New Test Student 2 - Updated Name",
+                GPA = 3.75m
+            };
+
+            // Act
+            var success = await _client.UpdateStudent(sId.Value, studentUpdateDto);
+
+            // Assert
+            success.Should().BeTrue();
+
+            var updatedStudent = await _client.GetStudent(sId.Value);
+
+            updatedStudent.Should().NotBeNull();
+            updatedStudent.SId.Should().Be(sId.Value);
+            updatedStudent.Name.Should().Be(studentUpdateDto.Name);
+            updatedStudent.GPA.Should().Be(studentUpdateDto.GPA);
+
+            await CleanUpTestStudent(sId.Value);
+        }
+
+        [Test]
+        public async Task DeleteStudent_ShouldDeleteStudent()
+        {
+            // Arrange
+            var newStudent = new NewStudentDto()
+            {
+                Name = "New Test Student - To be deleted",
+                GPA = 3.81m
+            };
+            var sId = await _client.AddStudent(newStudent);
+            sId.Should().NotBeNull();
+
+            var student = await _client.GetStudent(sId.Value);
+            student.Should().NotBeNull();
+
+            // Act
+            var success = await _client.DeleteStudent(sId.Value);
+
+            // Assert
+            success.Should().Be(true);
+
+            var studentResponse = await _client.GetStudentRestResponse(sId.Value);
+            studentResponse.Data.Should().BeNull();
+            studentResponse.IsSuccessStatusCode.Should().BeFalse();
+            studentResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        }
+
+
+        private async Task CleanUpTestStudent(int sId)
+        {
+            try
+            {
+                await _client.DeleteStudent(sId);
+            }
+            catch { }
         }
     }
 }

@@ -26,21 +26,21 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<Models.StudentDto?> GetStudent(int sId)
+        public async Task<StudentDto?> GetStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var student = (await connection.QueryAsync<Models.StudentDto?>("[SchoolDemo].GetStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault<Models.StudentDto>();
+                var student = (await connection.QueryAsync<StudentDto?>("[SchoolDemo].GetStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault<StudentDto>();
                 return student;
             }
         }
 
 
-        public async Task<bool> UpdateStudent(Models.StudentDto student)
+        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var success = (await connection.QueryAsync<bool>("[SchoolDemo].UpdateStudent", new { sId = student.SId, sName = student.Name, student.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
+                var success = (await connection.QueryAsync<bool>("[SchoolDemo].UpdateStudent", new { sId = sId, sName = student.Name, student.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return success;
             }
         }

@@ -7,8 +7,8 @@ namespace Harri.SchoolDemoAPI.Services
     {
         Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
-        Task<Models.StudentDto?> GetStudent(int sId);
-        Task<Models.StudentDto?> PatchStudent(int sId, StudentPatchDto student);
-        Task<bool> UpdateStudent(Models.StudentDto student);
+        Task<StudentDto?> GetStudent(int sId);
+        Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
+        Task<bool> UpdateStudent(int sId, UpdateStudentDto student);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.Data.Sqlite;
 using System.Data;

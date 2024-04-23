@@ -67,25 +67,25 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var name = (JsonElement?)parameters["name"];
             var gpa = (JsonElement?)parameters["GPA"];
 
-            var studentToMock = new Models.StudentDto()
+            var studentToMock = new StudentDto()
             {
                 SId = sId?.GetInt32(),
                 Name = name?.GetString(),
                 GPA = gpa?.GetDecimal()
             };
 
-            TestStartup.MockStudentRepo.Setup<Task<Models.StudentDto>>(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<Models.StudentDto>((Models.StudentDto?)studentToMock));
+            TestStartup.MockStudentRepo.Setup<Task<StudentDto>>(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto>((StudentDto?)studentToMock));
         }
 
         private async Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup<Task<Models.StudentDto>>(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<Models.StudentDto>((Models.StudentDto?)null));
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Models.StudentDto>())).Returns(Task.FromResult(false));
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(false));
         }
 
         private async Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Models.StudentDto>())).Throws(new Exception("UpdateStudent should not be called"));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(new Exception("UpdateStudent should not be called"));
         }
 
         private async Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
@@ -99,11 +99,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var name = (JsonElement?)parameters["name"];
             var gpa = (JsonElement?)parameters["GPA"];
 
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<Models.StudentDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>()))
                 .Returns(Task.FromResult(true))
-                .Callback<Models.StudentDto>(ns =>
+                .Callback<int, UpdateStudentDto>((id, ns) =>
                 {
-                    ns.SId.Should().Be(sId?.GetInt32());
+                    id.Should().Be(sId?.GetInt32());
                     ns.Name.Should().Be(name?.ToString());
                     ns.GPA.Should().Be(gpa?.GetDecimal());
                 });
