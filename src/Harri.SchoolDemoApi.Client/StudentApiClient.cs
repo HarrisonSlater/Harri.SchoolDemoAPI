@@ -6,6 +6,7 @@ namespace Harri.SchoolDemoApi.Client
 {
     public class StudentApiClient
     {
+        private const string BaseRoute = "students/";
         private readonly RestClient _restClient;
 
         public StudentApiClient(string? uri)
@@ -23,7 +24,7 @@ namespace Harri.SchoolDemoApi.Client
 
         public async Task<RestResponse<int?>> AddStudentRestResponse(NewStudentDto student)
         {
-            var request = new RestRequest("student/").AddBody(student);
+            var request = new RestRequest(BaseRoute).AddBody(student);
             var restResponse = await _restClient.ExecutePostAsync<int?>(request);
             return restResponse;
         }
@@ -37,7 +38,7 @@ namespace Harri.SchoolDemoApi.Client
 
         public async Task<RestResponse<StudentDto>> GetStudentRestResponse(int sId)
         {
-            var request = new RestRequest("student/{sId}").AddUrlSegment("sId", sId);
+            var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId);
             var restResponse = await _restClient.ExecuteGetAsync<StudentDto>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
@@ -55,7 +56,7 @@ namespace Harri.SchoolDemoApi.Client
 
         public async Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student)
         {
-            var request = new RestRequest("students/{sId}").AddUrlSegment("sId", sId).AddBody(student);
+            var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student);
             var restResponse = await _restClient.ExecutePutAsync<bool?>(request);
             return restResponse;
         }
@@ -70,7 +71,7 @@ namespace Harri.SchoolDemoApi.Client
 
         public async Task<RestResponse<bool>> DeleteStudentRestResponse(int sId)
         {
-            var request = new RestRequest("student/{sId}").AddUrlSegment("sId", sId);
+            var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId);
             request.Method = Method.Delete;
 
             var restResponse = await _restClient.ExecuteAsync<bool>(request);
@@ -86,7 +87,7 @@ namespace Harri.SchoolDemoApi.Client
 
         public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student)
         {
-            var request = new RestRequest("students/{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
+            var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
             request.Method = Method.Patch;
 
             var restResponse = await _restClient.ExecuteAsync<StudentDto?>(request);

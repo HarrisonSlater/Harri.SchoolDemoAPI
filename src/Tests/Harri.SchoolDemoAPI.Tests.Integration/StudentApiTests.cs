@@ -57,15 +57,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Act 
             var id = await _client.AddStudent(newStudent);
 
+            var expectedStudent = new StudentDto()
+            {
+                SId = id.Value,
+                Name = newStudent.Name,
+                GPA = newStudent.GPA
+            };
             // Assert
             id.Should().NotBeNull();
             id.Should().BeGreaterThan(0);
 
             var student = await _client.GetStudent(id.Value);
             student.Should().NotBeNull();
-            student.SId.Should().NotBeNull().And.Be(id.Value);
-            student.Name.Should().Be(newStudent.Name);
-            student.GPA.Should().Be(newStudent.GPA);
+            student.Should().BeEquivalentTo(expectedStudent);
 
             await CleanUpTestStudent(student.SId.Value);
         }
@@ -88,6 +92,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 GPA = 3.75m
             };
 
+            var expectedStudent = new StudentDto()
+            {
+                SId = sId.Value,
+                Name = studentUpdateDto.Name,
+                GPA = studentUpdateDto.GPA
+            };
+
             // Act
             var success = await _client.UpdateStudent(sId.Value, studentUpdateDto);
 
@@ -97,11 +108,83 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var updatedStudent = await _client.GetStudent(sId.Value);
 
             updatedStudent.Should().NotBeNull();
-            updatedStudent.SId.Should().Be(sId.Value);
-            updatedStudent.Name.Should().Be(studentUpdateDto.Name);
-            updatedStudent.GPA.Should().Be(studentUpdateDto.GPA);
+            updatedStudent.Should().BeEquivalentTo(expectedStudent);
 
             await CleanUpTestStudent(sId.Value);
+        }
+
+        [Test]
+        public async Task PatchStudent_ShouldUpdateOnlyGPAOnExistingStudent()
+        {
+            // Arrange
+            var newStudent = new NewStudentDto()
+            {
+                Name = "Test Student 3",
+                GPA = 3.55m
+            };
+
+            var sId = await _client.AddStudent(newStudent);
+            sId.Should().NotBeNull();
+
+            var studentPatchDto = new StudentPatchDto()
+            {
+                GPA = 3.99m
+            };
+
+            var expectedStudent = new StudentDto()
+            {
+                SId = sId.Value,
+                Name = newStudent.Name,
+                GPA = studentPatchDto.GPA,
+            };
+
+            // Act
+            var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto);
+            patchedStudent.Should().NotBeNull();
+
+            // Assert
+            patchedStudent.Should().BeEquivalentTo(expectedStudent);
+
+            var student = await _client.GetStudent(sId.Value);
+            student.Should().NotBeNull();
+            student.Should().BeEquivalentTo(expectedStudent);
+        }
+
+        [Test]
+        public async Task PatchStudent_ShouldUpdateOnlyNameOnExistingStudent()
+        {
+            // Arrange
+            var newStudent = new NewStudentDto()
+            {
+                Name = "Test Student 4",
+                GPA = 3.55m
+            };
+
+            var sId = await _client.AddStudent(newStudent);
+            sId.Should().NotBeNull();
+
+            var studentPatchDto = new StudentPatchDto()
+            {
+                Name = "Test Student 4 - PATCHED"
+            };
+
+            var expectedStudent = new StudentDto()
+            {
+                SId = sId.Value,
+                Name = studentPatchDto.Name,
+                GPA = newStudent.GPA,
+            };
+
+            // Act
+            var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto);
+            patchedStudent.Should().NotBeNull();
+
+            // Assert
+            patchedStudent.Should().BeEquivalentTo(expectedStudent);
+
+            var student = await _client.GetStudent(sId.Value);
+            student.Should().NotBeNull();
+            student.Should().BeEquivalentTo(expectedStudent);
         }
 
         [Test]

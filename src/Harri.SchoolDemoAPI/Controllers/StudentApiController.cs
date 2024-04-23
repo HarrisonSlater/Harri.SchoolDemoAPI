@@ -19,7 +19,9 @@ namespace Harri.SchoolDemoAPI.Controllers
     /// 
     /// </summary>
     [ApiController]
+    [Route("/students")]
     [Produces("application/json")]
+    [Consumes("application/json")]
     public class StudentApiController : ControllerBase
     {
         private readonly IStudentService _studentService;
@@ -38,8 +40,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid input</response>
         [HttpPost]
-        [Route("/student")]
-        [Consumes("application/json")]
         [SwaggerOperation(OperationId = "AddStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public async Task<IActionResult> AddStudent([FromBody]NewStudentDto newStudent)
@@ -57,8 +57,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
-        [HttpGet]
-        [Route("/student/{sId}")]
+        [HttpGet("{sId}")]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
@@ -78,9 +77,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
-        [HttpPut]
-        [Route("/students/{sId}")]
-        [Consumes("application/json")]
+        [HttpPut("{sId}")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
@@ -104,9 +101,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid request supplied</response>
         /// <response code="404">Student not found</response>
-        [HttpPatch]
-        [Route("/students/{sId}")]
-        [Consumes("application/json")]
+        [HttpPatch("{sId}")]
         [SwaggerOperation(OperationId = "PatchStudent")]
         public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
         {
@@ -135,8 +130,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="409">Conflict. Student has applications which must be deleted first</response>
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
-        [HttpDelete]
-        [Route("/student/{sId}")]
+        [HttpDelete("{sId}")]
         [SwaggerOperation(OperationId = "DeleteStudent")]
         public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveInt] int sId)
         {

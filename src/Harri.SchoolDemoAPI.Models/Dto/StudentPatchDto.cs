@@ -15,9 +15,9 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         [OptionalNotNullOrWhitespace]
         [JsonIgnore]
         [JsonPropertyName(APIConstants.Student.Name)] // Set for use in validation error message
-        public Optional<string?> OptionalName { get; set; }
+        public Optional<string?> OptionalName { get; private set; }
         [JsonIgnore]
-        public Optional<decimal?> OptionalGPA { get; set; }
+        public Optional<decimal?> OptionalGPA { get; private set; }
 
         /// <summary>
         /// Student name

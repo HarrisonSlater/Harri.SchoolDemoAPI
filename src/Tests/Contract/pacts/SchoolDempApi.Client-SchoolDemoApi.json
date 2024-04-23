@@ -44,7 +44,7 @@
           "header": {}
         },
         "method": "POST",
-        "path": "/student/"
+        "path": "/students/"
       },
       "response": {
         "body": {
@@ -115,7 +115,7 @@
           "header": {}
         },
         "method": "POST",
-        "path": "/student/"
+        "path": "/students/"
       },
       "response": {
         "body": {
@@ -176,7 +176,7 @@
           "header": {}
         },
         "method": "POST",
-        "path": "/student/"
+        "path": "/students/"
       },
       "response": {
         "body": {
@@ -240,7 +240,7 @@
       ],
       "request": {
         "method": "DELETE",
-        "path": "/student/-1234"
+        "path": "/students/-1234"
       },
       "response": {
         "body": {
@@ -307,7 +307,7 @@
       ],
       "request": {
         "method": "DELETE",
-        "path": "/student/1122"
+        "path": "/students/1122"
       },
       "response": {
         "body": {
@@ -350,7 +350,7 @@
       ],
       "request": {
         "method": "DELETE",
-        "path": "/student/123"
+        "path": "/students/123"
       },
       "response": {
         "body": {
@@ -393,7 +393,7 @@
       ],
       "request": {
         "method": "DELETE",
-        "path": "/student/456"
+        "path": "/students/456"
       },
       "response": {
         "body": {
@@ -428,7 +428,7 @@
       "pending": false,
       "request": {
         "method": "GET",
-        "path": "/student/-1000"
+        "path": "/students/-1000"
       },
       "response": {
         "body": {
@@ -496,7 +496,7 @@
       ],
       "request": {
         "method": "GET",
-        "path": "/student/1"
+        "path": "/students/1"
       },
       "response": {
         "body": {
@@ -561,7 +561,7 @@
       ],
       "request": {
         "method": "GET",
-        "path": "/student/1234"
+        "path": "/students/1234"
       },
       "response": {
         "body": {
@@ -624,7 +624,7 @@
       ],
       "request": {
         "method": "GET",
-        "path": "/student/404"
+        "path": "/students/404"
       },
       "response": {
         "body": {
@@ -679,7 +679,7 @@
       ],
       "request": {
         "method": "GET",
-        "path": "/student/4567"
+        "path": "/students/4567"
       },
       "response": {
         "body": {

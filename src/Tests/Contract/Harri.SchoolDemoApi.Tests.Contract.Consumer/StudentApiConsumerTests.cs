@@ -48,7 +48,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         { "name", name },
                         { "GPA", GPA is null ? "null" : GPA.ToString() },
                     })
-                    .WithRequest(HttpMethod.Get, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -81,7 +81,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sId} does not exist", new Dictionary<string, string>() {
                         { "sId", sId.ToString() }
                     })
-                    .WithRequest(HttpMethod.Get, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound)
                  .WithJsonBody(new
@@ -106,7 +106,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task GetStudent_WhenCalledWithInvalidStudentId_Returns400(int sId)
         {
             _pact.UponReceiving($"a request to get a student with an invalid id")
-                .WithRequest(HttpMethod.Get, $"/student/{sId}")
+                .WithRequest(HttpMethod.Get, $"/students/{sId}")
                 .WillRespond()
                 .WithStatus(HttpStatusCode.BadRequest)
                 .WithJsonBody(new
@@ -142,7 +142,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         { "name", name },
                         { "GPA", GPA is null ? "null" : GPA.ToString() },
                     })
-                    .WithRequest(HttpMethod.Post, $"/student/")
+                    .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new {
                         name = name,
@@ -169,7 +169,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task AddStudent_WhenCalledWithInvalidNewStudent_Returns400(int sIdNew, string? name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to add a new student without a name")
-                    .WithRequest(HttpMethod.Post, $"/student/")
+                    .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
@@ -309,7 +309,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sId} exists and will be deleted", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                     })
-                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -332,7 +332,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sId} does not exist and will not be deleted", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                     })
-                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -354,7 +354,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId { sId } exists but can not be deleted", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                     })
-                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.Conflict)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -375,7 +375,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             _pact.UponReceiving($"a request to delete a student with invalid sId {sId}")
                 .Given("no student will be deleted")
-                    .WithRequest(HttpMethod.Delete, $"/student/{sId}")
+                    .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.BadRequest)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
