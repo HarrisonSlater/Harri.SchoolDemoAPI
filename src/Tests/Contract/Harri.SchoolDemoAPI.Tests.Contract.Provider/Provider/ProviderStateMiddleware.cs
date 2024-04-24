@@ -61,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         /// </summary>
         /// <param name="parameters">Event parameters</param>
         /// <returns>Awaitable</returns>
-        private async Task EnsureStudentExists(IDictionary<string, object> parameters)
+        private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
             var name = (JsonElement?)parameters["name"];
@@ -74,44 +74,54 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 GPA = gpa?.GetDecimal()
             };
 
-            TestStartup.MockStudentRepo.Setup<Task<StudentDto>>(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto>((StudentDto?)studentToMock));
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
+        private Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(false));
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
+        private Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(new Exception("UpdateStudent should not be called"));
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
+        private Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(new Exception("DeleteStudent should not be called"));
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureStudentWillBeUpdated(IDictionary<string, object> parameters)
+        private Task EnsureStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
             var name = (JsonElement?)parameters["name"];
             var gpa = (JsonElement?)parameters["GPA"];
 
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>()))
-                .Returns(Task.FromResult(true))
-                .Callback<int, UpdateStudentDto>((id, ns) =>
-                {
-                    id.Should().Be(sId?.GetInt32());
-                    ns.Name.Should().Be(name?.ToString());
-                    ns.GPA.Should().Be(gpa?.GetDecimal());
-                });
+            .Returns(Task.FromResult(true))
+            .Callback<int, UpdateStudentDto>((id, ns) =>
+            {
+                id.Should().Be(sId?.GetInt32());
+                ns.Name.Should().Be(name?.ToString());
+                ns.GPA.Should().Be(gpa?.GetDecimal());
+            });
+
+            return Task.CompletedTask;
         }
 
-        private async Task EnsureStudentWillBeCreated(IDictionary<string, object> parameters)
+        private Task EnsureStudentWillBeCreated(IDictionary<string, object> parameters)
         {
-            var sIdNew = (JsonElement?)parameters["sIdNew"];
+                var sIdNew = (JsonElement?)parameters["sIdNew"];
             var name = (JsonElement?)parameters["name"];
             var gpa = (JsonElement?)parameters["GPA"];
 
@@ -122,10 +132,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     ns.Name.Should().Be(name.ToString());
                     ns.GPA.Should().Be(gpa?.GetDecimal());
                 });
+            return Task.CompletedTask;
 
         }
 
-        private async Task EnsureStudentWillBeDeleted(IDictionary<string, object> parameters)
+        private Task EnsureStudentWillBeDeleted(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
@@ -134,10 +145,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 {
                     sId.Should().Be(sId);
                 });
+
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureStudentDoesNotExistAndWillBeNotDeleted(IDictionary<string, object> parameters)
+        private Task EnsureStudentDoesNotExistAndWillBeNotDeleted(IDictionary<string, object> parameters)
         {
+
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
                 .Returns(Task.FromResult((bool?)false))
@@ -145,9 +160,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 {
                     sId.Should().Be(sId);
                 });
+            return Task.CompletedTask;
+
         }
 
-        private async Task EnsureStudentHasConflictAndCanNotNotDeleted(IDictionary<string, object> parameters)
+        private Task EnsureStudentHasConflictAndCanNotNotDeleted(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
@@ -156,6 +173,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 {
                     sId.Should().Be(sId);
                 });
+            return Task.CompletedTask;
+
         }
 
 
@@ -185,7 +204,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
                 try
                 {
-                    ProviderState providerState = JsonSerializer.Deserialize<ProviderState>(jsonRequestBody, Options);
+                    ProviderState? providerState = JsonSerializer.Deserialize<ProviderState>(jsonRequestBody, Options);
                     
                     if (!string.IsNullOrEmpty(providerState?.State))
                     {

@@ -27,7 +27,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [SetUp]
-        public async Task Setup()
+        public void Setup()
         {
             _client = new StudentApiClient(_hostedProvider.ServerUri.AbsoluteUri);
         }

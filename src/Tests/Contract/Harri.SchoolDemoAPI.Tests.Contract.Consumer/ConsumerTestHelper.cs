@@ -25,7 +25,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             errorMessages.Should().ContainSingle().Which.Should().NotBeEmpty();
         }
 
-        private static JsonNode GetErrorJson(RestResponse response)
+        private static JsonNode? GetErrorJson(RestResponse response)
         {
             return JsonSerializer.Deserialize<JsonNode>(response.Content);
         }
