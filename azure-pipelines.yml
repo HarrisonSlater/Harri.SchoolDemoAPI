@@ -106,11 +106,11 @@ steps:
     script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
     failOnStderr: true
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-    failOnStderr: true
+#- task: PowerShell@2
+#  inputs:
+#    targetType: 'inline'
+#    script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+#    failOnStderr: true
 
 - task: DotNetCoreCLI@2
   inputs:
