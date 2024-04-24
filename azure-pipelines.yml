@@ -84,7 +84,7 @@ steps:
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Provider.dll'
+    testAssemblyVer2: '**\Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
     searchFolder: '$(System.DefaultWorkingDirectory)'
     testRunTitle: 'Run Provider Tests - Consumer'
     vsTestVersion: 'toolsInstaller'
