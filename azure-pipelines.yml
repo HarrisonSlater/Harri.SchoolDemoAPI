@@ -57,7 +57,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**\Harri.SchoolDemoAPI.Tests.Contract.Consumer.dll'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.dll'
     testRunTitle: 'Run Contract Tests - Consumer'
 
 
@@ -81,13 +81,20 @@ steps:
     script: '[Environment]::SetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", "$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json", "User")'
     failOnStderr: true
     
-- task: VSTest@2
+
+#- task: VSTest@2
+#  inputs:
+#    testSelector: 'testAssemblies'
+#    testAssemblyVer2: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
+#    searchFolder: '$(System.DefaultWorkingDirectory)'
+#    testRunTitle: 'Run Provider Tests - Consumer'
+#    vsTestVersion: 'toolsInstaller'
+
+- task: DotNetCoreCLI@2
   inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    testRunTitle: 'Run Provider Tests - Consumer'
-    vsTestVersion: 'toolsInstaller'
+    command: 'test'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
+    testRunTitle: 'Run Contract Tests - Provider'
 
 - task: DockerInstaller@0
   inputs:
