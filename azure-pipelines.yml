@@ -57,7 +57,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.csproj'
+    projects: '**\Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
     testRunTitle: 'Run Contract Tests - Consumer'
 
 
@@ -69,7 +69,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
