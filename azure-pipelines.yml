@@ -33,7 +33,8 @@ steps:
     command: 'restore'
     projects: '$(solution)'
     feedsToUse: 'select'
-
+    workingDirectory: '$(Build.Repository.LocalPath)'
+    
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
