@@ -39,20 +39,27 @@ steps:
   inputs:
     command: 'build'
     projects: '$(solution)'
-    arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
 
-- task: VisualStudioTestPlatformInstaller@1
-  inputs:
-    packageFeedSelector: 'nugetOrg'
-    versionSelector: 'latestPreRelease'
+#- task: VisualStudioTestPlatformInstaller@1
+#  inputs:
+#    packageFeedSelector: 'nugetOrg'
+#    versionSelector: 'latestPreRelease'
 
-- task: VSTest@2
+#- task: VSTest@2
+#  inputs:
+#    testSelector: 'testAssemblies'
+#    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.dll'
+#    searchFolder: '$(System.DefaultWorkingDirectory)'
+#    testRunTitle: '
+#    vsTestVersion: 'toolsInstaller'
+
+- task: DotNetCoreCLI@2
   inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.dll'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
+    command: 'test'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
     testRunTitle: 'Run Contract Tests - Consumer'
-    vsTestVersion: 'toolsInstaller'
+
 
 #- task: PublishPipelineArtifact@1
 #  inputs:
@@ -62,22 +69,32 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
+
+
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: '[Environment]::SetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", "$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json", "User")'
     failOnStderr: true
     
-- task: VSTest@2
+
+#- task: VSTest@2
+#  inputs:
+#    testSelector: 'testAssemblies'
+#    testAssemblyVer2: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
+#    searchFolder: '$(System.DefaultWorkingDirectory)'
+#    testRunTitle: 'Run Provider Tests - Consumer'
+#    vsTestVersion: 'toolsInstaller'
+
+- task: DotNetCoreCLI@2
   inputs:
-    testSelector: 'testAssemblies'
-    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Provider.dll'
-    searchFolder: '$(System.DefaultWorkingDirectory)'
-    testRunTitle: 'Run Provider Tests - Consumer'
-    vsTestVersion: 'toolsInstaller'
+    command: 'test'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
+    testRunTitle: 'Run Contract Tests - Provider'
 
 - task: DockerInstaller@0
   inputs:
@@ -95,3 +112,8 @@ steps:
     script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
     failOnStderr: true
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+    testRunTitle: 'Integration Tests'
