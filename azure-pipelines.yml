@@ -93,7 +93,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
     testRunTitle: 'Run Contract Tests - Provider'
 
 - task: DockerInstaller@0
