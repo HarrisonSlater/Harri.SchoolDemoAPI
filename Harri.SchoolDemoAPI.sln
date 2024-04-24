@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Client", "src\Harri.SchoolDemoApi.Client\Harri.SchoolDemoAPI.Client.csproj", "{32AAA739-922B-4D1F-BDBC-6BC79AD212E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Client", "src\Harri.SchoolDemoAPI.Client\Harri.SchoolDemoAPI.Client.csproj", "{32AAA739-922B-4D1F-BDBC-6BC79AD212E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Contract.Provider", "src\Tests\Contract\Harri.SchoolDemoAPI.Tests.Contract.Provider\Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj", "{C91E9B08-8D27-43BE-83A4-CD9CE85F2C5D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Contract.Consumer", "src\Tests\Contract\Harri.SchoolDemoApi.Tests.Contract.Consumer\Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj", "{F30B47F2-29F0-4939-A44E-AD5139268BDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Contract.Consumer", "src\Tests\Contract\Harri.SchoolDemoAPI.Tests.Contract.Consumer\Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj", "{F30B47F2-29F0-4939-A44E-AD5139268BDC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pacts", "pacts", "{CE982582-20D5-4C27-BFEA-5351F221C5B7}"
 	ProjectSection(SolutionItems) = preProject
