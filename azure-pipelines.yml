@@ -39,7 +39,7 @@ steps:
   inputs:
     command: 'build'
     projects: '$(solution)'
-    arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
 
 - task: VisualStudioTestPlatformInstaller@1
   inputs:
