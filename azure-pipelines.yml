@@ -57,7 +57,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.dll'
+    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
     testRunTitle: 'Run Contract Tests - Consumer'
 
 
