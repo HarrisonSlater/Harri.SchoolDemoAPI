@@ -6,7 +6,7 @@ Consumer driven contract tests using pact net: https://github.com/pact-foundatio
 Tests for StudentApiClient and StudentApiController have been completed so far.
 
 # Consumer Tests
-https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/Harri.SchoolDemoApi.Tests.Contract.Consumer/StudentApiConsumerTests.cs
+https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs
 
 # Provider Tests
 The Provider tests have a mocked data layer, In the case of the Students API IStudentRepository is mocked using Moq.

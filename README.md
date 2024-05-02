@@ -3,54 +3,12 @@
 Demo API about students, schools, and students applications to schools
 
 ## WIP - API
-So far the /students/ api is complete: https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentApiController.cs
+So far the /students/ api is complete: https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs
 
 ## See Contract Tests 
 https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md
 
-## Upgrade NuGet Packages
+## See Integration Tests
+https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Harri.SchoolDemoAPI.Tests.Integration/StudentApiTests.cs
 
-NuGet packages get frequently updated.
-
-To upgrade this solution to the latest version of all NuGet packages, use the dotnet-outdated tool.
-
-
-Install dotnet-outdated tool:
-
-```
-dotnet tool install --global dotnet-outdated-tool
-```
-
-Upgrade only to new minor versions of packages
-
-```
-dotnet outdated --upgrade --version-lock Major
-```
-
-Upgrade to all new versions of packages (more likely to include breaking API changes)
-
-```
-dotnet outdated --upgrade
-```
-
-
-## Run
-
-Linux/OS X:
-
-```
-sh build.sh
-```
-
-Windows:
-
-```
-build.bat
-```
-## Run in Docker
-
-```
-cd src/Harri.SchoolDemoAPI
-docker build -t harri.schooldemoapi .
-docker run -p 5000:8080 harri.schooldemoapi
-```
+Integration tests are run in-agent on a containerised SQL server: https://hub.docker.com/repository/docker/harrisonslater/schooldemo_sqldatabase/general
