@@ -214,6 +214,17 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             studentResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
         }
 
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents();
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+        }
+
 
         private async Task CleanUpTestStudent(int sId)
         {

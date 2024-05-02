@@ -51,6 +51,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
                 ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
                 ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
+                ["some students exist"] = this.EnsureSomeStudentsExist,
+                ["no students exist"] = this.EnsureNoStudentsExist
                 //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
@@ -175,6 +177,43 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 });
             return Task.CompletedTask;
 
+        }
+
+        private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
+        {
+            var studentsToReturn = new List<StudentDto>()
+            {
+                new StudentDto()
+                {
+                    SId = 1,
+                    Name = "Test student 1",
+                    GPA = 3.99m
+                },
+                new StudentDto()
+                {
+                    SId = 2,
+                    Name = "Test student 2",
+                    GPA = 3.89m
+                },
+                new StudentDto()
+                {
+                    SId = 3,
+                    Name = "Test student 3",
+                    GPA = 3.79m
+                }
+            };
+            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents())
+                .Returns(Task.FromResult(studentsToReturn));
+
+            return Task.CompletedTask;
+        }
+
+        private Task EnsureNoStudentsExist(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents())
+                .Returns(Task.FromResult(new List<StudentDto>()));
+
+            return Task.CompletedTask;
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -48,6 +49,16 @@ namespace Harri.SchoolDemoAPI.Services
             {
                 return null;
             }
+        }
+
+        public async Task<List<StudentDto>> GetAllStudents()
+        {
+            return await _studentRepository.GetAllStudents();
+        }
+
+        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? GPAQuery)
+        {
+            return await _studentRepository.QueryStudents(name, GPAQuery);
         }
     }
 }

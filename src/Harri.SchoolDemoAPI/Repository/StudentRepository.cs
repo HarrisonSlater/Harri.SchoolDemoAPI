@@ -4,10 +4,10 @@ using System.Data;
 using System.Security.Cryptography;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
-    //TODO use async
     public class StudentRepository : IStudentRepository
     {
         private readonly IDbConnectionFactory _dbConnectionFactory;
@@ -52,6 +52,19 @@ namespace Harri.SchoolDemoAPI.Repository
                 var success = (await connection.QueryAsync<bool?>("[SchoolDemo].DeleteStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
                 return success;
             }
+        }
+
+        public async Task<List<StudentDto>> GetAllStudents()
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                return (await connection.QueryAsync<StudentDto>("SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student ORDER BY sId")).ToList();
+            }
+        }
+
+        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? GPAQuery)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

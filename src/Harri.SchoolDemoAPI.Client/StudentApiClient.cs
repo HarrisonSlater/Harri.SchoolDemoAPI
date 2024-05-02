@@ -47,6 +47,24 @@ namespace Harri.SchoolDemoApi.Client
             return restResponse;
         }
 
+        // Get
+        public async Task<List<StudentDto>?> GetStudents()
+        {
+            var restResponse = await GetStudentsRestResponse();
+            return restResponse.Data;
+        }
+
+        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse()
+        {
+            var request = new RestRequest(BaseRoute);
+            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
+            if (!restResponse.IsSuccessStatusCode)
+            {
+                restResponse.Data = null;
+            }
+            return restResponse;
+        }
+
         // Update
         public async Task<bool?> UpdateStudent(int sId, UpdateStudentDto student)
         {

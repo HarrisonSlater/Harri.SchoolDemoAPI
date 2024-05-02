@@ -13,6 +13,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
 using System.Threading.Tasks;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -156,6 +157,31 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <summary>
         /// Get students
         /// </summary>
+        /// <remarks>Get all  students</remarks>
+        /// <response code="200">Successful operation</response>
+        /// <response code="404">No students found</response>
+        [HttpGet]
+        [Route("/students")]
+        [SwaggerOperation(OperationId = "GetStudents")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
+        [Tags("Students")]
+        public async Task<IActionResult> GetStudents()
+        {
+            var students = await _studentService.GetAllStudents();
+
+            if (students.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(students);
+            }
+        }
+
+        /// <summary>
+        /// Get students
+        /// </summary>
         /// <remarks>Get students by query</remarks>
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
         /// <param name="GPAQuery">query object to search by GPA (lt, gt, eq)</param>
@@ -163,13 +189,12 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
         [HttpGet]
-        [Route("/students")]
-        [SwaggerOperation(OperationId = "GetStudents")]
+        [Route("/students/query")]
+        [SwaggerOperation(OperationId = "QueryStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
         public virtual IActionResult GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto? GPAQuery)
         {
-
             //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(200, default(List<Student>));
             //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
