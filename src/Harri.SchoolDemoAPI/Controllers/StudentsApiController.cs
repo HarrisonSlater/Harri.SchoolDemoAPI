@@ -193,22 +193,17 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "QueryStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public virtual IActionResult GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto? GPAQuery)
+        public virtual IActionResult GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
         {
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Student>));
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
+            if (name is null && gpaQuery.GPA is null)
+            {
+                return BadRequest();
+            }
+
             //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
             // return StatusCode(404);
-            string exampleJson = null;
-            exampleJson = "[ {\r\n  \"name\" : \"Garry Peterson\",\r\n  \"GPA\" : 3.9,\r\n  \"sId\" : 1234\r\n}, {\r\n  \"name\" : \"Garry Peterson\",\r\n  \"GPA\" : 3.9,\r\n  \"sId\" : 1234\r\n} ]";
-
-            var example = exampleJson != null
-            ? JsonSerializer.Deserialize<List<StudentDto>>(exampleJson)
-            : default(List<StudentDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+            var students = _studentService.QueryStudents(name, gpaQuery);
+            return Ok(students);
         }
     }
 }

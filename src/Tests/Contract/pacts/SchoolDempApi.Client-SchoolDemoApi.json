@@ -730,6 +730,143 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to get all students",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no students exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/"
+      },
+      "response": {
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to get all students",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to patch a non-existant student with sId 4567",
       "pending": false,
       "providerStates": [
@@ -1144,6 +1281,18 @@
           },
           "header": {}
         },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to query students",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query"
+      },
+      "response": {
         "status": 400
       },
       "type": "Synchronous/HTTP"

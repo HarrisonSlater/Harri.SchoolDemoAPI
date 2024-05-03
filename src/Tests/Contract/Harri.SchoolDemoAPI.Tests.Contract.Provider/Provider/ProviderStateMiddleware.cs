@@ -123,7 +123,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureStudentWillBeCreated(IDictionary<string, object> parameters)
         {
-                var sIdNew = (JsonElement?)parameters["sIdNew"];
+            var sIdNew = (JsonElement?)parameters["sIdNew"];
             var name = (JsonElement?)parameters["name"];
             var gpa = (JsonElement?)parameters["GPA"];
 

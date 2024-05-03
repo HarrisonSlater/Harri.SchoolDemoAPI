@@ -1,4 +1,5 @@
-﻿using Harri.SchoolDemoAPI.Models.Dto;
+﻿using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
 using System.Security.Cryptography;
 
@@ -40,24 +41,6 @@ namespace Harri.SchoolDemoApi.Client
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId);
             var restResponse = await _restClient.ExecuteGetAsync<StudentDto>(request);
-            if (!restResponse.IsSuccessStatusCode)
-            {
-                restResponse.Data = null;
-            }
-            return restResponse;
-        }
-
-        // Get
-        public async Task<List<StudentDto>?> GetStudents()
-        {
-            var restResponse = await GetStudentsRestResponse();
-            return restResponse.Data;
-        }
-
-        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse()
-        {
-            var request = new RestRequest(BaseRoute);
-            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
                 restResponse.Data = null;
@@ -109,6 +92,62 @@ namespace Harri.SchoolDemoApi.Client
             request.Method = Method.Patch;
 
             var restResponse = await _restClient.ExecuteAsync<StudentDto?>(request);
+            if (!restResponse.IsSuccessStatusCode)
+            {
+                restResponse.Data = null;
+            }
+            return restResponse;
+        }
+
+        // Get Students
+        public async Task<List<StudentDto>?> GetStudents()
+        {
+            var restResponse = await GetStudentsRestResponse();
+            return restResponse.Data;
+        }
+
+        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse()
+        {
+            var request = new RestRequest(BaseRoute);
+            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
+            if (!restResponse.IsSuccessStatusCode)
+            {
+                restResponse.Data = null;
+            }
+            return restResponse;
+        }
+
+        // Query Students
+        public async Task<List<StudentDto>?> QueryStudents(string? name = null, GPAQueryDto? gpaQuery = null)
+        {
+            var restResponse = await QueryStudentsRestResponse(name, gpaQuery);
+            return restResponse.Data;
+        }
+
+        public async Task<RestResponse<List<StudentDto>>> QueryStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null)
+        {
+            var request = new RestRequest(BaseRoute + "query");
+            if (name is not null)
+            {
+                request.AddQueryParameter("name", name);
+            }
+            if (gpaQuery?.GPA is not null)
+            {
+                if (gpaQuery.GPA.Lt is not null)
+                {
+                    request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Lt}", gpaQuery.GPA.Lt.Value);
+                }
+                if (gpaQuery.GPA.Gt is not null)
+                {
+                    request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Gt}", gpaQuery.GPA.Gt.Value);
+                }
+                if (gpaQuery.GPA.Eq is not null)
+                {
+                    request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Eq}", gpaQuery.GPA.Eq.Value);
+                }
+            }
+
+            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
                 restResponse.Data = null;

@@ -62,7 +62,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? GPAQuery)
+        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery)
         {
             throw new System.NotImplementedException();
         }

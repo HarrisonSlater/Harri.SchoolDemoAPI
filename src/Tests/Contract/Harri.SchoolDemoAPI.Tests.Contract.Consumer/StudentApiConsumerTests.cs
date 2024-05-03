@@ -46,7 +46,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sId} exists", new Dictionary<string, string>() {
                         { "sId", sId.ToString() },
                         { "name", name },
-                        { "GPA", GPA.ToString() ?? "null" },
+                        { "GPA", GPA?.ToString() ?? "null" },
                     })
                     .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
@@ -140,7 +140,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sIdNew} will be created", new Dictionary<string, string>() {
                         {"sIdNew", sIdNew.ToString() },
                         { "name", name },
-                        { "GPA", GPA.ToString() ?? "null" },
+                        { "GPA", GPA?.ToString() ?? "null" },
                     })
                     .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -210,7 +210,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .Given("a student with sId {sId} exists and will be updated", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                         { "name", name },
-                        { "GPA", GPA.ToString() ?? "null" },
+                        { "GPA", GPA?.ToString() ?? "null" },
                     })
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -564,6 +564,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
+        //GetStudents
         [Test]
         public async Task GetStudents_WhenCalled_ReturnsAllStudents()
         {
@@ -628,6 +629,74 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
                 // Client Assertions
                 students.Should().BeNull();
+            });
+        }
+
+        //QueryStudents
+        [Test]
+        public async Task QueryStudents_WhenCalledWithoutArguments_Returns400()
+        {
+            _pact.UponReceiving($"a request to query students")
+                    .WithRequest(HttpMethod.Get, $"/students/query")
+                    .WillRespond()
+                    .WithStatus(HttpStatusCode.BadRequest);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.QueryStudentsRestResponse();
+
+                // Client Assertions
+                response.Data.Should().BeNull();
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            });
+        }
+
+        //[Test]
+        public async Task QueryStudents_WhenCalled_ReturnsMatchingStudents()
+        {
+            _pact.UponReceiving($"a request to query students")
+                    .Given("some students exist")
+                    .WithRequest(HttpMethod.Get, $"/students/query")
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(new List<dynamic>()
+                 {
+                     new
+                     {
+                        sId = Match.Equality(1),
+                        name = Match.Equality("Test student 1"),
+                        GPA = Match.Equality(3.99)
+                     },
+                     new
+                     {
+                        sId = Match.Equality(2),
+                        name = Match.Equality("Test student 2"),
+                        GPA = Match.Equality(3.89)
+                     },
+                     new
+                     {
+                        sId = Match.Equality(3),
+                        name = Match.Equality("Test student 3"),
+                        GPA = Match.Equality(3.79)
+                     },
+                 });
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents();
+
+                // Client Assertions
+                students.Should().NotBeNull().And.HaveCountGreaterThan(0);
+
+                foreach (var student in students)
+                {
+                    student.SId.Should().NotBeNull().And.BeGreaterThan(0);
+                    student.Name.Should().NotBeNullOrWhiteSpace();
+                    student.GPA.Should().NotBeNull().And.BeGreaterThan(3.7m);
+                }
             });
         }
     }
