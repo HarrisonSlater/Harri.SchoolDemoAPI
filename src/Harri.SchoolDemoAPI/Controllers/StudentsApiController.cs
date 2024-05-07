@@ -184,7 +184,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// </summary>
         /// <remarks>Get students by query</remarks>
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
-        /// <param name="GPAQuery">query object to search by GPA (lt, gt, eq)</param>
+        /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
+        /// See <see cref="ComparativeQueryDto{T}"></see></param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
@@ -193,17 +194,33 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "QueryStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public virtual IActionResult GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
+        public async virtual Task<IActionResult> QueryStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
         {
             if (name is null && gpaQuery.GPA is null)
             {
                 return BadRequest();
             }
 
-            //TODO: Uncomment the next line to return response 404 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(404);
-            var students = _studentService.QueryStudents(name, gpaQuery);
-            return Ok(students);
+            var gpa = gpaQuery.GPA;
+            if (gpa is not null)
+            {
+                // Query validation, could be moved to attribute 
+                if (gpa.Eq.HasValue && (gpa.Gt.HasValue || gpa.Lt.HasValue))
+                {
+                    return BadRequest();
+                }
+            }
+
+            var students = await _studentService.QueryStudents(name, gpaQuery);
+
+            if (students.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(students);
+            }
         }
     }
 }

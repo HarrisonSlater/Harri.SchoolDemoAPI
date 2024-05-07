@@ -52,7 +52,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
                 ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
                 ["some students exist"] = this.EnsureSomeStudentsExist,
-                ["no students exist"] = this.EnsureNoStudentsExist
+                ["no students exist"] = this.EnsureNoStudentsExist,
+                ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
+                ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying
                 //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
@@ -178,32 +180,33 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             return Task.CompletedTask;
 
         }
+        private List<StudentDto> _mockStudentsToReturn =
+        [
+            new StudentDto()
+            {
+                SId = 1,
+                Name = "Test student 1",
+                GPA = 3.99m
+            },
+            new StudentDto()
+            {
+                SId = 2,
+                Name = "Test student 2",
+                GPA = 3.89m
+            },
+            new StudentDto()
+            {
+                SId = 3,
+                Name = "Test student 3",
+                GPA = 3.79m
+            }
+        ];
 
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
-            var studentsToReturn = new List<StudentDto>()
-            {
-                new StudentDto()
-                {
-                    SId = 1,
-                    Name = "Test student 1",
-                    GPA = 3.99m
-                },
-                new StudentDto()
-                {
-                    SId = 2,
-                    Name = "Test student 2",
-                    GPA = 3.89m
-                },
-                new StudentDto()
-                {
-                    SId = 3,
-                    Name = "Test student 3",
-                    GPA = 3.79m
-                }
-            };
+
             TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents())
-                .Returns(Task.FromResult(studentsToReturn));
+                .Returns(Task.FromResult(_mockStudentsToReturn));
 
             return Task.CompletedTask;
         }
@@ -216,6 +219,36 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             return Task.CompletedTask;
         }
 
+        private Task EnsureNoStudentsExistForQuerying(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+                .Returns(Task.FromResult(new List<StudentDto>()));
+
+            return Task.CompletedTask;
+        }
+
+        private Task EnsureStudentsExistForQuerying(IDictionary<string, object> parameters)
+        {
+            //Either parameter could be null
+            string? name = ((JsonElement?)parameters["name"])?.ToString();
+            var gpaQueryString = (JsonElement?)parameters["gpaQuery"];
+
+            GPAQueryDto gpaQuery = new GPAQueryDto() { GPA = null };
+            if (gpaQueryString is not null)
+            {
+                gpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString());
+            }
+
+            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+                .Returns(Task.FromResult(_mockStudentsToReturn))
+                .Callback<string, GPAQueryDto>((nameParam, gpaQueryDtoParam) =>
+                {
+                    nameParam.Should().Be(name);
+                    gpaQueryDtoParam.Should().BeEquivalentTo(gpaQuery);
+                });
+
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// Handle the request
