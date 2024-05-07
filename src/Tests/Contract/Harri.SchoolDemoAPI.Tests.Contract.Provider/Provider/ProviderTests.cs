@@ -31,7 +31,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             _provider.Dispose();
             _writer?.Close();
-            TestContext.AddTestAttachment(TestConsoleOutputFile);
+            TestContext.AddTestAttachment($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
+            
         }
 
         [Test]
