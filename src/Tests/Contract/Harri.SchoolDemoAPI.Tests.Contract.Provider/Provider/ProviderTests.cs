@@ -21,7 +21,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             if (_providerPactPath != null )
             {
-                _writer = new StreamWriter(TestConsoleOutputFile);
+                _writer = new StreamWriter($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
                 Console.SetOut(_writer);
             }
         }
@@ -31,8 +31,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             _provider.Dispose();
             _writer?.Close();
-            TestContext.AddTestAttachment($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
-            
+            if (_providerPactPath != null)
+            {
+                TestContext.AddTestAttachment($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
+            }
         }
 
         [Test]
