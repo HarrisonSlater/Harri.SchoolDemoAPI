@@ -17,11 +17,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             _provider = new MockedHostedProvider();
 
             //This environment variable should only be set on build agents
-            _providerPactPath = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", EnvironmentVariableTarget.User);
-
+            _providerPactPath = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH");
+            Console.WriteLine($"Provider Env Var: {_providerPactPath}");
             if (_providerPactPath != null )
             {
                 _writer = new StreamWriter($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
+                
                 Console.SetOut(_writer);
             }
         }
