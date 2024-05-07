@@ -78,12 +78,6 @@ steps:
     PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: '[Environment]::SetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", "$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json", "User")'
-    failOnStderr: true
     
 
 #- task: VSTest@2
