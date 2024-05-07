@@ -30,7 +30,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public void TearDown() 
         {
             _provider.Dispose();
-            _writer?.Close();
+            _writer.Close();
             if (_providerPactPath != null)
             {
                 TestContext.AddTestAttachment($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
