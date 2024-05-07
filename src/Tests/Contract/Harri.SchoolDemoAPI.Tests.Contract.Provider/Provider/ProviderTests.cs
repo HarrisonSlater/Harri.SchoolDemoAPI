@@ -9,7 +9,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private MockedHostedProvider _provider;
         private TextWriter? _writer;
         private string? _providerPactPath;
-        private const string TestConsoleOutputFile = "ProviderTestsOutput.txt";
+        private const string ProviderTestsOutputFileName = "ProviderTestsOutput.txt";
+        private string ProviderTestOutputFullPath => $"{TestContext.CurrentContext.WorkDirectory}/{ProviderTestsOutputFileName}";
 
         [SetUp]
         public void SetUp()
@@ -18,10 +19,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             //This environment variable should only be set on build agents
             _providerPactPath = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH");
-            Console.WriteLine($"Provider Env Var: {_providerPactPath}");
             if (_providerPactPath != null )
             {
-                _writer = new StreamWriter($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
+                _writer = new StreamWriter(ProviderTestOutputFullPath);
                 
                 Console.SetOut(_writer);
             }
@@ -31,10 +31,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public void TearDown() 
         {
             _provider.Dispose();
-            _writer.Close();
+
             if (_providerPactPath != null)
             {
-                TestContext.AddTestAttachment($"{TestContext.CurrentContext.WorkDirectory}/{TestConsoleOutputFile}");
+                _writer?.Close();
+                TestContext.AddTestAttachment(ProviderTestOutputFullPath);
             }
         }
 
