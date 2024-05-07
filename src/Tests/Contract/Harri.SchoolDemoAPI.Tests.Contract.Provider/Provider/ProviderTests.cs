@@ -6,25 +6,38 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
     [Category("Provider")]
     public class ProviderTests
     {
-        MockedHostedProvider _provider;
+        private MockedHostedProvider _provider;
+        private TextWriter? _writer;
+        private string? _providerPactPath;
+        private const string TestConsoleOutputFile = "ProviderTestsOutput.txt";
 
         [SetUp]
         public void SetUp()
         {
             _provider = new MockedHostedProvider();
+
+            //This environment variable should only be set on build agents
+            _providerPactPath = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", EnvironmentVariableTarget.User);
+
+            if (_providerPactPath != null )
+            {
+                _writer = new StreamWriter(TestConsoleOutputFile);
+                Console.SetOut(_writer);
+            }
         }
 
         [TearDown]
         public void TearDown() 
         {
             _provider.Dispose();
+            _writer?.Close();
+            TestContext.AddTestAttachment(TestConsoleOutputFile);
         }
 
         [Test]
         public void VerifySchoolDemoAPIHonoursPactsWithConsumer()
         {
-            var envVar = Environment.GetEnvironmentVariable("HARRI_PROVIDER_PACT_PATH", EnvironmentVariableTarget.User);
-            string pactPath = Path.Combine("..",
+            string localPactPath = Path.Combine("..",
                                        "..",
                                        "..",
                                        "..",
@@ -35,7 +48,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             pactVerifier
                 .WithHttpEndpoint(_provider.ServerUri)
-                .WithFileSource(new FileInfo(envVar == null ? pactPath : envVar))
+                .WithFileSource(new FileInfo(_providerPactPath == null ? localPactPath : _providerPactPath))
                 .WithProviderStateUrl(new Uri(_provider.ServerUri, "/provider-states"))
                 .Verify();
         }
