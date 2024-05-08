@@ -6,30 +6,14 @@ using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    public class StudentApiTests
+    public class StudentApiTests : IntegrationTestBase
     {
-        private static HostedProvider _hostedProvider;
         private StudentApiClient _client;
-
-        [OneTimeSetUp]
-        public static async Task OneTimeSetup()
-        {
-            _hostedProvider = new HostedProvider();
-            var t = new CancellationTokenSource();
-
-            await _hostedProvider.StartAsync(t.Token);
-        }
-
-        [OneTimeTearDown]
-        public static void OneTimeTearDown()
-        {
-            _hostedProvider.Dispose();
-        }
 
         [SetUp]
         public void Setup()
         {
-            _client = new StudentApiClient(_hostedProvider.ServerUri.AbsoluteUri);
+            _client = new StudentApiClient(HostedProvider.ServerUri.AbsoluteUri);
         }
 
         // This test assumes a restored clean database
@@ -224,7 +208,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
         }
-
 
         private async Task CleanUpTestStudent(int sId)
         {
