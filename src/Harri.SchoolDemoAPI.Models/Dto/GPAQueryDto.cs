@@ -16,9 +16,8 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     public class GPAQueryDto
     {
         /// <summary>
-        /// less than
+        /// GPA Query DTO 
         /// </summary>
-        /// <example>3.5</example>
         [JsonPropertyName(APIConstants.Student.GPA)]
         public ComparativeQueryDto<decimal>? GPA { get; set; }
 

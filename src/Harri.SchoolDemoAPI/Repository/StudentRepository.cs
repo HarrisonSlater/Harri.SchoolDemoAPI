@@ -64,7 +64,37 @@ namespace Harri.SchoolDemoAPI.Repository
 
         public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery)
         {
-            throw new System.NotImplementedException();
+            var builder = new SqlBuilder();
+            
+            if (name != null)
+            {
+                builder.Where("sName LIKE @searchString", new { searchString = $"%{name}%" });
+            }
+            if (gpaQuery?.GPA != null)
+            {
+                var gpa = gpaQuery.GPA;
+
+                if (gpa.Eq.HasValue)
+                {
+                    builder.Where("GPA = @eq", new { eq = gpa.Eq });
+                }
+                if (gpa.Gt.HasValue)
+                {
+                    builder.Where("GPA > @gt", new { gt = gpa.Gt });
+                }
+                if (gpa.Lt.HasValue)
+                {
+                    builder.Where("GPA < @lt", new { lt = gpa.Lt });
+                }
+            }
+
+            var baseQuery = "SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId";
+            var fullQuery = builder.AddTemplate(baseQuery);
+
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                return (await connection.QueryAsync<StudentDto>(fullQuery.RawSql, fullQuery.Parameters)).ToList();
+            }
         }
     }
 }
