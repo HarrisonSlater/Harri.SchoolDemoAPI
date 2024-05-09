@@ -17,19 +17,19 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     public class ComparativeQueryDto<T> where T : struct // struct required to fix .net framework 4.8 warnings
     {
         /// <summary>
-        /// less than
+        /// Less than
         /// </summary>
         [JsonPropertyName(APIConstants.Query.Lt)]
         public T? Lt { get; set; }
 
         /// <summary>
-        /// greater than
+        /// Greater than
         /// </summary>
         [JsonPropertyName(APIConstants.Query.Gt)]
         public T? Gt { get; set; }
 
         /// <summary>
-        /// equal to
+        /// Equal to
         /// </summary>
         [JsonPropertyName(APIConstants.Query.Eq)]
         public T? Eq { get; set; }

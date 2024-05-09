@@ -57,7 +57,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         //TODO use custom json converter for this?
         public object GetObjectToSerialize()
         {
-            var obj = new ExpandoObject() as IDictionary<string, Object>;
+            var obj = new ExpandoObject() as IDictionary<string, object>;
             if (OptionalName.HasValue) 
             { 
                 obj.Add(APIConstants.Student.Name, OptionalName.Value); 

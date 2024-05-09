@@ -101,7 +101,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("Johnnny 'The Integrator' TestShoes")]
         [TestCase("johnnny 'the integrator' testShoes")]
         [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
-        public async Task QueryStudents_ShouldMatch_ByName(string name)
+        public async Task QueryStudents_ShouldMatch_OnName(string name)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
@@ -117,7 +117,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task QueryStudents_ShouldNotMatch_ByName()
+        public async Task QueryStudents_ShouldNotMatch_OnName()
         {
             // Arrange
             var searchName = Guid.NewGuid().ToString();
@@ -228,6 +228,38 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
             response.Data.Should().BeNull();
+        }
+
+        [Test]
+        public async Task QueryStudents_ShouldMatch_OnNullGpa()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+        }
+
+        [Test]
+        public async Task QueryStudents_ShouldMatch_OnNameAndNullGpa()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
         }
 
         private async Task CleanUpTestStudent(int sId)

@@ -1355,8 +1355,9 @@
             "gpaQuery": {
               "GPA": {
                 "eq": null,
-                "gt": 4,
-                "lt": 2
+                "gt": null,
+                "isNull": true,
+                "lt": null
               }
             },
             "name": null
@@ -1367,11 +1368,8 @@
         "method": "GET",
         "path": "/students/query",
         "query": {
-          "GPA.gt": [
-            "4"
-          ],
-          "GPA.lt": [
-            "2"
+          "GPA.isNull": [
+            "True"
           ]
         }
       },
