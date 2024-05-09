@@ -183,10 +183,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static IEnumerable<TestCaseData> MatchingGPAAndNameTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m, IsNull = false} });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.02m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m, Lt = 3.02m } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m, Lt = 3.02m, IsNull = false } });
         }
 
         [TestCaseSource(nameof(MatchingGPAAndNameTestCases))]
@@ -212,6 +213,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m, Lt = 3.01m } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m, Lt = 3.01m, IsNull = true } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = true } });
         }
 
         [TestCaseSource(nameof(NotMatchingGPAAndNameTestCases))]
@@ -230,8 +233,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Data.Should().BeNull();
         }
 
+        //TODO refactor these tests below
         [Test]
-        public async Task QueryStudents_ShouldMatch_OnNullGpa()
+        public async Task QueryStudents_ShouldMatch_OnNullGpa_WhenIsNull_True()
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
@@ -244,6 +248,31 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
             response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+        }
+
+        [Test]
+        public async Task QueryStudents_ShouldNotMatch_OnNullGpa_WhenIsNull_False()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
+
+            // Assert
+            response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+                response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            }
+            else
+            {
+                response.Data.Should().BeNull();
+            }
         }
 
         [Test]
@@ -260,6 +289,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
             response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().BeNull());
         }
 
         private async Task CleanUpTestStudent(int sId)

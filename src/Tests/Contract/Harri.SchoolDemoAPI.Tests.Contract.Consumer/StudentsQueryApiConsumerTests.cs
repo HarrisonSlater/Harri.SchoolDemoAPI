@@ -39,6 +39,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = null } });
         }
 
         [TestCaseSource(nameof(GetInvalidGPAQueryDtoTestCases))]
@@ -61,7 +62,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             });
         }
-
+        //TODO fix query string test failure poor error messages "Expected students not to be <null>."
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
@@ -70,6 +71,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
         }
 
         [TestCaseSource(nameof(GetValidQueryTestCases))]
@@ -172,9 +174,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             {
                 pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
             }
-            if (gpaQuery.GPA.IsNull)
+            if (gpaQuery.GPA.IsNull is not null)
             {
-                pactBuilder.WithQuery("GPA.isNull", "True");
+                pactBuilder.WithQuery("GPA.isNull", gpaQuery.GPA.IsNull.ToString());
             }
             return pactBuilder;
         }
