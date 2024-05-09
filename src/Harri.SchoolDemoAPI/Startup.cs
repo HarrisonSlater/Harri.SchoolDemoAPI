@@ -50,6 +50,7 @@ namespace Harri.SchoolDemoAPI
                 .AddControllers(options =>
                 {
                     options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+                    
                 })
                 .AddJsonOptions(options =>
                 {

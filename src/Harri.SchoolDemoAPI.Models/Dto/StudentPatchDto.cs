@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
@@ -15,8 +16,11 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         [OptionalNotNullOrWhitespace]
         [JsonIgnore]
         [JsonPropertyName(APIConstants.Student.Name)] // Set for use in validation error message
+        [BindNever]
         public Optional<string?> OptionalName { get; private set; }
+
         [JsonIgnore]
+        [BindNever]
         public Optional<decimal?> OptionalGPA { get; private set; }
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         //TODO use custom json converter for this?
         public object GetObjectToSerialize()
         {
-            var obj = new ExpandoObject() as IDictionary<string, Object>;
+            var obj = new ExpandoObject() as IDictionary<string, object>;
             if (OptionalName.HasValue) 
             { 
                 obj.Add(APIConstants.Student.Name, OptionalName.Value); 

@@ -236,6 +236,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             GPAQueryDto gpaQuery = new GPAQueryDto() { GPA = null };
             if (gpaQueryString is not null)
             {
+                //TODO redo this for null cases
                 gpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString());
             }
 

@@ -141,9 +141,16 @@ namespace Harri.SchoolDemoApi.Client
                 {
                     request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Gt}", gpaQuery.GPA.Gt.Value);
                 }
-                if (gpaQuery.GPA.Eq is not null)
+                if (gpaQuery.GPA.OptionalEq.HasValue)
                 {
-                    request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Eq}", gpaQuery.GPA.Eq.Value);
+                    if (gpaQuery.GPA.Eq is null)
+                    {
+                        request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Eq}", "null");
+                    }
+                    else
+                    {
+                        request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Eq}", gpaQuery.GPA.Eq.Value);
+                    }
                 }
             }
 

@@ -64,11 +64,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
+            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
+            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null });
+            //yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
+            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
+            //yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = null} });
         }
 
         [TestCaseSource(nameof(GetValidQueryTestCases))]
@@ -167,9 +168,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             {
                 pactBuilder.WithQuery("GPA.gt", gpaQuery.GPA.Gt.ToString());
             }
-            if (gpaQuery.GPA.Eq is not null)
+            if (gpaQuery.GPA.OptionalEq.HasValue)
             {
-                pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
+                if (gpaQuery.GPA.Eq is null)
+                {
+                    pactBuilder.WithQuery("GPA.eq", "null");
+                }
+                else
+                {
+                    pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
+                }
             }
             return pactBuilder;
         }

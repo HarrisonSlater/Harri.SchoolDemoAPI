@@ -222,5 +222,52 @@ namespace Harri.SchoolDemoAPI.Controllers
                 return Ok(students);
             }
         }
+
+
+        /// <summary>
+        /// Get students
+        /// </summary>
+        /// <remarks>Get students by query post</remarks>
+        /// <param name="name">Name partial of students to search on. Case insensitive</param>
+        /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
+        /// See <see cref="ComparativeQueryDto{T}"></see></param>
+        /// <response code="200">Successful operation</response>
+        /// <response code="400">Invalid query supplied</response>
+        /// <response code="404">No students found</response>
+        [HttpPost]
+        [Route("/students/query")]
+        [SwaggerOperation(OperationId = "QueryStudentsPost")]
+        [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
+        [Tags("Students")]
+        public async virtual Task<IActionResult> QueryStudentsPost([FromBody] StudentQueryDto queryDto)
+        { 
+            //TODO refactor
+            if (queryDto.Name is null && queryDto.GPA is null)
+            {
+                return BadRequest();
+            }
+
+            var gpa = queryDto.GPA;
+            if (gpa is not null)
+            {
+                // Query validation, could be moved to attribute 
+                if (gpa.Eq.HasValue && (gpa.Gt.HasValue || gpa.Lt.HasValue))
+                {
+                    return BadRequest();
+                }
+            }
+
+            var gpaQueryDto = new GPAQueryDto() { GPA = queryDto.GPA };
+            var students = await _studentService.QueryStudents(queryDto.Name, gpaQueryDto);
+
+            if (students.IsNullOrEmpty())
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(students);
+            }
+        }
     }
 }
