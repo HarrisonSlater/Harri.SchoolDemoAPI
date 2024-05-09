@@ -1,4 +1,6 @@
-﻿/// without modification from: https://github.com/dotnet/roslyn/blob/43b0b05cc4f492fd5de00f6f6717409091df8daa/src/Compilers/Core/Portable/Optional.cs
+﻿/// Source from: https://github.com/dotnet/roslyn/blob/43b0b05cc4f492fd5de00f6f6717409091df8daa/src/Compilers/Core/Portable/Optional.cs
+/// Only changes are the [BindNever] attributes
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
@@ -12,6 +14,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// Constructs an <see cref="Optional{T}"/> with a meaningful value.
         /// </summary>
         /// <param name="value"></param>
+
         public Optional(T value)
         {
             _hasValue = true;
@@ -22,6 +25,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// Returns <see langword="true"/> if the <see cref="Value"/> will return a meaningful value.
         /// </summary>
         /// <returns></returns>
+        [BindNever]
         public bool HasValue
         {
             get { return _hasValue; }
@@ -38,6 +42,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// <para>The value if <see cref="HasValue"/> is <see langword="true"/>; otherwise, the default value for type
         /// <typeparamref name="T"/>.</para>
         /// </returns>
+        [BindNever]
         public T Value
         {
             get { return _value; }
