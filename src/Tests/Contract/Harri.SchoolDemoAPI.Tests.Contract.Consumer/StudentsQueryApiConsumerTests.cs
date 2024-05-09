@@ -64,11 +64,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
-            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null });
-            //yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            //yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
-            //yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
         }
 
