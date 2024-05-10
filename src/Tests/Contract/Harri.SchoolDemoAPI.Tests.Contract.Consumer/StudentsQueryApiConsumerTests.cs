@@ -39,7 +39,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = null } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = true } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = false } });
         }
 
         [TestCaseSource(nameof(GetInvalidGPAQueryDtoTestCases))]
@@ -71,7 +74,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = true } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = false } });
         }
 
         [TestCaseSource(nameof(GetValidQueryTestCases))]
