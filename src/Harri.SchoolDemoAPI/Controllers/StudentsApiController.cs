@@ -204,8 +204,12 @@ namespace Harri.SchoolDemoAPI.Controllers
             var gpa = gpaQuery.GPA;
             if (gpa is not null)
             {
-                // Query validation, could be moved to attribute 
+                // Query validation, could be moved to attribute TODO
                 if (gpa.Eq.HasValue && (gpa.Gt.HasValue || gpa.Lt.HasValue))
+                {
+                    return BadRequest();
+                }
+                if (gpa.IsNull.HasValue && (gpa.Eq.HasValue || gpa.Gt.HasValue || gpa.Lt.HasValue))
                 {
                     return BadRequest();
                 }

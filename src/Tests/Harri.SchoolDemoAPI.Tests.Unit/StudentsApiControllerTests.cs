@@ -22,17 +22,28 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
 
         private static IEnumerable<TestCaseData> GetQueryStudentsTestCases()
         {
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = null }, typeof(BadRequestResult));
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } }, typeof(OkObjectResult));
+            foreach (var name in new string?[] { "Test Student", null })
+            {
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() {  Gt = 4 } }, typeof(OkObjectResult));
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() {  Lt = 4 } }, typeof(OkObjectResult));
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() {  Gt = 4, Lt = 4 } }, typeof(OkObjectResult));
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Eq = 4 } }, typeof(OkObjectResult));
+
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } }, typeof(BadRequestResult));
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } }, typeof(BadRequestResult));
+                yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4, Lt = 4 } }, typeof(BadRequestResult));
+
+                // IsNull invalid use test cases
+                foreach (var isNullValue in new bool[] { true, false })
+                {
+                    yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = isNullValue } }, typeof(BadRequestResult));
+                    yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Lt = 4, IsNull = isNullValue } }, typeof(BadRequestResult));
+                    yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Gt = 4, Lt = 4, IsNull = isNullValue } }, typeof(BadRequestResult));
+                    yield return new TestCaseData(name, new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = isNullValue } }, typeof(BadRequestResult));
+                }
+            }
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null }, typeof(OkObjectResult));
-
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } }, typeof(OkObjectResult));
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } }, typeof(OkObjectResult));
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } }, typeof(BadRequestResult));
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } }, typeof(BadRequestResult));
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4, Lt = 4 } }, typeof(BadRequestResult));
-
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() {  Gt = 4, Lt = 4 } }, typeof(OkObjectResult));
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = null }, typeof(BadRequestResult));
         }
 
         [TestCaseSource(nameof(GetQueryStudentsTestCases))]
