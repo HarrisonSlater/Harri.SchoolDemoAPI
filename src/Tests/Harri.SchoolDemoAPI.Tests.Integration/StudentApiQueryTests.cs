@@ -67,26 +67,18 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await CleanUpTestStudent(_studentToMatchNameAndGpaId);
         }
 
-        [Test]
-        public async Task QueryStudents_ByName_ShouldReturnBadRequest()
+        private static IEnumerable<TestCaseData> BadRequestTestCases()
         {
-            var response = await _client.QueryStudentsRestResponse(" \t\n  ", null);
-            response.Data.Should().BeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            yield return new TestCaseData(" \t\n  ", null);
+            yield return new TestCaseData(null, null);
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2 } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2, IsNull = true } });
         }
 
-        [Test]
-        public async Task QueryStudents_ShouldReturnBadRequest()
+        [TestCaseSource(nameof(BadRequestTestCases))]
+        public async Task QueryStudents_ByName_ShouldReturnBadRequest(string? name, GPAQueryDto? gpaQuery)
         {
-            var response = await _client.QueryStudentsRestResponse(null, null);
-            response.Data.Should().BeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        }
-
-        [Test]
-        public async Task QueryStudents_ByGPA_ShouldReturnBadRequest()
-        {
-            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2} });
+            var response = await _client.QueryStudentsRestResponse(name, gpaQuery);
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -153,6 +145,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
             response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -177,6 +170,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             {
                 response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
                 response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
             }
         }
 
@@ -205,6 +199,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.ContainSingle();
             response.Data!.Single().Should().BeEquivalentTo(expectedStudentToFind);
+
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAAndNameTestCases()
@@ -233,15 +228,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Data.Should().BeNull();
         }
 
-        //TODO refactor these tests below
-        [Test]
-        public async Task QueryStudents_ShouldMatch_OnNullGpa_WhenIsNull_True()
+        private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
+        {
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = true } });
+        }
+
+        [TestCaseSource(nameof(MatchingNullGPATestCases))]
+        public async Task QueryStudents_ShouldMatch_OnNullGpa_WhenIsNull_True(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -258,7 +257,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
 
             // Assert
             response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
@@ -275,23 +274,38 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             }
         }
 
-        [Test]
-        public async Task QueryStudents_ShouldMatch_OnNameAndNullGpa()
+        [TestCase(false)]
+        [TestCase(null)]
+        public async Task QueryStudents_ShouldMatch_OnGpa_WhenIsNull_False_OrNull(bool? isNull)
         {
             // Arrange
-            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
             response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Data.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
         }
 
+        [Test]
+        public async Task QueryStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            response.Data.Should().BeNull();
+        }
         private async Task CleanUpTestStudent(int sId)
         {
             try

@@ -76,7 +76,11 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 if (gpa.IsNull.HasValue && gpa.IsNull == true)
                 {
-                    builder.Where("GPA IS NULL"); //TODO implement nullable ISNull o_0
+                    builder.Where("GPA IS NULL");
+                }
+                else if (gpa.IsNull.HasValue && gpa.IsNull == false)
+                {
+                    builder.Where("GPA IS NOT NULL");
                 }
 
                 if (gpa.Eq.HasValue)
