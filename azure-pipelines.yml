@@ -41,6 +41,19 @@ steps:
     projects: '$(solution)'
     arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/Harri.SchoolDemoAPI.Client.csproj'
+    nobuild: true
+    includesymbols: true
+    includesource: true
+    versioningScheme: 'off'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'nuget'
+    publishLocation: 'Container'
 #- task: VisualStudioTestPlatformInstaller@1
 #  inputs:
 #    packageFeedSelector: 'nugetOrg'
