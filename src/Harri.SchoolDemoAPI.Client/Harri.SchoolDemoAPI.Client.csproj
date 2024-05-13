@@ -9,6 +9,7 @@
     <Version>1.0.0</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
