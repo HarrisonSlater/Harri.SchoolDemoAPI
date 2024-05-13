@@ -1,8 +1,6 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {

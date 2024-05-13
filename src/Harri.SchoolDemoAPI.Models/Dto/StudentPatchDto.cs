@@ -1,12 +1,7 @@
 using System.Collections.Generic;
-using System;
-using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using Harri.SchoolDemoAPI.Models.Attributes;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
