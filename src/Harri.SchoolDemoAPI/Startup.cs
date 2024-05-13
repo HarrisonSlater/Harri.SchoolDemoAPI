@@ -57,7 +57,12 @@ namespace Harri.SchoolDemoAPI
                     //options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
                     //options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 });
-
+            
+            services.AddCors(options => {
+                options.AddDefaultPolicy(
+                        policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }
+                    );
+            });
             services
                 .AddSwaggerGen(c =>
                 {
@@ -126,11 +131,13 @@ namespace Harri.SchoolDemoAPI
                 });
 
             app.UseRouting();
+
+            app.UseCors();
+
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
                 });
-
         }
     }
 }

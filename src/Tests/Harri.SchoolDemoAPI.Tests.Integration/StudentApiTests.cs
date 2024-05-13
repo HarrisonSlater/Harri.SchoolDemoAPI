@@ -12,7 +12,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [SetUp]
         public void Setup()
         {
-            _client = new StudentApiClient(HostedProvider.ServerUri.AbsoluteUri);
+            _client = new StudentApiClient(new HttpClient() { BaseAddress = new Uri(HostedProvider.ServerUri.AbsoluteUri) });
         }
 
         // This test assumes a restored clean database
