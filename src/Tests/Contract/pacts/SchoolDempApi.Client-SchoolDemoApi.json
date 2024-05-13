@@ -4,6 +4,458 @@
   },
   "interactions": [
     {
+      "description": "a bad request to patch a student with sId 1234 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/1234"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to patch a student with sId 4567 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": ""
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":4,\"eq\":null}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.gt": [
+            "4"
+          ],
+          "GPA.isNull": [
+            "False"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":null,\"eq\":4}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "GPA.lt": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":4,\"eq\":4}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "GPA.gt": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":4}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "GPA.isNull": [
+            "True"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to update a student with sId 1234 and invalid name 1",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/1234"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to update a student with sId 4567 and invalid name 2",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": ""
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to add a new student with name Mocky",
       "pending": false,
       "providerStates": [
@@ -146,7 +598,177 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to add a new student without a name",
+      "description": "a request to add a new student without a name 1",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to add a new student without a name 2",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": ""
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to add a new student without a name 3",
       "pending": false,
       "request": {
         "body": {
@@ -420,6 +1042,26 @@
           "header": {}
         },
         "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to delete a student with sId 83641",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists but can not be deleted",
+          "params": {
+            "sId": 83641
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/students/83641"
+      },
+      "response": {
+        "status": 409
       },
       "type": "Synchronous/HTTP"
     },
@@ -1008,7 +1650,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to patch a student with sId 123",
+      "description": "a request to patch a student with sId 456",
       "pending": false,
       "providerStates": [
         {
@@ -1016,7 +1658,7 @@
           "params": {
             "GPA": 3.91,
             "name": "EXISTING STUDENT NAME",
-            "sId": 123
+            "sId": 456
           }
         },
         {
@@ -1024,7 +1666,7 @@
           "params": {
             "GPA": 3.52,
             "name": "EXISTING STUDENT NAME",
-            "sId": 123
+            "sId": 456
           }
         }
       ],
@@ -1055,14 +1697,14 @@
           "header": {}
         },
         "method": "PATCH",
-        "path": "/students/123"
+        "path": "/students/456"
       },
       "response": {
         "body": {
           "content": {
             "GPA": 3.52,
             "name": "EXISTING STUDENT NAME",
-            "sId": 123
+            "sId": 456
           },
           "contentType": "application/json",
           "encoded": false
@@ -1106,307 +1748,6 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to patch a student with sId 1234 and invalid name",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "no student will be updated"
-        }
-      ],
-      "request": {
-        "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": null
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PATCH",
-        "path": "/students/1234"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to patch a student with sId 4567 and invalid name",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "no student will be updated"
-        }
-      ],
-      "request": {
-        "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": ""
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PATCH",
-        "path": "/students/4567"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query",
-        "query": {
-          "GPA.gt": [
-            "4"
-          ],
-          "GPA.isNull": [
-            "False"
-          ],
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query",
-        "query": {
-          "GPA.eq": [
-            "4"
-          ],
-          "GPA.isNull": [
-            "True"
-          ],
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query",
-        "query": {
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query",
-        "query": {
-          "GPA.eq": [
-            "4"
-          ],
-          "GPA.lt": [
-            "4"
-          ],
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query",
-        "query": {
-          "GPA.eq": [
-            "4"
-          ],
-          "GPA.gt": [
-            "4"
-          ],
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students",
-      "pending": false,
-      "request": {
-        "method": "GET",
-        "path": "/students/query"
-      },
-      "response": {
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
       "description": "a request to query students by name and GPA",
       "pending": false,
       "providerStates": [
@@ -1432,7 +1773,358 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to query students by name and GPA",
+      "description": "a request to update a non-existant student with sId 4567 and invalid name",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": false,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 123",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists and will be updated",
+          "params": {
+            "GPA": 3.81,
+            "name": "Mocky",
+            "sId": 123
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/123"
+      },
+      "response": {
+        "body": {
+          "content": true,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId {sId} exists and will be updated",
+          "params": {
+            "GPA": null,
+            "name": "Mocky",
+            "sId": 4567
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Mocky"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": true,
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request without arguments to query students",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query"
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":null}",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": null
+            },
+            "name": "Test Student"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}}",
       "pending": false,
       "providerStates": [
         {
@@ -1571,24 +2263,58 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to update a student with sId 123",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":2,\"eq\":null}}",
       "pending": false,
       "providerStates": [
         {
-          "name": "a student with sId {sId} exists and will be updated",
+          "name": "some students exist for querying",
           "params": {
-            "GPA": 3.81,
-            "name": "Mocky",
-            "sId": 123
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": 2,
+                "isNull": null,
+                "lt": 4
+              }
+            },
+            "name": "Test Student"
           }
         }
       ],
       "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.gt": [
+            "2"
+          ],
+          "GPA.lt": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
         "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": "Mocky"
-          },
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
           "contentType": "application/json",
           "encoded": false
         },
@@ -1599,34 +2325,71 @@
         },
         "matchingRules": {
           "body": {
-            "$": {
+            "$[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
                   "match": "equality"
                 }
               ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PUT",
-        "path": "/students/123"
-      },
-      "response": {
-        "body": {
-          "content": true,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1642,114 +2405,330 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to update a student with sId 1234 and invalid name",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}}",
       "pending": false,
       "providerStates": [
         {
-          "name": "no student will be updated"
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": 4,
+                "gt": null,
+                "isNull": null,
+                "lt": null
+              }
+            },
+            "name": "Test Student"
+          }
         }
       ],
       "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
         "body": {
-          "content": {
-            "GPA": 3.81,
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": null,
+                "isNull": true,
+                "lt": null
+              }
+            },
+            "name": "Test Student"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.isNull": [
+            "True"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": null,
+                "isNull": false,
+                "lt": null
+              }
+            },
             "name": null
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PUT",
-        "path": "/students/1234"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to update a student with sId 4567",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "a student with sId {sId} exists and will be updated",
-          "params": {
-            "GPA": null,
-            "name": "Mocky",
-            "sId": 4567
           }
         }
       ],
       "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.isNull": [
+            "False"
+          ]
+        }
+      },
+      "response": {
         "body": {
-          "content": {
-            "GPA": null,
-            "name": "Mocky"
-          },
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
           "contentType": "application/json",
           "encoded": false
         },
@@ -1760,34 +2739,71 @@
         },
         "matchingRules": {
           "body": {
-            "$": {
+            "$[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
                   "match": "equality"
                 }
               ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PUT",
-        "path": "/students/4567"
-      },
-      "response": {
-        "body": {
-          "content": true,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1803,46 +2819,55 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to update a student with sId 4567 and invalid name",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":2,\"gt\":4,\"eq\":null}}",
       "pending": false,
       "providerStates": [
         {
-          "name": "a student with sId {sId} does not exist"
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": 4,
+                "isNull": null,
+                "lt": 2
+              }
+            },
+            "name": null
+          }
         }
       ],
       "request": {
-        "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": "Mocky Mockson"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.gt": [
+            "4"
+          ],
+          "GPA.lt": [
+            "2"
           ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PUT",
-        "path": "/students/4567"
+        }
       },
       "response": {
         "body": {
-          "content": false,
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
           "contentType": "application/json",
           "encoded": false
         },
@@ -1853,7 +2878,71 @@
         },
         "matchingRules": {
           "body": {
-            "$": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1864,59 +2953,57 @@
           },
           "header": {}
         },
-        "status": 404
+        "status": 200
       },
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to update a student with sId 4567 and invalid name",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}}",
       "pending": false,
       "providerStates": [
         {
-          "name": "no student will be updated"
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": 4,
+                "gt": null,
+                "isNull": null,
+                "lt": null
+              }
+            },
+            "name": null
+          }
         }
       ],
       "request": {
-        "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": ""
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "4"
           ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PUT",
-        "path": "/students/4567"
+        }
       },
       "response": {
         "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
             },
-            "status": 400,
-            "title": "title"
-          },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
           "contentType": "application/json",
           "encoded": false
         },
@@ -1927,15 +3014,7 @@
         },
         "matchingRules": {
           "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
+            "$[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1943,18 +3022,210 @@
                 }
               ]
             },
-            "$.title": {
+            "$[0].name": {
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "type"
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
                 }
               ]
             }
           },
           "header": {}
         },
-        "status": 400
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": null,
+                "isNull": true,
+                "lt": null
+              }
+            },
+            "name": null
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.isNull": [
+            "True"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
       },
       "type": "Synchronous/HTTP"
     }

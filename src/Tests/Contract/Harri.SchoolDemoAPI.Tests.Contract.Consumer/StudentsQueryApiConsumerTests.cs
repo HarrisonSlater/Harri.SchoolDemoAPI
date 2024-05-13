@@ -21,7 +21,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [Test]
         public async Task QueryStudents_WhenCalledWithoutArguments_Returns400()
         {
-            _pact.UponReceiving($"a request to query students")
+            _pact.UponReceiving($"a request without arguments to query students")
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .WillRespond()
                     .WithStatus(HttpStatusCode.BadRequest);
@@ -40,7 +40,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = null } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = true } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = false } });
         }
@@ -49,7 +48,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task QueryStudents_WhenCalledWithoutInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery)
         {
             var name = "Test Student";
-            _pact.UponReceiving($"a request to query students")
+            var gpaString = JsonSerializer.Serialize(gpaQuery);
+            _pact.UponReceiving($"a bad request to query students: {name}, {gpaString}")
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .SetQueryStringParameters("Test Student", gpaQuery)
                     .WillRespond()
@@ -82,11 +82,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCaseSource(nameof(GetValidQueryTestCases))]
         public async Task QueryStudents_WhenCalled_ReturnsMatchingStudents(string? name, GPAQueryDto? gpaQuery)
         {
-            var pactBuilder = _pact.UponReceiving($"a request to query students by name and GPA")
+            var nameSerialized = name ?? "null";
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {nameSerialized}, {gpaQuerySerialized}")
                     .Given("some students exist for querying", new Dictionary<string, string>() {
                         //Passed to provider to asserting on the mocked respository
-                        {"name", name ?? "null" },
-                        {"gpaQuery", JsonSerializer.Serialize(gpaQuery) },
+                        {"name", nameSerialized },
+                        {"gpaQuery", gpaQuerySerialized },
                     })
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .SetQueryStringParameters(name, gpaQuery)

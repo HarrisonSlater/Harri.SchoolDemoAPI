@@ -142,11 +142,11 @@ namespace Harri.SchoolDemoAPI.Controllers
             var success = await _studentService.DeleteStudent(sId);
             if (success is null) {
                 // Return conflict when student cannot be deleted due to applications referencing that student exist
-                return Conflict(success);
+                return Conflict();
             }
             else if (success.Value)
             {
-                return Ok(success);
+                return Ok(success); //TODO remove the value returned here.
             }
             else
             {
