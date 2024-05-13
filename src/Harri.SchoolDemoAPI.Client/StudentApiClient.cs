@@ -15,6 +15,16 @@ namespace Harri.SchoolDemoApi.Client
             _restClient = new RestClient(options);
         }
 
+        public StudentApiClient(HttpClient httpClient)
+        {
+            _restClient = new RestClient(httpClient);
+        }
+
+        public StudentApiClient(RestClient restClient)
+        {
+            _restClient = restClient;
+        }
+
         // Add
         public async Task<int?> AddStudent(NewStudentDto student)
         {
