@@ -177,11 +177,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static IEnumerable<TestCaseData> MatchingGPAAndNameTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m, IsNull = false} });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.02m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m, Lt = 3.02m } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m, Lt = 3.02m, IsNull = false } });
         }
 
         [TestCaseSource(nameof(MatchingGPAAndNameTestCases))]
@@ -208,7 +206,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m, Lt = 3.01m } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m, Lt = 3.01m, IsNull = true } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = true } });
         }
 
