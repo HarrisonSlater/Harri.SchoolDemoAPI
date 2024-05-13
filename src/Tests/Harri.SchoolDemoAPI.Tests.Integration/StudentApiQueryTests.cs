@@ -67,26 +67,18 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await CleanUpTestStudent(_studentToMatchNameAndGpaId);
         }
 
-        [Test]
-        public async Task QueryStudents_ByName_ShouldReturnBadRequest()
+        private static IEnumerable<TestCaseData> BadRequestTestCases()
         {
-            var response = await _client.QueryStudentsRestResponse(" \t\n  ", null);
-            response.Data.Should().BeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            yield return new TestCaseData(" \t\n  ", null);
+            yield return new TestCaseData(null, null);
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2 } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2, IsNull = true } });
         }
 
-        [Test]
-        public async Task QueryStudents_ShouldReturnBadRequest()
+        [TestCaseSource(nameof(BadRequestTestCases))]
+        public async Task QueryStudents_ByName_ShouldReturnBadRequest(string? name, GPAQueryDto? gpaQuery)
         {
-            var response = await _client.QueryStudentsRestResponse(null, null);
-            response.Data.Should().BeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        }
-
-        [Test]
-        public async Task QueryStudents_ByGPA_ShouldReturnBadRequest()
-        {
-            var response = await _client.QueryStudentsRestResponse(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2} });
+            var response = await _client.QueryStudentsRestResponse(name, gpaQuery);
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -101,7 +93,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("Johnnny 'The Integrator' TestShoes")]
         [TestCase("johnnny 'the integrator' testShoes")]
         [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
-        public async Task QueryStudents_ShouldMatch_ByName(string name)
+        public async Task QueryStudents_ShouldMatch_OnName(string name)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
@@ -117,7 +109,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task QueryStudents_ShouldNotMatch_ByName()
+        public async Task QueryStudents_ShouldNotMatch_OnName()
         {
             // Arrange
             var searchName = Guid.NewGuid().ToString();
@@ -153,6 +145,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
             response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -177,12 +170,12 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             {
                 response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
                 response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
             }
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAAndNameTestCases()
         {
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.02m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.00m } });
@@ -204,6 +197,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().NotBeNull().And.ContainSingle();
             response.Data!.Single().Should().BeEquivalentTo(expectedStudentToFind);
+
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAAndNameTestCases()
@@ -212,6 +206,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Lt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m } });
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 3.01m, Lt = 3.01m } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = true } });
         }
 
         [TestCaseSource(nameof(NotMatchingGPAAndNameTestCases))]
@@ -230,6 +225,84 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Data.Should().BeNull();
         }
 
+        private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
+        {
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { IsNull = true } });
+        }
+
+        [TestCaseSource(nameof(MatchingNullGPATestCases))]
+        public async Task QueryStudents_ShouldMatch_OnNullGpa_WhenIsNull_True(GPAQueryDto gpaQueryDto)
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+        }
+
+        [Test]
+        public async Task QueryStudents_ShouldNotMatch_OnNullGpa_WhenIsNull_False()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+
+            // Assert
+            response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+                response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            }
+            else
+            {
+                response.Data.Should().BeNull();
+            }
+        }
+
+        [TestCase(false)]
+        [TestCase(null)]
+        public async Task QueryStudents_ShouldMatch_OnGpa_WhenIsNull_False_OrNull(bool? isNull)
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+        }
+
+        [Test]
+        public async Task QueryStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            response.Data.Should().BeNull();
+        }
         private async Task CleanUpTestStudent(int sId)
         {
             try

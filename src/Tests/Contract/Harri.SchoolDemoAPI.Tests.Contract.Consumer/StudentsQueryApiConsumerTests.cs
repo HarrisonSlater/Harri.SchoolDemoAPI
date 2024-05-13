@@ -21,7 +21,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [Test]
         public async Task QueryStudents_WhenCalledWithoutArguments_Returns400()
         {
-            _pact.UponReceiving($"a request to query students")
+            _pact.UponReceiving($"a request without arguments to query students")
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .WillRespond()
                     .WithStatus(HttpStatusCode.BadRequest);
@@ -39,13 +39,17 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = true } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = false } });
         }
 
         [TestCaseSource(nameof(GetInvalidGPAQueryDtoTestCases))]
         public async Task QueryStudents_WhenCalledWithoutInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery)
         {
             var name = "Test Student";
-            _pact.UponReceiving($"a request to query students")
+            var gpaString = JsonSerializer.Serialize(gpaQuery);
+            _pact.UponReceiving($"a bad request to query students: {name}, {gpaString}")
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .SetQueryStringParameters("Test Student", gpaQuery)
                     .WillRespond()
@@ -61,7 +65,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             });
         }
-
+        //TODO fix query string test failure poor error messages "Expected students not to be <null>."
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
@@ -69,16 +73,22 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = true } });
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = false } });
         }
 
         [TestCaseSource(nameof(GetValidQueryTestCases))]
         public async Task QueryStudents_WhenCalled_ReturnsMatchingStudents(string? name, GPAQueryDto? gpaQuery)
         {
-            var pactBuilder = _pact.UponReceiving($"a request to query students by name and GPA")
+            var nameSerialized = name ?? "null";
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {nameSerialized}, {gpaQuerySerialized}")
                     .Given("some students exist for querying", new Dictionary<string, string>() {
                         //Passed to provider to asserting on the mocked respository
-                        {"name", name ?? "null" },
-                        {"gpaQuery", JsonSerializer.Serialize(gpaQuery) },
+                        {"name", nameSerialized },
+                        {"gpaQuery", gpaQuerySerialized },
                     })
                     .WithRequest(HttpMethod.Get, $"/students/query")
                     .SetQueryStringParameters(name, gpaQuery)
@@ -170,6 +180,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             if (gpaQuery.GPA.Eq is not null)
             {
                 pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
+            }
+            if (gpaQuery.GPA.IsNull is not null)
+            {
+                pactBuilder.WithQuery("GPA.isNull", gpaQuery.GPA.IsNull.ToString());
             }
             return pactBuilder;
         }

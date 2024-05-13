@@ -145,6 +145,10 @@ namespace Harri.SchoolDemoApi.Client
                 {
                     request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.Eq}", gpaQuery.GPA.Eq.Value);
                 }
+                if (gpaQuery.GPA.IsNull is not null)
+                {
+                    request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.IsNull}", gpaQuery.GPA.IsNull.ToString());
+                }
             }
 
             var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);

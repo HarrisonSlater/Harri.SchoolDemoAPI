@@ -142,12 +142,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(4567, null, null)]
-        [TestCase(4567, "", null)]
-        [TestCase(4567, "  \t\r\n   ", null)]
-        public async Task AddStudent_WhenCalledWithInvalidNewStudent_Returns400(int sIdNew, string? name, decimal? GPA)
+        [TestCase(4567, null, null, 1)]
+        [TestCase(4567, "", null, 2)]
+        [TestCase(4567, "  \t\r\n   ", null, 3)]
+        public async Task AddStudent_WhenCalledWithInvalidNewStudent_Returns400(int sIdNew, string? name, decimal? GPA, int testCase)
         {
-            _pact.UponReceiving($"a request to add a new student without a name")
+            _pact.UponReceiving($"a request to add a new student without a name {testCase}")
                     .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -213,11 +213,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(1234, null, 3.81)]
-        [TestCase(4567, "", 3.81)]
-        public async Task UpdateStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA)
+        [TestCase(1234, null, 3.81, 1)]
+        [TestCase(4567, "", 3.81, 2)]
+        public async Task UpdateStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA, int testCase)
         {
-            _pact.UponReceiving($"a request to update a student with sId {sId} and invalid name")
+            _pact.UponReceiving($"a bad request to update a student with sId {sId} and invalid name {testCase}")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -255,7 +255,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCase(4567, "Mocky Mockson", 3.81)]
         public async Task UpdateStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
         {
-            _pact.UponReceiving($"a request to update a student with sId {sId} and invalid name")
+            _pact.UponReceiving($"a request to update a non-existant student with sId {sId} and invalid name")
                 .Given("a student with sId {sId} does not exist")
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -327,17 +327,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
+        [TestCase(83641)]
         public async Task DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409(int sId)
         {
             _pact.UponReceiving($"a request to delete a student with sId {sId}")
-                    .Given("a student with sId { sId } exists but can not be deleted", new Dictionary<string, string>() {
+                    .Given("a student with sId {sId} exists but can not be deleted", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                     })
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.Conflict)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(false));
+                 .WithStatus(HttpStatusCode.Conflict);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -382,7 +381,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         // PatchStudent
-        //[TestCase(4567, "Mocky", null)]
         [TestCase(123, "Mocky")]
         public async Task PatchStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndPatchesStudentName(int sId, string newName)
         {
@@ -430,7 +428,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(123, 3.52)]
+        [TestCase(456, 3.52)]
         public async Task PatchStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndPatchesStudentGPA(int sId, decimal gpa)
         {
             var existingName = "EXISTING STUDENT NAME";
@@ -482,7 +480,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCase(4567, "", 3.81)]
         public async Task PatchStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA)
         {
-            _pact.UponReceiving($"a request to patch a student with sId {sId} and invalid name")
+            _pact.UponReceiving($"a bad request to patch a student with sId {sId} and invalid name")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")

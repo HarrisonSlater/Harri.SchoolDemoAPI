@@ -142,11 +142,11 @@ namespace Harri.SchoolDemoAPI.Controllers
             var success = await _studentService.DeleteStudent(sId);
             if (success is null) {
                 // Return conflict when student cannot be deleted due to applications referencing that student exist
-                return Conflict(success);
+                return Conflict();
             }
             else if (success.Value)
             {
-                return Ok(success);
+                return Ok(success); //TODO remove the value returned here.
             }
             else
             {
@@ -204,8 +204,12 @@ namespace Harri.SchoolDemoAPI.Controllers
             var gpa = gpaQuery.GPA;
             if (gpa is not null)
             {
-                // Query validation, could be moved to attribute 
+                // Query validation, could be moved to attribute TODO
                 if (gpa.Eq.HasValue && (gpa.Gt.HasValue || gpa.Lt.HasValue))
+                {
+                    return BadRequest();
+                }
+                if (gpa.IsNull.HasValue && (gpa.Eq.HasValue || gpa.Gt.HasValue || gpa.Lt.HasValue))
                 {
                     return BadRequest();
                 }
@@ -221,6 +225,6 @@ namespace Harri.SchoolDemoAPI.Controllers
             {
                 return Ok(students);
             }
-        }
+        } 
     }
 }

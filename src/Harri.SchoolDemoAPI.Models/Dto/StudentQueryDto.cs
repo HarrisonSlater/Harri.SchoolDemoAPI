@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
@@ -13,8 +13,12 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     /// <summary>
     /// 
     /// </summary>
-    public class GPAQueryDto
+    public class StudentQueryDto
     {
+
+        [JsonPropertyName(APIConstants.Student.Name)]
+        public string? Name { get; set; }
+
         /// <summary>
         /// GPA Query DTO 
         /// </summary>

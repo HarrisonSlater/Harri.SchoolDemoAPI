@@ -74,6 +74,15 @@ namespace Harri.SchoolDemoAPI.Repository
             {
                 var gpa = gpaQuery.GPA;
 
+                if (gpa.IsNull.HasValue && gpa.IsNull == true)
+                {
+                    builder.Where("GPA IS NULL");
+                }
+                else if (gpa.IsNull.HasValue && gpa.IsNull == false)
+                {
+                    builder.Where("GPA IS NOT NULL");
+                }
+
                 if (gpa.Eq.HasValue)
                 {
                     builder.Where("GPA = @eq", new { eq = gpa.Eq });

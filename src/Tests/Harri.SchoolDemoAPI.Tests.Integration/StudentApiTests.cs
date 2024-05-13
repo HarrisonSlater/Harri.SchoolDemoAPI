@@ -1,6 +1,5 @@
 using Harri.SchoolDemoApi.Client;
 using FluentAssertions;
-using System.Runtime.CompilerServices;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Security.Cryptography;
 
@@ -32,11 +31,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task AddStudent_ShouldAddNewStudent()
         {
             // Arrange
-            var newStudent = new NewStudentDto()
-            {
-                Name = "New Test Student",
-                GPA = 3.81m
-            };
+            var newStudent = new NewStudentDto() { Name = "New Test Student", GPA = 3.81m };
 
             // Act 
             var id = await _client.AddStudent(newStudent);
@@ -62,19 +57,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task UpdateStudent_ShouldUpdateExistingStudent()
         {
             // Arrange 
-            var newStudent = new NewStudentDto()
-            {
-                Name = "New Test Student 2",
-                GPA = 3.71m
-            };
+            var newStudent = new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m };
             var sId = await _client.AddStudent(newStudent);
             sId.Should().NotBeNull();
 
-            var studentUpdateDto = new UpdateStudentDto()
-            {
-                Name = "New Test Student 2 - Updated Name",
-                GPA = 3.75m
-            };
+            var studentUpdateDto = new UpdateStudentDto() { Name = "New Test Student 2 - Updated Name", GPA = 3.75m };
 
             var expectedStudent = new StudentDto()
             {
@@ -97,67 +84,31 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await CleanUpTestStudent(sId.Value);
         }
 
-        [Test]
-        public async Task PatchStudent_ShouldUpdateOnlyGPAOnExistingStudent()
+        private static IEnumerable<TestCaseData> PatchStudentTestCases()
         {
-            // Arrange
-            var newStudent = new NewStudentDto()
-            {
-                Name = "Test Student 3",
-                GPA = 3.55m
-            };
+            var newStudent1 = new NewStudentDto() { Name = "Test Student 3", GPA = 3.55m };
+            var newStudent1PatchDto = new StudentPatchDto() { GPA = 3.99m };
+            var expectedStudent1 = new StudentDto() { Name = newStudent1.Name, GPA = newStudent1PatchDto.GPA, };
+            yield return new TestCaseData(newStudent1, newStudent1PatchDto, expectedStudent1);
 
-            var sId = await _client.AddStudent(newStudent);
-            sId.Should().NotBeNull();
+            var newStudent2 = new NewStudentDto() { Name = "Test Student 4", GPA = 3.45m };
+            var newStudent2PatchDto = new StudentPatchDto() { Name = "Test Student 4 - PATCHED" };
+            var expectedStudent2 = new StudentDto() { Name = newStudent2PatchDto.Name, GPA = newStudent2.GPA, };
+            yield return new TestCaseData(newStudent2, newStudent2PatchDto, expectedStudent2);
 
-            var studentPatchDto = new StudentPatchDto()
-            {
-                GPA = 3.99m
-            };
-
-            var expectedStudent = new StudentDto()
-            {
-                SId = sId.Value,
-                Name = newStudent.Name,
-                GPA = studentPatchDto.GPA,
-            };
-
-            // Act
-            var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto);
-            patchedStudent.Should().NotBeNull();
-
-            // Assert
-            patchedStudent.Should().BeEquivalentTo(expectedStudent);
-
-            var student = await _client.GetStudent(sId.Value);
-            student.Should().NotBeNull();
-            student.Should().BeEquivalentTo(expectedStudent);
+            var newStudent3 = new NewStudentDto() { Name = "Test Student 5", GPA = 3.35m };
+            var newStudent3PatchDto = new StudentPatchDto() { Name = "Test Student 5 - PATCHED", GPA = 4 };
+            var expectedStudent3 = new StudentDto() { Name = newStudent3PatchDto.Name, GPA = newStudent3PatchDto.GPA, };
+            yield return new TestCaseData(newStudent3, newStudent3PatchDto, expectedStudent3);
         }
 
-        [Test]
-        public async Task PatchStudent_ShouldUpdateOnlyNameOnExistingStudent()
+        [TestCaseSource(nameof(PatchStudentTestCases))]
+        public async Task PatchStudent_ShouldUpdateOnlyGPAOnExistingStudent(NewStudentDto newStudent, StudentPatchDto studentPatchDto, StudentDto expectedStudent)
         {
             // Arrange
-            var newStudent = new NewStudentDto()
-            {
-                Name = "Test Student 4",
-                GPA = 3.55m
-            };
-
             var sId = await _client.AddStudent(newStudent);
             sId.Should().NotBeNull();
-
-            var studentPatchDto = new StudentPatchDto()
-            {
-                Name = "Test Student 4 - PATCHED"
-            };
-
-            var expectedStudent = new StudentDto()
-            {
-                SId = sId.Value,
-                Name = studentPatchDto.Name,
-                GPA = newStudent.GPA,
-            };
+            expectedStudent.SId = sId;
 
             // Act
             var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto);
@@ -169,6 +120,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var student = await _client.GetStudent(sId.Value);
             student.Should().NotBeNull();
             student.Should().BeEquivalentTo(expectedStudent);
+
+            await CleanUpTestStudent(student.SId.Value);
         }
 
         [Test]

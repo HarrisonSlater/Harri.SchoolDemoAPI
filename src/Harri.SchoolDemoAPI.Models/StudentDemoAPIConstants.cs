@@ -31,6 +31,7 @@ namespace Harri.SchoolDemoAPI.Models
             public const string Lt = "lt";
             public const string Gt = "gt";
             public const string Eq = "eq";
+            public const string IsNull = "isNull";
         }
     }
 }
