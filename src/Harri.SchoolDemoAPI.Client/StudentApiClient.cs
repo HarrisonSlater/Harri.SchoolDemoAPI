@@ -1,7 +1,6 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
-using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoApi.Client
 {

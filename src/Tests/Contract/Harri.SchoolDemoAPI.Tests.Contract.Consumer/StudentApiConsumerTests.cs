@@ -1,14 +1,7 @@
 using FluentAssertions;
 using Harri.SchoolDemoApi.Client;
-using PactNet;
 using PactNet.Matchers;
 using System.Net;
-using System.Security.Cryptography;
-using System.Text.Json;
-using System.Xml.Linq;
-using Harri.SchoolDemoAPI.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Net.Http.Headers;
 using Harri.SchoolDemoAPI.Models.Dto;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
