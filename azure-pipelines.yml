@@ -49,6 +49,16 @@ steps:
     includesymbols: true
     includesource: true
     versioningScheme: 'off'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/Harri.SchoolDemoAPI.Models.csproj'
+    nobuild: true
+    includesymbols: true
+    includesource: true
+    versioningScheme: 'off'
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
