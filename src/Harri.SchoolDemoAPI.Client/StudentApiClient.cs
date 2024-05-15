@@ -4,7 +4,7 @@ using RestSharp;
 
 namespace Harri.SchoolDemoApi.Client
 {
-    public class StudentApiClient
+    public class StudentApiClient : IStudentApiClient
     {
         private const string BaseRoute = "students/";
         private readonly RestClient _restClient;
