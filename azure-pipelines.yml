@@ -138,3 +138,8 @@ steps:
     command: 'test'
     projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
     testRunTitle: 'Integration Tests'
+
+- task: Docker@2
+  inputs:
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
