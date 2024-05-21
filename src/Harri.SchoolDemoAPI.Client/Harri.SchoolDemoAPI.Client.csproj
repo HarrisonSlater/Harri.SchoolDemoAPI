@@ -4,6 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageId>Harri.SchoolDemoApi.Client</PackageId>
+    <Version>1.0.3</Version>
+    <Authors>harri.dev</Authors>
+    <Company>harri.dev</Company>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

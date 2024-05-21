@@ -1,11 +1,10 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
-using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoApi.Client
 {
-    public class StudentApiClient
+    public class StudentApiClient : IStudentApiClient
     {
         private const string BaseRoute = "students/";
         private readonly RestClient _restClient;
@@ -14,6 +13,16 @@ namespace Harri.SchoolDemoApi.Client
         {
             var options = new RestClientOptions(uri is null ? "https://localhost:44301/" : uri);
             _restClient = new RestClient(options);
+        }
+
+        public StudentApiClient(HttpClient httpClient)
+        {
+            _restClient = new RestClient(httpClient);
+        }
+
+        public StudentApiClient(RestClient restClient)
+        {
+            _restClient = restClient;
         }
 
         // Add
