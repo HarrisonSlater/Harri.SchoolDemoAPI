@@ -11,9 +11,13 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Copy the code into the container
 WORKDIR /src
+COPY ["src/Harri.SchoolDemoAPI.Models/Harri.SchoolDemoAPI.Models.csproj", "Harri.SchoolDemoAPI.Models/"]
 COPY ["src/Harri.SchoolDemoAPI/Harri.SchoolDemoAPI.csproj", "Harri.SchoolDemoAPI/"]
 
 # NuGet restore
+#RUN dotnet restore "Harri.SchoolDemoAPI.Models/Harri.SchoolDemoAPI.Models.csproj"
+#COPY ["src/Harri.SchoolDemoAPI.Models/", "Harri.SchoolDemoAPI.Models/"]
+
 RUN dotnet restore "Harri.SchoolDemoAPI/Harri.SchoolDemoAPI.csproj"
 COPY ["src/Harri.SchoolDemoAPI/", "Harri.SchoolDemoAPI/"]
 
