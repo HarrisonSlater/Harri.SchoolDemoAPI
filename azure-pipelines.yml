@@ -139,7 +139,13 @@ steps:
     projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
     testRunTitle: 'Integration Tests'
 
-- task: Docker@2
+#- task: Docker@2
+#  inputs:
+#    command: 'build'
+#    Dockerfile: '**/Dockerfile'
+
+- task: PowerShell@2
   inputs:
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
+    targetType: 'inline'
+    script: 'docker build'
+    failOnStderr: true
