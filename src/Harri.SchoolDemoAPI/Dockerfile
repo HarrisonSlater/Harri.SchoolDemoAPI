@@ -25,9 +25,13 @@ COPY ["src/Harri.SchoolDemoAPI/", "Harri.SchoolDemoAPI/"]
 WORKDIR "Harri.SchoolDemoAPI"
 RUN dotnet build "Harri.SchoolDemoAPI.csproj" -c Release -o /app/build
 
+
+
 # Publish it
 FROM build AS publish
 RUN dotnet publish "Harri.SchoolDemoAPI.csproj" -c Release -o /app/publish
+
+
 
 # Make the final image for publishing
 FROM base AS final
