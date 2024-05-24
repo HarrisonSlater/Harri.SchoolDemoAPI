@@ -140,12 +140,11 @@ steps:
 
 - task: Docker@2
   inputs:
+    containerRegistry: 'Docker Hub'
     repository: 'harri-schooldemoapi'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
     buildContext: '$(System.DefaultWorkingDirectory)'
-
-
 #- task: PowerShell@2
 #  inputs:
 #    targetType: 'inline'
