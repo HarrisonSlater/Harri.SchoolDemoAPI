@@ -23,6 +23,7 @@ stages:
       - task: NuGetToolInstaller@1
 
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet restore'
         inputs:
           command: 'restore'
           projects: '$(solution)'
@@ -30,36 +31,42 @@ stages:
           workingDirectory: '$(Build.Repository.LocalPath)'
           
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet build - $(buildConfiguration)'
         inputs:
           command: 'build'
           projects: '$(solution)'
           arguments: '--no-restore --configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:SkipInvalidConfigurations=true"'
 
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet test - Unit'
         inputs:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.Unit.csproj'
           testRunTitle: 'Run Unit Tests'
 
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet test - Consumer Contract Tests'
         inputs:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
           testRunTitle: 'Run Contract Tests - Consumer'
 
       - task: PublishBuildArtifacts@1
+        displayName: 'Publish pact file'
         inputs:
           PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
           ArtifactName: 'pact'
           publishLocation: 'Container'
     
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet test - Provider Contract Tests'
         inputs:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
           testRunTitle: 'Run Contract Tests - Provider'
       
       - task: DotNetCoreCLI@2
+        displayName: 'dotnet publish - $(buildConfiguration)'
         inputs:
           command: 'publish'
           publishWebProjects: true
