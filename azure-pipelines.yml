@@ -14,154 +14,57 @@ variables:
   buildConfiguration: 'Release'
   commitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
 
-steps:
-- task: NuGetToolInstaller@1
+stages:
+- stage: 'Build'
+  displayName: 'Build the School Demo REST API'
+  jobs: 
+    - job: 'Build'
+      steps:
+      - task: NuGetToolInstaller@1
 
-#- task: NuGetCommand@2
-#  inputs:
-#    restoreSolution: '$(solution)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+          projects: '$(solution)'
+          feedsToUse: 'select'
+          workingDirectory: '$(Build.Repository.LocalPath)'
+          
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'build'
+          projects: '$(solution)'
+          arguments: '--no-restore --configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:SkipInvalidConfigurations=true"'
 
-#- task: VSBuild@1
-#  inputs:
-#    solution: '$(solution)'
-#    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Unit.csproj'
+          testRunTitle: 'Run Unit Tests'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: '$(solution)'
-    feedsToUse: 'select'
-    workingDirectory: '$(Build.Repository.LocalPath)'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
+          testRunTitle: 'Run Contract Tests - Consumer'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
+          ArtifactName: 'pact'
+          publishLocation: 'Container'
     
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: '$(solution)'
-    arguments: '--configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/Harri.SchoolDemoAPI.Client.csproj'
-    nobuild: true
-    includesymbols: true
-    includesource: true
-    versioningScheme: 'off'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/Harri.SchoolDemoAPI.Models.csproj'
-    nobuild: true
-    includesymbols: true
-    includesource: true
-    versioningScheme: 'off'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'nuget'
-    publishLocation: 'Container'
-#- task: VisualStudioTestPlatformInstaller@1
-#  inputs:
-#    packageFeedSelector: 'nugetOrg'
-#    versionSelector: 'latestPreRelease'
-
-#- task: VSTest@2
-#  inputs:
-#    testSelector: 'testAssemblies'
-#    testAssemblyVer2: '**\Harri.SchoolDemoApi.Tests.Contract.Consumer.dll'
-#    searchFolder: '$(System.DefaultWorkingDirectory)'
-#    testRunTitle: '
-#    vsTestVersion: 'toolsInstaller'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Unit.csproj'
-    testRunTitle: 'Run Unit Tests'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
-    testRunTitle: 'Run Contract Tests - Consumer'
-
-
-#- task: PublishPipelineArtifact@1
-#  inputs:
-#    targetPath: '$(System.DefaultWorkingDirectory)\src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json'
-#    artifact: 'Pact file'
-#    publishLocation: 'pipeline'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-    
-
-#- task: VSTest@2
-#  inputs:
-#    testSelector: 'testAssemblies'
-#    testAssemblyVer2: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.dll'
-#    searchFolder: '$(System.DefaultWorkingDirectory)'
-#    testRunTitle: 'Run Provider Tests - Consumer'
-#    vsTestVersion: 'toolsInstaller'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
-    testRunTitle: 'Run Contract Tests - Provider'
-
-- task: DockerInstaller@0
-  inputs:
-    dockerVersion: '17.09.0-ce'
-
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
-    failOnStderr: true
-
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-    failOnStderr: true
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
-    testRunTitle: 'Integration Tests'
-
-- task: Docker@2
-  inputs:
-    containerRegistry: 'Docker Hub'
-    repository: 'harrisonslater/harri-schooldemoapi'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    buildContext: '$(System.DefaultWorkingDirectory)'
-    tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
-
-#- task: PowerShell@2
-#  inputs:
-#    targetType: 'inline'
-#    script: 'docker build $(System.DefaultWorkingDirectory)/src/Harri.SchoolDemoAPI/Dockerfile'
-#    failOnStderr: true
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      curl -L \
-        -X POST \
-        -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer $(GitHubChecksPAT)" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        https://api.github.com/repos/HarrisonSlater/Harri.SchoolDemoAPI/statuses/$(commitIdForGitHub) \
-        -d \
-        '{"state":"success","description":"The build succeeded","context":"HarrisonSlater.Harri.SchoolDemoApi"}'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
+          testRunTitle: 'Run Contract Tests - Provider'
+      
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'publish'
+          publishWebProjects: true
+          arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+     
+      - publish: '$(Build.ArtifactStagingDirectory)'
+        artifact: build
+      
