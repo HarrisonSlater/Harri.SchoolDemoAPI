@@ -13,6 +13,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   commitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
+  APIUrlToTest: 'http://localhost:5001/'
 
 stages:
 - stage: 'Build'
@@ -86,23 +87,52 @@ stages:
           downloadType: 'single'
           artifactName: 'build'
           downloadPath: '$(System.DefaultWorkingDirectory)'
-          cleanDestinationFolder: true
+          cleanDestinationFolder: false
 
       - task: ExtractFiles@1
         inputs:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
           destinationFolder: '$(System.DefaultWorkingDirectory)/Extract'
-          cleanDestinationFolder: true
+          cleanDestinationFolder: false
           overwriteExistingFiles: false
 
-#      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &'
+#      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &'
 #      - task: Bash@3
 #        inputs:
 #          targetType: 'inline'
-      - script: | 
-          nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &
-          echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
 
-      - script: 'curl -X GET http://localhost:5001/students/123'
+
+      #- script: 'curl -X GET $(APIUrlToTest)/students/123'
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '17.09.0-ce'
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+          failOnStderr: true
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+          failOnStderr: true
+          
+      - script: | 
+          nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
+          echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
+      - task: FileTransform@1
+        inputs:
+          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+          fileType: 'json'
+          targetFiles: 'appsettings.json'
+
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - Integration
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+          testRunTitle: 'Integration Tests'
       
       - script: 'kill $(dotnetProcessId)'
