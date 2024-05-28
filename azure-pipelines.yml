@@ -93,7 +93,7 @@ stages:
         inputs:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
           destinationFolder: '$(System.DefaultWorkingDirectory)/Extract'
-          cleanDestinationFolder: true
+          cleanDestinationFolder: false
           overwriteExistingFiles: false
 
 #      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &'
