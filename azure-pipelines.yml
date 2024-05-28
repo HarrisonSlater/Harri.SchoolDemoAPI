@@ -101,9 +101,9 @@ stages:
           custom: './Extract/Harri.SchoolDemoAPI.dll'
           arguments: '--urls=http://localhost:5001/'
 
-      - script: |
-          nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &
-          dotnet_process_id=$!
+      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &'
+          
+      - script: 'dotnet_process_id=$!'
 
       - script: 'curl -X -S GET http://localhost:5001/students/123'
       
