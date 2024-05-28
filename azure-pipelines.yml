@@ -91,14 +91,14 @@ stages:
       - task: ExtractFiles@1
         inputs:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
-          destinationFolder: '$(System.DefaultWorkingDirectory)'
+          destinationFolder: '$(System.DefaultWorkingDirectory)/Extract'
           cleanDestinationFolder: true
           overwriteExistingFiles: false
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
-          custom: 'Harri.SchoolDemoAPI.dll'
+          custom: './Extract/Harri.SchoolDemoAPI.dll'
           arguments: '--urls=http://localhost:5001/'
 
       - script: 'curl -X -S GET http://localhost:5001/students/123'
