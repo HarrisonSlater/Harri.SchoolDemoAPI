@@ -125,7 +125,7 @@ stages:
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
           
-      - script: 'curl -X GET -S -L http://localhost:8080/openapi'
+      - script: 'curl -X GET -S -L $(APIUrlToTest)/openapi'
       - script: 'curl -X GET $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
