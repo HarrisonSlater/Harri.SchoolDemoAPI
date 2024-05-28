@@ -127,9 +127,8 @@ stages:
           
       - script: 'curl -X GET $(APIUrlToTest)'
       - script: 'curl -X GET $(APIUrlToTest)students/123'
-      - script: 'curl -X GET http://localhost:1231/students/123'
       - script: 'curl -X GET http://localhost:8080/'
-
+      - script: 'curl -X GET http://localhost:8080/students/123'
       - task: FileTransform@1
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
