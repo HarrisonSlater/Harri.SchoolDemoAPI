@@ -101,8 +101,6 @@ stages:
 #        inputs:
 #          targetType: 'inline'
 
-
-      #- script: 'curl -X GET $(APIUrlToTest)/students/123'
       - task: DockerInstaller@0
         inputs:
           dockerVersion: '17.09.0-ce'
@@ -122,6 +120,9 @@ stages:
       - script: | 
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
+
+      - script: 'curl -X GET $(APIUrlToTest)students/123'
+
       - task: FileTransform@1
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
