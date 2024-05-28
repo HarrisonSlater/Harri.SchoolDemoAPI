@@ -101,8 +101,8 @@ stages:
 #          targetType: 'inline'
       - script: | 
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &
-          dotnet_process_id=$!
+          echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
 
       - script: 'curl -X GET http://localhost:5001/students/123'
       
-      - script: 'kill $dotnet_process_id'
+      - script: 'kill $(dotnetProcessId)'
