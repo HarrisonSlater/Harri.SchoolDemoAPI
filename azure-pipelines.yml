@@ -87,7 +87,7 @@ stages:
           downloadType: 'single'
           artifactName: 'build'
           downloadPath: '$(System.DefaultWorkingDirectory)'
-          cleanDestinationFolder: true
+          cleanDestinationFolder: false
 
       - task: ExtractFiles@1
         inputs:
