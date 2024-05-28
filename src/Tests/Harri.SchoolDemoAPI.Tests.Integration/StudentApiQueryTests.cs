@@ -46,7 +46,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [OneTimeSetUp]
         public static async Task SetUp()
         {
-            _client = new StudentApiClient(HostedProvider.ServerUri.AbsoluteUri);
+            if (APIUrlToTest is null) throw new ArgumentException("APIUrlToTest from appsettings.json cannot be null");
+
+            _client = new StudentApiClient(APIUrlToTest);
 
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
             _studentToMatchNameId = (await _client.AddStudent(_studentToMatchName)).Value;

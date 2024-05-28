@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Harri.SchoolDemoAPI.Client\Harri.SchoolDemoAPI.Client.csproj" />
-    <ProjectReference Include="..\..\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

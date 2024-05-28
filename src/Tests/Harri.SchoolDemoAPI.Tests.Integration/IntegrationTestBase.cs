@@ -5,21 +5,19 @@
 
     public class IntegrationTestBase
     {
-        protected static HostedProvider HostedProvider;
+        public static string? APIUrlToTest {get;set;}
 
         [OneTimeSetUp]
-        public static async Task OneTimeSetup()
+        public async Task OneTimeSetup()
         {
-            HostedProvider = new HostedProvider();
-            var t = new CancellationTokenSource();
-
-            await HostedProvider.StartAsync(t.Token);
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            APIUrlToTest = config["APIUrlToTest"];
         }
 
         [OneTimeTearDown]
         public static void OneTimeTearDown()
         {
-            HostedProvider.Dispose();
+
         }
     }
 }
