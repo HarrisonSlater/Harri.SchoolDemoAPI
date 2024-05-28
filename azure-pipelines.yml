@@ -105,7 +105,22 @@ stages:
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
 
       #- script: 'curl -X GET $(APIUrlToTest)/students/123'
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '17.09.0-ce'
 
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+          failOnStderr: true
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+          failOnStderr: true
+          
       - task: FileTransform@1
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
