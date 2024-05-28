@@ -74,4 +74,31 @@ stages:
      
       - publish: '$(Build.ArtifactStagingDirectory)'
         artifact: build
-      
+
+- stage: 'DeployAndTest'
+  jobs: 
+    - job: 'DeployAndTest'
+      displayName: 'Deploy (in-agent) and run integration tests'
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'build'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: true
+
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
+          destinationFolder: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: true
+          overwriteExistingFiles: false
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'Harri.SchoolDemoAPI.dll'
+          arguments: '--urls=http://localhost:5001/'
+
+      - script: 'curl -X -S GET http://localhost:5001/students/123'
