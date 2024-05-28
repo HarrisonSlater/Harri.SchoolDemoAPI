@@ -90,7 +90,7 @@ stages:
           artifactName: 'build'
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
-          
+
       - script: 'ls $(System.DefaultWorkingDirectory)'
 
       - task: ExtractFiles@1
@@ -124,7 +124,8 @@ stages:
       - script: | 
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
-
+          
+      - script: 'curl -X GET $(APIUrlToTest)'
       - script: 'curl -X GET $(APIUrlToTest)students/123'
       - script: 'curl -X GET http://localhost:1231/students/123'
       - script: 'curl -X GET http://localhost:8080/'
