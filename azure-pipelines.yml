@@ -95,20 +95,14 @@ stages:
           cleanDestinationFolder: true
           overwriteExistingFiles: false
 
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'custom'
-          custom: './Extract/Harri.SchoolDemoAPI.dll'
-          arguments: '--urls=http://localhost:5001/'
-
 #      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &'
 #      - task: Bash@3
 #        inputs:
 #          targetType: 'inline'
-#          script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &'
-          
-#      - script: 'dotnet_process_id=$!'
+      - script: | 
+          nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=http://localhost:5001/ &
+          dotnet_process_id=$!
 
       - script: 'curl -X -S GET http://localhost:5001/students/123'
       
-#      - script: 'kill $dotnet_process_id'
+      - script: 'kill $dotnet_process_id'
