@@ -113,23 +113,25 @@ stages:
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
 
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-
+      - script: 'docker stats --no-stream'
 #      - script: 'export ASPNETCORE_ENVIRONMENT="Development"'
 #      - script: 'echo $ASPNETCORE_ENVIRONMENT'
       
       - script: | 
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
-          
+      - script: 'docker stats --no-stream'
       - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
       - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
+      - script: 'docker stats --no-stream'
       - task: FileTransform@1
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
           fileType: 'json'
           targetFiles: 'appsettings.json'
-
+      - script: 'docker stats --no-stream'
+      
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
         inputs:
