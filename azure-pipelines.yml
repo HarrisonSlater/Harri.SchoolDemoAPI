@@ -85,7 +85,7 @@ stages:
           tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
-      - script: 'docker save harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber) -o $(Build.ArtifactStagingDirectory)/Docker/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar'
+      - script: 'docker save harrisonslater/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber) -o $(Build.ArtifactStagingDirectory)/Docker/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar'
 
       - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
 
