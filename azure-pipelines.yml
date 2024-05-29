@@ -113,6 +113,7 @@ stages:
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
 
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+        displayName: Run School Demo SQL DB Container
       
 
       - script: | 
