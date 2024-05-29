@@ -199,6 +199,8 @@ stages:
       - script: 'docker run -d -p $(APIPortToTest):8080 harrisonslater/$(DockerImageName)'
       
       - script: 'docker stats --no-stream'
+      - script: 'docker network ls'
+      - script: 'docker network inspect bridge'
       - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
       - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
