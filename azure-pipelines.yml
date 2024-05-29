@@ -110,20 +110,12 @@ stages:
         inputs:
           dockerVersion: '17.09.0-ce'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
-          failOnStderr: true
+      - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-          failOnStderr: true
-          
-      - script: 'export ASPNETCORE_ENVIRONMENT="Development"'
-      - script: 'echo $ASPNETCORE_ENVIRONMENT'
+      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+
+#      - script: 'export ASPNETCORE_ENVIRONMENT="Development"'
+#      - script: 'echo $ASPNETCORE_ENVIRONMENT'
       
       - script: | 
           nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
