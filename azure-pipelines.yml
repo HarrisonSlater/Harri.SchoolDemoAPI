@@ -196,10 +196,11 @@ stages:
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
         displayName: docker run - School Demo SQL DB Container
       
-      - script: 'docker run -dt -p $(APIPortToTest):8080 harrisonslater/$(DockerImageName)'
-          
-#      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
-#      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+      - script: 'docker run -d -p $(APIPortToTest):8080 harrisonslater/$(DockerImageName)'
+      
+      - script: 'docker stats --no-stream'
+      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
+      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
         displayName: appsettings.json transform
