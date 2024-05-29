@@ -242,3 +242,20 @@ stages:
           repository: 'harrisonslater/harri-schooldemoapi'
           command: 'push'
           tags: '$(DockerImageTag)'
+
+    - job: 'GithubPostCommitStatus'
+      dependsOn: 'PublishDocker'
+      displayName: 'Update Github Commit Status'
+      steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            curl -L \
+              -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $(GitHubChecksPAT)" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/HarrisonSlater/Harri.SchoolDemoAPI/statuses/$(CommitIdForGitHub) \
+              -d \
+              '{"state":"success","description":"The build succeeded","context":"HarrisonSlater.Harri.SchoolDemoApi"}'
