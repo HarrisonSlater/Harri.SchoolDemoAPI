@@ -71,10 +71,32 @@ stages:
         inputs:
           command: 'publish'
           publishWebProjects: true
-          arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
-     
-      - publish: '$(Build.ArtifactStagingDirectory)'
+          arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Build/$(buildConfiguration)'
+          
+      - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
+      #harri-schooldemoapi
+      - task: Docker@2
+        inputs:
+          command: 'build'
+          repository: 'harrisonslater/harri-schooldemoapi'
+          Dockerfile: '**/Dockerfile'
+          buildContext: '$(System.DefaultWorkingDirectory)'
+          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
+
+      - script: 'ls'
+      - script: 'docker save harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber) -o $(Build.ArtifactStagingDirectory)/Docker/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar'
+      - script: 'ls'
+      - script: '$(Build.ArtifactStagingDirectory)/Docker'
+
+#      - task: Docker@2
+#        inputs:
+#          containerRegistry: 'Docker Hub'
+#          repository: 'harrisonslater/harri-schooldemoapi'
+#          command: 'buildAndPush'
+#          Dockerfile: '**/Dockerfile'
+#          buildContext: '$(System.DefaultWorkingDirectory)'
+#          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
 - stage: 'DeployAndTest'
   jobs: 
