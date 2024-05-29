@@ -9,12 +9,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  commitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
+  Solution: '**/*.sln'
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
+  CommitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIPortToTest: 5001
-  APIUrlToTest: 'http://localhost:$(APIPortToTest)/'
+  APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides appsettings.json in integration tests
   DockerImageArtifactName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar.gz
   DockerImageName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerVersion: '25.0.5'
@@ -31,16 +31,16 @@ stages:
         displayName: 'dotnet restore'
         inputs:
           command: 'restore'
-          projects: '$(solution)'
+          projects: '$(Solution)'
           feedsToUse: 'select'
           workingDirectory: '$(Build.Repository.LocalPath)'
           
       - task: DotNetCoreCLI@2
-        displayName: 'dotnet build - $(buildConfiguration)'
+        displayName: 'dotnet build - $(BuildConfiguration)'
         inputs:
           command: 'build'
-          projects: '$(solution)'
-          arguments: '--no-restore --configuration $(buildConfiguration) /p:Platform="$(buildPlatform)" /p:SkipInvalidConfigurations=true"'
+          projects: '$(Solution)'
+          arguments: '--no-restore --configuration $(BuildConfiguration) /p:Platform="$(BuildPlatform)" /p:SkipInvalidConfigurations=true"'
 
       - task: DotNetCoreCLI@2
         displayName: 'dotnet test - Unit'
@@ -71,18 +71,18 @@ stages:
           testRunTitle: 'Run Contract Tests - Provider'
       
       - task: DotNetCoreCLI@2
-        displayName: 'dotnet publish - $(buildConfiguration)'
+        displayName: 'dotnet publish - $(BuildConfiguration)'
         inputs:
           command: 'publish'
           publishWebProjects: true
-          arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/Build/$(buildConfiguration)'
+          arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Build/$(BuildConfiguration)'
           
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '$(DockerVersion)'
+          dockerVersion: $(DockerVersion)
 
       - task: Docker@2
         inputs:
@@ -128,7 +128,7 @@ stages:
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '$(DockerVersion)'
+          dockerVersion: $(DockerVersion)
 
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
         displayName: docker pull
@@ -141,7 +141,7 @@ stages:
           nohup dotnet ./Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
           cd $(System.DefaultWorkingDirectory)
-        displayName: Run SchoolDemoAPI $(buildConfiguration) build
+        displayName: Run SchoolDemoAPI $(BuildConfiguration) build
           
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
@@ -182,7 +182,7 @@ stages:
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '$(DockerVersion)'
+          dockerVersion: $(DockerVersion)
 
       - script: 'ls'
       - script: 'docker load < $(DockerImageArtifactName)'
