@@ -81,7 +81,6 @@ stages:
     - job: 'DeployAndTest'
       displayName: 'Deploy (in-agent) and run integration tests'
       steps:
-      - script: 'ls $(System.DefaultWorkingDirectory)'
 
       - task: DownloadBuildArtifacts@1
         inputs:
@@ -91,8 +90,8 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
 
-      - script: 'ls $(System.DefaultWorkingDirectory)'
-      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+#      - script: 'ls $(System.DefaultWorkingDirectory)'
+#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
 
       - task: ExtractFiles@1
         inputs:
@@ -101,21 +100,16 @@ stages:
           cleanDestinationFolder: false
           overwriteExistingFiles: false
 
-#      - script: 'nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &'
-#      - task: Bash@3
-#        inputs:
-#          targetType: 'inline'
-
       - task: DockerInstaller@0
         inputs:
           dockerVersion: '17.09.0-ce'
 
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+        displayName: docker pull
 
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-        displayName: Run School Demo SQL DB Container
+        displayName: docker run - School Demo SQL DB Container
       
-
       - script: | 
           cd $(System.DefaultWorkingDirectory)/Extract/
           nohup dotnet ./Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
@@ -124,9 +118,10 @@ stages:
         displayName: Run SchoolDemoAPI $(buildConfiguration) build
           
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
-      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+#      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
+        displayName: appsettings.json transform
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
           fileType: 'json'
