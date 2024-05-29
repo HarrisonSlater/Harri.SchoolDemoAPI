@@ -11,7 +11,7 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
-  buildConfiguration: 'Debug'
+  buildConfiguration: 'Release'
   commitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIUrlToTest: 'http://localhost:5001/'
 
@@ -92,6 +92,7 @@ stages:
           cleanDestinationFolder: false
 
       - script: 'ls $(System.DefaultWorkingDirectory)'
+      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
 
       - task: ExtractFiles@1
         inputs:
@@ -109,31 +110,28 @@ stages:
         inputs:
           dockerVersion: '17.09.0-ce'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
-          failOnStderr: true
+      - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
 
-      - task: PowerShell@2
-        inputs:
-          targetType: 'inline'
-          script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-          failOnStderr: true
-          
+      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+
+#      - script: 'export ASPNETCORE_ENVIRONMENT="Development"'
+#      - script: 'echo $ASPNETCORE_ENVIRONMENT'
+      
       - script: | 
-          nohup dotnet $(System.DefaultWorkingDirectory)/Extract/Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
+          cd $(System.DefaultWorkingDirectory)/Extract/
+          nohup dotnet ./Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
+          cd $(System.DefaultWorkingDirectory)
           
       - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
-      - script: 'curl -X GET $(APIUrlToTest)students/123'
+      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
         inputs:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
           fileType: 'json'
           targetFiles: 'appsettings.json'
-
+      
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
         inputs:
