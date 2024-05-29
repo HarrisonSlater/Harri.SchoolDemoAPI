@@ -15,8 +15,9 @@ variables:
   CommitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIPortToTest: 5001
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides appsettings.json in integration tests
-  DockerImageArtifactName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar.gz
-  DockerImageName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber)
+  DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
+  DockerImageArtifactName: harri-schooldemoapi:$(DockerImageTag).tar.gz
+  DockerImageName: harri-schooldemoapi:$(DockerImageTag)
   DockerVersion: '25.0.5'
 
 stages:
@@ -196,11 +197,11 @@ stages:
       - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway harrisonslater/$(DockerImageName)'
         displayName: docker run - School Demo API Container
 
-      - script: 'docker stats --no-stream'
-      - script: 'docker network ls'
-      - script: 'docker network inspect bridge'
-      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
-      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+#      - script: 'docker stats --no-stream'
+#      - script: 'docker network ls'
+#      - script: 'docker network inspect bridge'
+#      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
+      - script: 'curl -X GET $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
         displayName: appsettings.json transform
@@ -215,5 +216,27 @@ stages:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
           testRunTitle: 'Integration Tests'
+
+- stage: 'Publish'
+  dependsOn: DeployAndTestDocker
+  jobs: 
+    - job: 'PublishDocker'
+      displayName: 'Publish Docker container to DockerHub'
+      steps:
+
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'dockerBuild'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
+      - script: 'docker load < $(DockerImageArtifactName)'
       
-      - script: 'kill $(dotnetProcessId)'
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Docker Hub'
+          repository: 'harrisonslater/harri-schooldemoapi'
+          command: 'push'
+          tags: '$(DockerImageTag)'
