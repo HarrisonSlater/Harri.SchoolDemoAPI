@@ -185,7 +185,7 @@ stages:
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '17.09.0-ce'
+          dockerVersion: '25.0.5-ce'
 
       - script: 'ls'
       - script: 'docker load < $(DockerImageArtifactName)'
