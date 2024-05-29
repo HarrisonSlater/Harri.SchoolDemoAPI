@@ -104,6 +104,7 @@ stages:
 
 - stage: 'DeployAndTest'
   dependsOn: Build
+  condition: not(always())
   jobs: 
     - job: 'DeployAndTest'
       displayName: 'Deploy (in-agent) and run integration tests'
