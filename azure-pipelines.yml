@@ -196,7 +196,7 @@ stages:
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
         displayName: docker run - School Demo SQL DB Container
       
-      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal=host-gateway harrisonslater/$(DockerImageName)'
+      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway harrisonslater/$(DockerImageName)'
         displayName: docker run - School Demo API Container
 
       - script: 'docker stats --no-stream'
