@@ -201,7 +201,9 @@ stages:
 #      - script: 'docker network ls'
 #      - script: 'docker network inspect bridge'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
-      - script: 'curl -X GET $(APIUrlToTest)students/123'
+
+      - script: 'sleep 5'
+      - script: 'curl -X GET -S $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
         displayName: appsettings.json transform
