@@ -17,6 +17,7 @@ variables:
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/'
   DockerImageArtifactName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar.gz
   DockerImageName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber)
+  DockerVersion: '25.0.5'
 
 stages:
 - stage: 'Build'
@@ -78,7 +79,11 @@ stages:
           
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
-      #harri-schooldemoapi
+
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '$(DockerVersion)'
+
       - task: Docker@2
         inputs:
           command: 'build'
@@ -94,14 +99,6 @@ stages:
 
       - publish: '$(Build.ArtifactStagingDirectory)/Docker'
         artifact: dockerBuild
-#      - task: Docker@2
-#        inputs:
-#          containerRegistry: 'Docker Hub'
-#          repository: 'harrisonslater/harri-schooldemoapi'
-#          command: 'buildAndPush'
-#          Dockerfile: '**/Dockerfile'
-#          buildContext: '$(System.DefaultWorkingDirectory)'
-#          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
 - stage: 'DeployAndTest'
   dependsOn: Build
@@ -131,7 +128,7 @@ stages:
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '17.09.0-ce'
+          dockerVersion: '$(DockerVersion)'
 
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
         displayName: docker pull
@@ -185,7 +182,7 @@ stages:
 
       - task: DockerInstaller@0
         inputs:
-          dockerVersion: '25.0.5-ce'
+          dockerVersion: '$(DockerVersion)'
 
       - script: 'ls'
       - script: 'docker load < $(DockerImageArtifactName)'
