@@ -84,11 +84,13 @@ stages:
           buildContext: '$(System.DefaultWorkingDirectory)'
           tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
-      - script: 'ls'
+      - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
       - script: 'docker save harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber) -o $(Build.ArtifactStagingDirectory)/Docker/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar'
-      - script: 'ls'
-      - script: '$(Build.ArtifactStagingDirectory)/Docker'
 
+      - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
+
+      - publish: '$(Build.ArtifactStagingDirectory)/Docker'
+        artifact: dockerBuild
 #      - task: Docker@2
 #        inputs:
 #          containerRegistry: 'Docker Hub'
