@@ -186,7 +186,7 @@ stages:
           dockerVersion: '17.09.0-ce'
 
       - script: 'ls'
-      - script: 'docker load $(DockerImageArtifactName)'
+      - script: 'docker load < $(DockerImageArtifactName)'
 
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
         displayName: docker pull
