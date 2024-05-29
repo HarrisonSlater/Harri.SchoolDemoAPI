@@ -113,17 +113,16 @@ stages:
       - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
 
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
-
-#      - script: 'export ASPNETCORE_ENVIRONMENT="Development"'
-#      - script: 'echo $ASPNETCORE_ENVIRONMENT'
       
+
       - script: | 
           cd $(System.DefaultWorkingDirectory)/Extract/
           nohup dotnet ./Harri.SchoolDemoAPI.dll --urls=$(APIUrlToTest) &
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
           cd $(System.DefaultWorkingDirectory)
+        displayName: Run SchoolDemoAPI $(buildConfiguration) build
           
-      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
+#      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
       - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
 
       - task: FileTransform@1
