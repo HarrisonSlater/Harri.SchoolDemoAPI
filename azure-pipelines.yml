@@ -14,6 +14,8 @@ variables:
   buildConfiguration: 'Release'
   commitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIUrlToTest: 'http://localhost:5001/'
+  DockerImageArtifactName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar.gz
+  DockerImageName: harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber)
 
 stages:
 - stage: 'Build'
@@ -85,7 +87,7 @@ stages:
           tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
-      - script: 'docker save harrisonslater/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber) | gzip > $(Build.ArtifactStagingDirectory)/Docker/harri-schooldemoapi:$(Build.SourceBranchName)-$(Build.BuildNumber).tar.gz'
+      - script: 'docker save harrisonslater/$(DockerImageName) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
 
       - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
 
@@ -101,6 +103,7 @@ stages:
 #          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
 
 - stage: 'DeployAndTest'
+  dependsOn: Build
   jobs: 
     - job: 'DeployAndTest'
       displayName: 'Deploy (in-agent) and run integration tests'
@@ -140,6 +143,58 @@ stages:
           echo "##vso[task.setvariable variable=dotnetProcessId;]"$!
           cd $(System.DefaultWorkingDirectory)
         displayName: Run SchoolDemoAPI $(buildConfiguration) build
+          
+#      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
+#      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+
+      - task: FileTransform@1
+        displayName: appsettings.json transform
+        inputs:
+          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+          fileType: 'json'
+          targetFiles: 'appsettings.json'
+      
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - Integration
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+          testRunTitle: 'Integration Tests'
+      
+      - script: 'kill $(dotnetProcessId)'
+
+- stage: 'DeployAndTestDocker'
+  dependsOn: Build
+  jobs: 
+    - job: 'DeployAndTestDocker'
+      displayName: 'Deploy Docker container (in-agent) and run integration tests'
+      steps:
+
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'dockerBuild'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
+#      - script: 'ls $(System.DefaultWorkingDirectory)'
+#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+
+      - task: DockerInstaller@0
+        inputs:
+          dockerVersion: '17.09.0-ce'
+
+      - script: 'ls'
+      - script: 'docker load $(DockerImageArtifactName)'
+
+      - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+        displayName: docker pull
+
+      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+        displayName: docker run - School Demo SQL DB Container
+      
+      - script: 'docker run -it -p 5000:8080 --name schooldemoapi $(DockerImageName)'
           
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
