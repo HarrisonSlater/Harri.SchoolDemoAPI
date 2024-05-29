@@ -225,7 +225,7 @@ stages:
     - job: 'PublishDocker'
       displayName: 'Publish Docker container to DockerHub'
       steps:
-
+      - checkout: none
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
@@ -247,6 +247,7 @@ stages:
       dependsOn: 'PublishDocker'
       displayName: 'Update Github Commit Status'
       steps:
+      - checkout: none
       - task: Bash@3
         inputs:
           targetType: 'inline'
