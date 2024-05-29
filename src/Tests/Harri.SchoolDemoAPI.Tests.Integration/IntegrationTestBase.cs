@@ -12,7 +12,6 @@
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             APIUrlToTest = config["APIUrlToTest"];
-            throw new Exception($"APIUrlToTest: {APIUrlToTest}");
         }
 
         [OneTimeTearDown]
