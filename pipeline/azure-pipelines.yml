@@ -91,7 +91,9 @@ stages:
           repository: 'harrisonslater/harri-schooldemoapi'
           Dockerfile: '**/Dockerfile'
           buildContext: '$(System.DefaultWorkingDirectory)'
-          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
+          tags: |
+            $(DockerImageTag)
+            latest
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
       - script: 'docker save harrisonslater/$(DockerImageName) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
