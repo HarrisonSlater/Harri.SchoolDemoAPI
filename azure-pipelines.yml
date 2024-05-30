@@ -107,7 +107,7 @@ stages:
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run integration tests'
       steps:
-
+      - script: 'asdfsdfsdfsdf'
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
@@ -159,7 +159,7 @@ stages:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
           testRunTitle: 'Integration Tests'
-      - script: 'asdfsdfsdfsdf'
+
       - script: 'kill $(dotnetProcessId)'
 
 - stage: 'DeployAndTestDocker'
@@ -247,9 +247,11 @@ stages:
   dependsOn:
   - 'DeployAndTest'
   - 'DeployAndTestDocker'
+  condition: always()
   jobs:
     - job: 'GithubPostSuccessCommitStatus'
       displayName: 'Update Github Commit Status - Successful'
+      condition: succeeded()
       steps:
       - checkout: none
       - task: Bash@3
