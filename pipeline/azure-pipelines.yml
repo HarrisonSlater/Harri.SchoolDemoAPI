@@ -18,6 +18,7 @@ variables:
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerImageArtifactName: harri-schooldemoapi:$(DockerImageTag).tar.gz
   DockerImageName: harri-schooldemoapi:$(DockerImageTag)
+  DockerImageNameLatest: harri-schooldemoapi:latest
   DockerVersion: '25.0.5'
 
 stages:
@@ -91,10 +92,12 @@ stages:
           repository: 'harrisonslater/harri-schooldemoapi'
           Dockerfile: '**/Dockerfile'
           buildContext: '$(System.DefaultWorkingDirectory)'
-          tags: '$(Build.SourceBranchName)-$(Build.BuildNumber)'
+          tags: |
+            $(DockerImageTag)
+            latest
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
-      - script: 'docker save harrisonslater/$(DockerImageName) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
+      - script: 'docker save harrisonslater/$(DockerImageName) harrisonslater/$(DockerImageNameLatest) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
 
       - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
 
@@ -218,6 +221,7 @@ stages:
           testRunTitle: 'Integration Tests'
 
 - stage: 'Publish'
+  displayName: 'Publish main'
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   dependsOn: DeployAndTestDocker
   jobs: 
@@ -241,9 +245,12 @@ stages:
           containerRegistry: 'Docker Hub'
           repository: 'harrisonslater/harri-schooldemoapi'
           command: 'push'
-          tags: '$(DockerImageTag)'
+          tags: |
+            $(DockerImageTag)
+            latest
 
 - stage: 'PostGithubCommitStatus'
+  displayName: 'Github Commit Status'
   dependsOn:
   - 'DeployAndTest'
   - 'DeployAndTestDocker'
