@@ -9,9 +9,9 @@ namespace Harri.SchoolDemoApi.Client
         private const string BaseRoute = "students/";
         private readonly RestClient _restClient;
 
-        public StudentApiClient(string? uri)
+        public StudentApiClient(string uri)
         {
-            var options = new RestClientOptions(uri is null ? "https://localhost:44301/" : uri);
+            var options = new RestClientOptions(uri);
             _restClient = new RestClient(options);
         }
 

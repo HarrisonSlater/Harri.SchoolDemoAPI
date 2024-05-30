@@ -7,12 +7,14 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 {
     public class StudentApiTests : IntegrationTestBase
     {
-        private StudentApiClient _client;
+        private static StudentApiClient _client;
 
-        [SetUp]
-        public void Setup()
+        [OneTimeSetUp]
+        public static void Setup()
         {
-            _client = new StudentApiClient(new HttpClient() { BaseAddress = new Uri(HostedProvider.ServerUri.AbsoluteUri) });
+            if (APIUrlToTest is null) throw new ArgumentException("APIUrlToTest from appsettings.json cannot be null");
+
+            _client = new StudentApiClient(new HttpClient() { BaseAddress = new Uri(APIUrlToTest) });
         }
 
         // This test assumes a restored clean database
