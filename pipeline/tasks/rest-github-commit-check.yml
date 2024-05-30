@@ -4,6 +4,7 @@ parameters:
   context: "HarrisonSlater.Harri.SchoolDemoApi"
 
 steps:
+- script: 'echo ''{"state":"${{ parameters.state }}","description":"${{ parameters.description }}","context":"${{ parameters.context }}"}'''
 - script: |
     curl -L \
       -X POST \
