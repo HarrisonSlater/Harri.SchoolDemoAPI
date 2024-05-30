@@ -1,7 +1,7 @@
 parameters:
-  state: ""
-  description: ""
-  context: "HarrisonSlater.Harri.SchoolDemoApi"
+  state: ''
+  description: ''
+  context: 'HarrisonSlater.Harri.SchoolDemoApi'
 
 steps:
 - script: 'echo ''{"state":"${{ parameters.state }}","description":"${{ parameters.description }}","context":"${{ parameters.context }}"}'''
