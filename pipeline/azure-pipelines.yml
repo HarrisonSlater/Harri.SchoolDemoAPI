@@ -18,6 +18,7 @@ variables:
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerImageArtifactName: harri-schooldemoapi:$(DockerImageTag).tar.gz
   DockerImageName: harri-schooldemoapi:$(DockerImageTag)
+  DockerImageNameLatest: harri-schooldemoapi:latest
   DockerVersion: '25.0.5'
 
 stages:
@@ -96,7 +97,7 @@ stages:
             latest
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
-      - script: 'docker save harrisonslater/$(DockerImageName) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
+      - script: 'docker save harrisonslater/$(DockerImageName) harrisonslater/$(DockerImageNameLatest) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
 
       - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
 
