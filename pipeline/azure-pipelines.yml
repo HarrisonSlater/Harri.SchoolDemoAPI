@@ -168,7 +168,7 @@ stages:
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run integration tests'
       steps:
-
+      - script: 'sdfsdfsdfsdfsdfsdf'
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
