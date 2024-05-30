@@ -107,7 +107,7 @@ stages:
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run integration tests'
       steps:
-      - script: 'asdfsdfsdfsdf'
+
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
