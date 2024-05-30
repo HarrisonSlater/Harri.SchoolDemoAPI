@@ -250,7 +250,7 @@ stages:
   condition: always()
   jobs:
     - job: 'GithubPostSuccessCommitStatus'
-      displayName: 'Update Github Commit Status - Successful'
+      displayName: 'Successful - Update Github Commit Status'
       condition: and(eq(stageDependencies.DeployAndTest.DeployAndTestJob.result, 'Succeeded'), eq(stageDependencies.DeployAndTestDocker.DeployAndTestDockerJob.result, 'Succeeded'))
       steps:
       - checkout: none
@@ -267,7 +267,7 @@ stages:
               -d \
               '{"state":"success","description":"The build succeeded","context":"HarrisonSlater.Harri.SchoolDemoApi"}'
     - job: 'GithubPostFailureCommitStatus'
-      displayName: 'Update Github Commit Status - Failure'
+      displayName: 'Failure - Update Github Commit Status'
       condition: or(in(stageDependencies.DeployAndTest.DeployAndTestJob.result, 'Failed', 'Skipped'), in(stageDependencies.DeployAndTestDocker.DeployAndTestDockerJob.result, 'Failed', 'Skipped'))
       steps:
       - checkout: none
