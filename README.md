@@ -13,7 +13,7 @@ Using:
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
 
 ## Building from source
-Use the included build scripts or build in Visual Studio
+Use the included build scripts in the root of the repo or build in Visual Studio
 ### Windows
 
 #### PowerShell
@@ -29,6 +29,9 @@ The build script then prompts you to run using
 > `dotnet run --project src\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj`
 
 The API will be accessible via http://localhost:8080 by default
+
+Also make sure to set up the database or the api will return 500 Internal server error
+[Running the database from container](#running-the-database-from-container)
 
 ## Building container from source
 Build the container locally run: 
