@@ -89,3 +89,6 @@ Integration tests are run in-agent using a preconfigured containerised SQL serve
 
 ## Build pipeline
 Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
+
+A successful pipeline run based on main looks like:
+![image](docs/img/readme/ADOPipelineCapture.PNG)
