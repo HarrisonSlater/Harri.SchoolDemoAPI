@@ -11,6 +11,23 @@ Using:
   - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
 
+## Building from Source
+Use the included build scripts or build in Visual Studio
+### Windows
+
+#### PowerShell
+Run `./build.bat`
+#### CMD
+Run `build`
+
+### Linux
+Run `./build.sh`
+
+## Running from Source
+The build script then prompts you to run using
+`dotnet run --project src\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj`
+The API will be accessible via http://localhost:8080 by default
+
 ## See Contract Tests 
 https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md
 
@@ -26,4 +43,4 @@ https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Harri.
 Integration tests are run in-agent using a containerised SQL server: https://hub.docker.com/repository/docker/harrisonslater/schooldemo_sqldatabase/general
 
 ## Build pipeline
-Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/azure-pipelines.yml)
+Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
