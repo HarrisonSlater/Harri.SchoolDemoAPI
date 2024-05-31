@@ -15,9 +15,11 @@ Using:
 # Running the SchoolDemo REST Web API
 You have three options for running this web api,
 
-Build it from source and run (using git, dotnet sdk)
-Build a docker container and run (using git, dotnet sdk, and docker desktop)
-Pull and run a docker container (using docker desktop)
+1. Build it from source and run with dotnet sdk. See [Building from source](#building-from-source) below
+2. Build a docker container and run. See [Building container from source](#building-container-from-source) below
+3. Pull and run a docker container. See [Running from container](#running-from-container) below
+
+   For all options above you will also need to pull and run the [database container](#running-the-database-from-container)
 
 ## Building from source
 Use the included build scripts in the root of the repo or build in Visual Studio
