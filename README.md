@@ -11,6 +11,13 @@ Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
+  - 
+# Running the SchoolDemo REST Web API
+You have three options for running this web api,
+
+Build it from source and run (using git, dotnet sdk)
+Build a docker container and run (using git, dotnet sdk, and docker desktop)
+Pull and run a docker container (using docker desktop)
 
 ## Building from source
 Use the included build scripts in the root of the repo or build in Visual Studio
