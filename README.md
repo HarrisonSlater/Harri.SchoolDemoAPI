@@ -12,7 +12,7 @@ Using:
   - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
 
-## Building from Source
+## Building from source
 Use the included build scripts or build in Visual Studio
 ### Windows
 
@@ -24,11 +24,42 @@ Use the included build scripts or build in Visual Studio
 ### Linux
 >`./build.sh`
 
-## Running from Source
+## Running from source
 The build script then prompts you to run using
 > `dotnet run --project src\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj`
 
 The API will be accessible via http://localhost:8080 by default
+
+## Building container from source
+Build the container locally run: 
+
+> `docker build -t schooldemoapi -f .\src\Harri.SchoolDemoAPI\Dockerfile .`
+
+## Running from container
+If you built the container yourself locally as above run:
+
+> `docker run -it -p 8080:8080 --name schooldemoapi schooldemoapi`
+
+---
+
+If you don't want to build the container you can pull the latest main branch linux container image from the [DockerHub harri-schooldemoapi repository](https://hub.docker.com/repository/docker/harrisonslater/harri-schooldemoapi/general)
+
+> `docker pull harrisonslater/harri-schooldemoapi:latest`
+
+And run 
+
+> `docker run -it -p 8080:8080 --name schooldemoapi harrisonslater/harri-schooldemoapi:latest`
+
+The API will be accessible via http://localhost:8080 or you can specify a different port in the docker run command above like `5000:8080`
+
+## Running the database from container
+The database required by the SchoolDemoAPI is available as a linux container image prefilled with student, school, and application data from the [DockerHub harri-schooldemosql-database repository](https://hub.docker.com/repository/docker/harrisonslater/harri-schooldemosql-database/general)
+
+> `docker pull harrisonslater/harri-schooldemosql-database:latest`
+
+And to run the database container:
+
+> `docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
 
 ## See Contract Tests 
 [Contract Test README.md](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md)
