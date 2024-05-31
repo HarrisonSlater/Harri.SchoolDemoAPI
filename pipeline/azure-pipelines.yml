@@ -15,10 +15,13 @@ variables:
   CommitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIPortToTest: 5001
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides appsettings.json in integration tests
+  DockerNamespace: harrisonslater
+  DockerSQLImageName: harri-schooldemosql-database:latest
+  DockerImageRepository: harri-schooldemoapi
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
-  DockerImageArtifactName: harri-schooldemoapi:$(DockerImageTag).tar.gz
-  DockerImageName: harri-schooldemoapi:$(DockerImageTag)
-  DockerImageNameLatest: harri-schooldemoapi:latest
+  DockerImageArtifactName: $(DockerImageRepository):$(DockerImageTag).tar.gz
+  DockerImageName: $(DockerImageRepository):$(DockerImageTag)
+  DockerImageNameLatest: $(DockerImageRepository):latest
   DockerVersion: '25.0.5'
 
 stages:
@@ -89,7 +92,7 @@ stages:
       - task: Docker@2
         inputs:
           command: 'build'
-          repository: 'harrisonslater/harri-schooldemoapi'
+          repository: '$(DockerNamespace)/$(DockerImageRepository)'
           Dockerfile: '**/Dockerfile'
           buildContext: '$(System.DefaultWorkingDirectory)'
           tags: |
@@ -97,7 +100,7 @@ stages:
             latest
 
       - script: 'mkdir $(Build.ArtifactStagingDirectory)/Docker'
-      - script: 'docker save harrisonslater/$(DockerImageName) harrisonslater/$(DockerImageNameLatest) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
+      - script: 'docker save $(DockerNamespace)/$(DockerImageName) $(DockerNamespace)/$(DockerImageNameLatest) | gzip > $(Build.ArtifactStagingDirectory)/Docker/$(DockerImageArtifactName)'
 
       - script: 'ls $(Build.ArtifactStagingDirectory)/Docker'
 
@@ -133,10 +136,10 @@ stages:
         inputs:
           dockerVersion: $(DockerVersion)
 
-      - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+      - script: 'docker pull $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker pull
 
-      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
       
       - script: | 
@@ -190,10 +193,10 @@ stages:
       - script: 'ls'
       - script: 'docker load < $(DockerImageArtifactName)'
 
-      - script: 'docker pull harrisonslater/schooldemo_sqldatabase:latest'
+      - script: 'docker pull $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker pull SQL DB Image
 
-      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/schooldemo_sqldatabase'
+      - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
       
       - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway harrisonslater/$(DockerImageName)'
@@ -243,7 +246,7 @@ stages:
       - task: Docker@2
         inputs:
           containerRegistry: 'Docker Hub'
-          repository: 'harrisonslater/harri-schooldemoapi'
+          repository: '$(DockerNamespace)/$(DockerImageRepository)'
           command: 'push'
           tags: |
             $(DockerImageTag)
