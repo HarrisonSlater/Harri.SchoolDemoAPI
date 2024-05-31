@@ -5,7 +5,7 @@ Demo .NET 8 API about students, schools, and students applications to schools
 This repository is intended as a demonstration of a RESTful API with a SQL Server database focusing on automated testing to validate the API functionality.
 
 ## WIP - API
-So far the /students/ api is complete: [StudentsApiController.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
+So far the /students/ API is complete: [StudentsApiController.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
 
 Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
@@ -13,7 +13,7 @@ Using:
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
   - 
 # Running the SchoolDemo REST Web API
-You have three options for running this web api,
+You have three options for running this web API,
 
 1. Build it from source and run with dotnet sdk. See [Building from source](#building-from-source) below
 2. Build a docker container and run. See [Building container from source](#building-container-from-source) below
@@ -39,7 +39,7 @@ The build script then prompts you to run using
 
 The API will be accessible via http://localhost:8080 by default
 
-Also make sure to set up the database or the api will return 500 Internal server error
+Also make sure to set up the database or the API will return 500 Internal server error
 [Running the database from container](#running-the-database-from-container)
 
 ## Building container from source
