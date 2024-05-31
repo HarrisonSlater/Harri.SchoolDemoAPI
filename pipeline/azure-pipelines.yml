@@ -26,7 +26,7 @@ variables:
 
 stages:
 - stage: 'Build'
-  displayName: 'Build the School Demo REST API'
+  displayName: 'Build the API'
   jobs: 
     - job: 'Build'
       steps:
@@ -108,6 +108,7 @@ stages:
         artifact: dockerBuild
 
 - stage: 'DeployAndTest'
+  displayName: 'Deploy and Test'
   dependsOn: Build
   jobs: 
     - job: 'DeployAndTestJob'
@@ -169,6 +170,7 @@ stages:
       - script: 'kill $(dotnetProcessId)'
 
 - stage: 'DeployAndTestDocker'
+  displayName: 'Deploy and Test Docker'
   dependsOn: Build
   jobs: 
     - job: 'DeployAndTestDockerJob'
