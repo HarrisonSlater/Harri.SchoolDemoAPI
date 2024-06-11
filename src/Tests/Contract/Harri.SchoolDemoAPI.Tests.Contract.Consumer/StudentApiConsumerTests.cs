@@ -211,7 +211,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
         [TestCase(1234, null, 3.81, "name", 1)]
         [TestCase(4567, "", 3.81, "name", 2)]
-        [TestCase(4567, "Test Student", 3.811, "GPA", 3)]
+        [TestCase(4567, "Test Student", -2, "GPA", 3)]
+        [TestCase(4567, "Test Student", 3.811, "GPA", 4)]
         public async Task UpdateStudent_WhenCalledWithAnInvalidName_Returns400(int sId, string? name, decimal? GPA, string expectedPropertyError, int testCase)
         {
             IDictionary<string, object?> expectedErrors = new ExpandoObject();
@@ -475,12 +476,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         
         [TestCase(1234, null, 3.81, "name")]
         [TestCase(4567, "", 3.81, "name")]
+        [TestCase(8910, "Test Student", -2.2, "GPA")]
+        [TestCase(1011, "Test Student", 3.811, "GPA")]
         public async Task PatchStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA, string expectedPropertyError)
         {
             IDictionary<string, object?> expectedErrors = new ExpandoObject();
             expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
 
-            _pact.UponReceiving($"a bad request to patch a student with sId {sId} and invalid name")
+            _pact.UponReceiving($"a bad request to patch a student with sId {sId}")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -496,10 +499,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  {
                      title = Match.Type("title"),
                      status = Match.Equality(400),
-                     errors = new
-                     {
-                         name = new dynamic[] { Match.Type("error message") }
-                     }
+                     errors = expectedErrors
                  });
 
             await _pact.VerifyAsync(async ctx =>

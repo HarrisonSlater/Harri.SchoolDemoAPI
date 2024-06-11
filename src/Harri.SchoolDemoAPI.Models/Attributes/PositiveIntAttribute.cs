@@ -2,9 +2,9 @@
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
-    public class PositiveInt : RangeAttribute
+    public class PositiveIntAttribute : RangeAttribute
     {
-        public PositiveInt() : base(0, int.MaxValue)
+        public PositiveIntAttribute() : base(0, int.MaxValue)
         {
             ErrorMessage = "int should be positive";
         }

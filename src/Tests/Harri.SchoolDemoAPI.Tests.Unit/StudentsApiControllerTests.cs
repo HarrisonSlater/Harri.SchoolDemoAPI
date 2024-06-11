@@ -8,6 +8,7 @@ using Moq;
 
 namespace Harri.SchoolDemoAPI.Tests.Unit
 {
+    [TestFixture]
     public class StudentsApiControllerTests
     {
         private StudentsApiController _controller;

@@ -2,9 +2,9 @@
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
-    public class PositiveDecimal : RangeAttribute
+    public class PositiveDecimalAttribute : RangeAttribute
     {
-        public PositiveDecimal() : base(0, double.MaxValue)
+        public PositiveDecimalAttribute() : base(0, double.MaxValue)
         {
             ErrorMessage = "decimal should be positive";
         }

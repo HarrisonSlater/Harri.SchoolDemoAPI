@@ -7,12 +7,12 @@ using System.Linq;
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class DecimalPrecision : ValidationAttribute
+    public class DecimalPrecisionAttribute : ValidationAttribute
     {
         private int _maxDigits;
         private int _precision;
 
-        public DecimalPrecision(int maxDigits, int precision)
+        public DecimalPrecisionAttribute(int maxDigits, int precision)
         {
             _maxDigits = maxDigits;
             _precision = precision;
