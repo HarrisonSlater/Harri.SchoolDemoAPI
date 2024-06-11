@@ -6,7 +6,7 @@ namespace Harri.SchoolDemoAPI.Models.Attributes
     {
         public PositiveIntAttribute() : base(0, int.MaxValue)
         {
-            ErrorMessage = "int should be positive";
+            ErrorMessage = "Integer should be positive";
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Harri.SchoolDemoAPI.Models.Attributes
     {
         public PositiveDecimalAttribute() : base(0, double.MaxValue)
         {
-            ErrorMessage = "decimal should be positive";
+            ErrorMessage = "Decimal should be positive";
         }
     }
 }
