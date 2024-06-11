@@ -3,6 +3,7 @@ using Harri.SchoolDemoApi.Client;
 using PactNet.Matchers;
 using System.Net;
 using Harri.SchoolDemoAPI.Models.Dto;
+using System.Dynamic;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -135,12 +136,17 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(4567, null, null, 1)]
-        [TestCase(4567, "", null, 2)]
-        [TestCase(4567, "  \t\r\n   ", null, 3)]
-        public async Task AddStudent_WhenCalledWithInvalidNewStudent_Returns400(int sIdNew, string? name, decimal? GPA, int testCase)
+        [TestCase(4567, null, null, "name", 1)]
+        [TestCase(4567, "", null, "name", 2)]
+        [TestCase(4567, "  \t\r\n   ", null, "name", 3)]
+        [TestCase(4567, "Test Student Bad GPA", -4, "GPA", 4)]
+        [TestCase(4567, "Test Student Bad GPA", 2.222, "GPA", 5)]
+        public async Task AddStudent_WhenCalledWithInvalidNewStudent_Returns400(int sIdNew, string? name, decimal? GPA, string expectedPropertyError, int testCase)
         {
-            _pact.UponReceiving($"a request to add a new student without a name {testCase}")
+            IDictionary<string, object?> expectedErrors = new ExpandoObject();
+            expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
+
+            _pact.UponReceiving($"an invalid request to add a new student {testCase}")
                     .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -155,10 +161,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  {
                      title = Match.Type("title"),
                      status = Match.Equality(400),
-                     errors = new
-                     {
-                         name = new dynamic[] { Match.Type("error message") }
-                     }
+                     errors = Match.Type(expectedErrors)
                  });
 
             await _pact.VerifyAsync(async ctx =>
@@ -170,45 +173,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.Data.Should().BeNull();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-                response.ShouldContainErrorMessageForProperty("name");
-            });
-        }
-
-        [TestCase(4567, "Test Student Bad GPA", -4, 1)]
-        [TestCase(4567, "Test Student Bad GPA", 2.222, 2)]
-        public async Task AddStudent_WhenCalledWithInvalidNewStudentGPA_Returns400(int sIdNew, string? name, decimal? GPA, int testCase)
-        {
-            _pact.UponReceiving($"a request to add a new student with a bad GPA {testCase}")
-                    .WithRequest(HttpMethod.Post, $"/students/")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
-                    .WithJsonBody(Match.Equality(new
-                    {
-                        name = name,
-                        GPA = GPA
-                    }))
-                 .WillRespond()
-                 .WithStatus(HttpStatusCode.BadRequest)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(new
-                 {
-                     title = Match.Type("title"),
-                     status = Match.Equality(400),
-                     errors = new
-                     {
-                         GPA = new dynamic[] { Match.Type("error message") }
-                     }
-                 });
-
-            await _pact.VerifyAsync(async ctx =>
-            {
-                var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.AddStudentRestResponse(new NewStudentDto() { Name = name, GPA = GPA });
-
-                // Client Assertions
-                response.Data.Should().BeNull();
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-                response.ShouldContainErrorMessageForProperty("GPA");
+                response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
 
@@ -244,10 +209,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(1234, null, 3.81, 1)]
-        [TestCase(4567, "", 3.81, 2)]
-        public async Task UpdateStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA, int testCase)
+        [TestCase(1234, null, 3.81, "name", 1)]
+        [TestCase(4567, "", 3.81, "name", 2)]
+        [TestCase(4567, "Test Student", 3.811, "GPA", 3)]
+        public async Task UpdateStudent_WhenCalledWithAnInvalidName_Returns400(int sId, string? name, decimal? GPA, string expectedPropertyError, int testCase)
         {
+            IDictionary<string, object?> expectedErrors = new ExpandoObject();
+            expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
+
             _pact.UponReceiving($"a bad request to update a student with sId {sId} and invalid name {testCase}")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
@@ -264,10 +233,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  {
                      title = Match.Type("title"),
                      status = Match.Equality(400),
-                     errors = new
-                     {
-                         name = new dynamic[] { Match.Type("error message") }
-                     }
+                     errors = Match.Type(expectedErrors)
                  });
 
             await _pact.VerifyAsync(async ctx =>
@@ -279,7 +245,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.Data.Should().BeNull();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-                response.ShouldContainErrorMessageForProperty("name");
+                response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
 
@@ -507,10 +473,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         
-        [TestCase(1234, null, 3.81)]
-        [TestCase(4567, "", 3.81)]
-        public async Task PatchStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA)
+        [TestCase(1234, null, 3.81, "name")]
+        [TestCase(4567, "", 3.81, "name")]
+        public async Task PatchStudent_WhenCalledWithAnInvalidRequest_Returns400(int sId, string? name, decimal? GPA, string expectedPropertyError)
         {
+            IDictionary<string, object?> expectedErrors = new ExpandoObject();
+            expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
+
             _pact.UponReceiving($"a bad request to patch a student with sId {sId} and invalid name")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
@@ -542,7 +511,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.Data.Should().BeNull();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-                response.ShouldContainErrorMessageForProperty("name");
+                response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
         

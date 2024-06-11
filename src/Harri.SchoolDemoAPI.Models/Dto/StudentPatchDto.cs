@@ -31,6 +31,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// <example>3.9</example>
         [JsonPropertyName(APIConstants.Student.GPA)]
         //        [PositiveDecimal] TODO
+        //         [DecimalPrecision(3, 2)] TODO
         public decimal? GPA
         {
             get => OptionalGPA.Value;
