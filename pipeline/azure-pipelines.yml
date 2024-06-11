@@ -85,6 +85,32 @@ stages:
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
 
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/Harri.SchoolDemoAPI.Client.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/Nuget'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'off'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/Harri.SchoolDemoAPI.Models.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/Nuget'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'off'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/Nuget'
+          ArtifactName: 'nuget'
+          publishLocation: 'Container'
+          
       - task: DockerInstaller@0
         inputs:
           dockerVersion: $(DockerVersion)
