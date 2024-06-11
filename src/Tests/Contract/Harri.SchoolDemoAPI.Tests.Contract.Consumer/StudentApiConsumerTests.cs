@@ -174,6 +174,44 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
+        [TestCase(4567, "Test Student Bad GPA", -4, 1)]
+        [TestCase(4567, "Test Student Bad GPA", 2.222, 2)]
+        public async Task AddStudent_WhenCalledWithInvalidNewStudentGPA_Returns400(int sIdNew, string? name, decimal? GPA, int testCase)
+        {
+            _pact.UponReceiving($"a request to add a new student with a bad GPA {testCase}")
+                    .WithRequest(HttpMethod.Post, $"/students/")
+                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithJsonBody(Match.Equality(new
+                    {
+                        name = name,
+                        GPA = GPA
+                    }))
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.BadRequest)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(new
+                 {
+                     title = Match.Type("title"),
+                     status = Match.Equality(400),
+                     errors = new
+                     {
+                         GPA = new dynamic[] { Match.Type("error message") }
+                     }
+                 });
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.AddStudentRestResponse(new NewStudentDto() { Name = name, GPA = GPA });
+
+                // Client Assertions
+                response.Data.Should().BeNull();
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+                response.ShouldContainErrorMessageForProperty("GPA");
+            });
+        }
+
         [TestCase(4567, "Mocky", null)]
         [TestCase(123, "Mocky", 3.81)]
         public async Task UpdateStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndUpdatesStudent(int sId, string? name, decimal? GPA)

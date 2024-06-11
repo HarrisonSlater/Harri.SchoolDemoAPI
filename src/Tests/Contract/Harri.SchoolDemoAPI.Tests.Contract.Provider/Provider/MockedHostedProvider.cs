@@ -16,7 +16,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         public MockedHostedProvider()
         {
-            this.ServerUri = new Uri("http://localhost:9222");
+            this.ServerUri = new Uri("http://localhost:9223");
 
             this.server = Host.CreateDefaultBuilder()
                               .ConfigureWebHostDefaults(webBuilder =>
