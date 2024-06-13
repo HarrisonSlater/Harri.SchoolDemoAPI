@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Harri.SchoolDemoAPI.Models.Attributes
                 ErrorMessage = string.Join(", ", result.Errors.Select(x => x.ErrorMessage));
             }
 
-            return result.IsValid ? ValidationResult.Success : new ValidationResult(ErrorMessage);
+            return result.IsValid ? ValidationResult.Success : new ValidationResult(ErrorMessage, new string[1]{propInfo.Name});
         }
     }
 
