@@ -280,6 +280,32 @@ stages:
             $(DockerImageTag)
             latest
 
+- stage: 'PublishNuget'
+  displayName: 'Publish main nuget'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  dependsOn: DeployAndTest
+  jobs: 
+    - job: 'PublishNuget'
+      displayName: 'Publish nuget package to Nuget.org'
+
+      steps:
+      - checkout: none
+      - task: NuGetToolInstaller@1
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'nuget'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: true
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'Nuget.org harri.dev Connection'
+
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
   dependsOn:
