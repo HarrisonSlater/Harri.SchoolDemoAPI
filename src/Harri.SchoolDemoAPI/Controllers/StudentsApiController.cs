@@ -63,7 +63,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet("{sId}")]
         [SwaggerOperation(OperationId = "GetStudent")]
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
-        public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveIntAttribute] int sId)
+        public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
             var result = await _studentService.GetStudent(sId);
             if (result is null) {
@@ -83,7 +83,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Student not found</response>
         [HttpPut("{sId}")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
-        public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveIntAttribute] int sId, [FromBody] UpdateStudentDto student)
+        public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
             var success = await _studentService.UpdateStudent(sId, student);
             if (success)
@@ -108,7 +108,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Student not found</response>
         [HttpPatch("{sId}")]
         [SwaggerOperation(OperationId = "PatchStudent")]
-        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveIntAttribute]int sId, [FromBody] StudentPatchDto student)
+        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
         {
             if (!student.OptionalName.HasValue && !student.OptionalGPA.HasValue)
             {
@@ -137,7 +137,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="404">Student not found</response>
         [HttpDelete("{sId}")]
         [SwaggerOperation(OperationId = "DeleteStudent")]
-        public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveIntAttribute] int sId)
+        public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveInt] int sId)
         {
             var success = await _studentService.DeleteStudent(sId);
             if (success is null) {
