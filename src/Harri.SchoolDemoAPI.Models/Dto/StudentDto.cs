@@ -1,3 +1,4 @@
+using Harri.SchoolDemoAPI.Models.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -26,6 +27,8 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// </summary>
         /// <example>3.9</example>
         [JsonPropertyName(APIConstants.Student.GPA)]
+        [PositiveDecimal]
+        [DecimalPrecision(3, 2)]
         public decimal? GPA { get; set; }
 
         public UpdateStudentDto AsUpdateStudentDto()

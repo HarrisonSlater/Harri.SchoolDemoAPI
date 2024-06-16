@@ -4,7 +4,97 @@
   },
   "interactions": [
     {
-      "description": "a bad request to patch a student with sId 1234 and invalid name",
+      "description": "a bad request to patch a student with sId 1011",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.811,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/1011"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.GPA[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to patch a student with sId 1234",
       "pending": false,
       "providerStates": [
         {
@@ -94,7 +184,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to patch a student with sId 4567 and invalid name",
+      "description": "a bad request to patch a student with sId 4567",
       "pending": false,
       "providerStates": [
         {
@@ -153,6 +243,96 @@
         "matchingRules": {
           "body": {
             "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to patch a student with sId 8910",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": -2.2,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/8910"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors.GPA[0]": {
               "combine": "AND",
               "matchers": [
                 {
@@ -334,6 +514,14 @@
         },
         "matchingRules": {
           "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
             "$.errors.name[0]": {
               "combine": "AND",
               "matchers": [
@@ -424,7 +612,211 @@
         },
         "matchingRules": {
           "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
             "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to update a student with sId 4567 and invalid name 3",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": -2,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.GPA[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to update a student with sId 4567 and invalid name 4",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no student will be updated"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.811,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.GPA[0]": {
               "combine": "AND",
               "matchers": [
                 {
@@ -594,261 +986,6 @@
           "header": {}
         },
         "status": 200
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to add a new student without a name 1",
-      "pending": false,
-      "request": {
-        "body": {
-          "content": {
-            "GPA": null,
-            "name": null
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "POST",
-        "path": "/students/"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to add a new student without a name 2",
-      "pending": false,
-      "request": {
-        "body": {
-          "content": {
-            "GPA": null,
-            "name": ""
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "POST",
-        "path": "/students/"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to add a new student without a name 3",
-      "pending": false,
-      "request": {
-        "body": {
-          "content": {
-            "GPA": null,
-            "name": "  \t\r\n   "
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "POST",
-        "path": "/students/"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "errors": {
-              "name": [
-                "error message"
-              ]
-            },
-            "status": 400,
-            "title": "title"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.errors.name[0]": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            },
-            "$.status": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.title": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "type"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 400
       },
       "type": "Synchronous/HTTP"
     },
@@ -3226,6 +3363,471 @@
           "header": {}
         },
         "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "an invalid request to add a new student 1",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": null
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "an invalid request to add a new student 2",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": ""
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "an invalid request to add a new student 3",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "  \t\r\n   "
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "name": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.name[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "an invalid request to add a new student 4",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": -4,
+            "name": "Test Student Bad GPA"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.GPA[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "an invalid request to add a new student 5",
+      "pending": false,
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 2.222,
+            "name": "Test Student Bad GPA"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "errors": {
+              "GPA": [
+                "error message"
+              ]
+            },
+            "status": 400,
+            "title": "title"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.errors": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.errors.GPA[0]": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.title": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 400
       },
       "type": "Synchronous/HTTP"
     }

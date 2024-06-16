@@ -85,6 +85,32 @@ stages:
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
 
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/Harri.SchoolDemoAPI.Client.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/Nuget'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'off'
+
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/Harri.SchoolDemoAPI.Models.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/Nuget'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'off'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/Nuget'
+          ArtifactName: 'nuget'
+          publishLocation: 'Container'
+          
       - task: DockerInstaller@0
         inputs:
           dockerVersion: $(DockerVersion)
@@ -253,6 +279,32 @@ stages:
           tags: |
             $(DockerImageTag)
             latest
+
+- stage: 'PublishNuget'
+  displayName: 'Publish nuget'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  dependsOn: DeployAndTest
+  jobs: 
+    - job: 'PublishNuget'
+      displayName: 'Publish nuget package to Nuget.org'
+
+      steps:
+      - checkout: none
+      - task: NuGetToolInstaller@1
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'nuget'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: true
+
+      - task: NuGetCommand@2
+        inputs:
+          command: 'push'
+          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'Nuget.org harri.dev Connection'
 
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
