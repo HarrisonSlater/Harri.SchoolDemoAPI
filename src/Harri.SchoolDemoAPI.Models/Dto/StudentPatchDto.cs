@@ -57,12 +57,12 @@ namespace Harri.SchoolDemoAPI.Models.Dto
             var obj = new ExpandoObject() as IDictionary<string, object>;
             if (OptionalName.HasValue) 
             { 
-                obj.Add(APIConstants.Student.Name, OptionalName.Value); 
+                obj.Add(APIConstants.Student.Name, OptionalName.Value!); 
             }
 
             if (OptionalGPA.HasValue)
             {
-                obj.Add(APIConstants.Student.GPA, OptionalGPA.Value);
+                obj.Add(APIConstants.Student.GPA, OptionalGPA.Value!);
             }
 
             return obj;
