@@ -8,7 +8,7 @@
         public static string? APIUrlToTest {get;set;}
 
         [OneTimeSetUp]
-        public async Task OneTimeSetup()
+        public void OneTimeSetup()
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             APIUrlToTest = config["APIUrlToTest"];

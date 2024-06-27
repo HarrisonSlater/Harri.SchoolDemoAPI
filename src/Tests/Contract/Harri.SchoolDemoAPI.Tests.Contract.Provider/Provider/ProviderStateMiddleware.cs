@@ -233,10 +233,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             string? name = ((JsonElement?)parameters["name"])?.ToString();
             var gpaQueryString = (JsonElement?)parameters["gpaQuery"];
 
-            GPAQueryDto expectedGpaQuery = new GPAQueryDto() { GPA = null };
+            GPAQueryDto? expectedGpaQuery = new GPAQueryDto() { GPA = null };
             if (gpaQueryString is not null)
             {
-                expectedGpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString());
+                expectedGpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString() ?? "");
             }
 
             TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))

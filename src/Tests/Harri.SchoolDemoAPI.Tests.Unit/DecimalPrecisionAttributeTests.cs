@@ -39,7 +39,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
             else
             {
                 result.Should().NotBe(ValidationResult.Success);
-                result.ErrorMessage.Should().NotBeNullOrEmpty();
+                result?.ErrorMessage.Should().NotBeNullOrEmpty();
             }
         }
 
