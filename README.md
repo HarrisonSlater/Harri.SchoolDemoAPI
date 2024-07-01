@@ -1,6 +1,6 @@
 # Harri.SchoolDemoAPI - ASP.NET Core 8.0 Server
 
-Demo .NET 8 API about students, schools, and students applications to schools
+Demo .NET 8 API about students, schools, and student's applications to schools
 
 This repository is intended as a demonstration of a RESTful API with a SQL Server database focusing on automated testing to validate the API functionality.
 
