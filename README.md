@@ -11,7 +11,7 @@ Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
-  - 
+  
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
 
