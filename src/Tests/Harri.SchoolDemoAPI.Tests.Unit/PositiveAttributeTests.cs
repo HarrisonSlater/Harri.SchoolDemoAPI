@@ -18,6 +18,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [TestCase(2, true)]
+        [TestCase(1, true)]
         [TestCase(0, false)]
         [TestCase(-1, false)]
         [TestCase(-100, false)]
@@ -34,7 +35,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
 
             // Act
             var decimalResult = _positiveDecimalAttribute.GetValidationResult(d, validationContextDecimal);
-            var intResult = _positiveDecimalAttribute.GetValidationResult(d, validationContextInt);
+            var intResult = _positiveIntAttribute.GetValidationResult(d, validationContextInt);
 
             // Assert
             if (expectedResult is true)
@@ -49,6 +50,22 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
                 decimalResult?.ErrorMessage.Should().NotBeNullOrEmpty();
                 intResult?.ErrorMessage.Should().NotBeNullOrEmpty();
             }
+        }
+
+        [TestCase(0.1)]
+        [TestCase(0.01)]
+        [TestCase(0.001)]
+        [TestCase(0.0000001)]
+        public void PositiveDecimalAttribute_ShouldValidateCorrectly(decimal? d)
+        {
+            // Arrange
+            var validationContextDecimal = new ValidationContext(new TestDTO() { DecimalToTest = d }) { MemberName = "DecimalToTest" };
+
+            // Act
+            var decimalResult = _positiveDecimalAttribute.GetValidationResult(d, validationContextDecimal);
+
+            // Assert
+            decimalResult.Should().Be(ValidationResult.Success);
         }
 
         public class TestDTO

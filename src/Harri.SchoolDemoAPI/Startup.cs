@@ -71,7 +71,7 @@ namespace Harri.SchoolDemoAPI
                     c.SwaggerDoc("1.0.0", new OpenApiInfo
                     {
                         Title = "Swagger School ADMIN - OpenAPI 3.0",
-                        Description = "Swagger School ADMIN - OpenAPI 3.0 (ASP.NET Core 6.0)",
+                        Description = "Swagger School ADMIN - OpenAPI 3.0 (ASP.NET Core 8.0)",
                         TermsOfService = new Uri("https://github.com/openapitools/openapi-generator"),
                         Contact = new OpenApiContact
                         {
