@@ -8,7 +8,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <Version>1.0.5</Version>
     <Nullable>enable</Nullable>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
     <OutputType>Library</OutputType>
     <AssemblyName>Harri.SchoolDemoAPI.Models</AssemblyName>
     <PackageId>Harri.SchoolDemoAPI.Models</PackageId>

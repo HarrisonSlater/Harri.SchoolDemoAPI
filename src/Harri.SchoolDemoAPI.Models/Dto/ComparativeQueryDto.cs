@@ -1,3 +1,4 @@
+using Harri.SchoolDemoAPI.Models.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
@@ -5,12 +6,12 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     /// <summary>
     /// 
     /// </summary>
-    //TODO Validation for negative numbers
-    public class ComparativeQueryDto<T> where T : struct // struct required to fix .net framework 4.8 warnings
+    public class ComparativeQueryDto<T> where T : struct // struct constraint required to fix .net framework 4.8 warnings
     {
         /// <summary>
         /// Less than
         /// </summary>
+        [PositiveNumber]
         [JsonPropertyName(APIConstants.Query.Lt)]
         public T? Lt { get; set; }
 
@@ -23,6 +24,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         /// <summary>
         /// Equal to
         /// </summary>
+        [PositiveNumber]
         [JsonPropertyName(APIConstants.Query.Eq)]
         public T? Eq { get; set; }
     }

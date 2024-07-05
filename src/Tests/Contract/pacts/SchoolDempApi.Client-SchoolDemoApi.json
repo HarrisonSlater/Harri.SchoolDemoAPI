@@ -433,6 +433,46 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":-1}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "-1"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":0}}",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.eq": [
+            "0"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":4}}",
       "pending": false,
       "request": {
@@ -2844,6 +2884,145 @@
         "query": {
           "GPA.isNull": [
             "False"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":0.99,\"gt\":0,\"eq\":null}}",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "gpaQuery": {
+              "GPA": {
+                "eq": null,
+                "gt": 0,
+                "isNull": null,
+                "lt": 0.99
+              }
+            },
+            "name": null
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "GPA.gt": [
+            "0"
+          ],
+          "GPA.lt": [
+            "0.99"
           ]
         }
       },
