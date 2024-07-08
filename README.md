@@ -4,7 +4,7 @@ Demo .NET 8 API about students, schools, and student's applications to schools
 
 This repository is intended as a demonstration of a RESTful API with a SQL Server database focusing on automated testing to validate the API functionality.
 
-Also see a front-end static Blazor WASM app that uses this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
+Also see a front-end Blazor WASM SPA that uses this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
 
 ## WIP - API
 So far the /students/ API is complete: [StudentsApiController.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
