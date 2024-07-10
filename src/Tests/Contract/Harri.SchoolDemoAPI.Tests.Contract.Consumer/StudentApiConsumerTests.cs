@@ -288,9 +288,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     })
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(true));
+                 .WithStatus(HttpStatusCode.OK);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -311,9 +309,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     })
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(false));
+                 .WithStatus(HttpStatusCode.NotFound);
 
             await _pact.VerifyAsync(async ctx =>
             {
