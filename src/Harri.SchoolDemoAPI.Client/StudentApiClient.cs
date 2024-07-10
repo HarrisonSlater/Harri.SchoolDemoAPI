@@ -76,7 +76,7 @@ namespace Harri.SchoolDemoApi.Client
         public async Task<bool> DeleteStudent(int sId)
         {
             var restResponse = await DeleteStudentRestResponse(sId);
-            return restResponse.Data;
+            return restResponse.IsSuccessStatusCode;
         }
 
         public async Task<RestResponse<bool>> DeleteStudentRestResponse(int sId)

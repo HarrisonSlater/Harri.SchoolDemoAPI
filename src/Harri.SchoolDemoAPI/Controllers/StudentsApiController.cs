@@ -146,11 +146,11 @@ namespace Harri.SchoolDemoAPI.Controllers
             }
             else if (success.Value)
             {
-                return Ok(success); //TODO remove the value returned here.
+                return Ok();
             }
             else
             {
-                return NotFound(success);
+                return NotFound();
             }
         }
 
