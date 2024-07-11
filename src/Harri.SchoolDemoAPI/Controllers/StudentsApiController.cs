@@ -1,19 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using Harri.SchoolDemoAPI.Models.Attributes;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
-using System.Threading.Tasks;
-using System.Text.Json;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -199,20 +193,6 @@ namespace Harri.SchoolDemoAPI.Controllers
             if (name is null && gpaQuery.GPA is null)
             {
                 return BadRequest();
-            }
-
-            var gpa = gpaQuery.GPA;
-            if (gpa is not null)
-            {
-                // Query validation, could be moved to attribute TODO
-                if (gpa.Eq.HasValue && (gpa.Gt.HasValue || gpa.Lt.HasValue))
-                {
-                    return BadRequest();
-                }
-                if (gpa.IsNull.HasValue && (gpa.Eq.HasValue || gpa.Gt.HasValue || gpa.Lt.HasValue))
-                {
-                    return BadRequest();
-                }
             }
 
             var students = await _studentService.QueryStudents(name, gpaQuery);

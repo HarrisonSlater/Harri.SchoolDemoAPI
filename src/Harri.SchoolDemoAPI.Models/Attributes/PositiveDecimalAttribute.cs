@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class PositiveDecimalAttribute : ValidationAttribute
     {
         public PositiveDecimalAttribute() : base()
