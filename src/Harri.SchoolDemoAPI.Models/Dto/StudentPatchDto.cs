@@ -51,7 +51,6 @@ namespace Harri.SchoolDemoAPI.Models.Dto
             }
         }
 
-        //TODO use custom json converter for this?
         public object GetObjectToSerialize()
         {
             var obj = new ExpandoObject() as IDictionary<string, object>;

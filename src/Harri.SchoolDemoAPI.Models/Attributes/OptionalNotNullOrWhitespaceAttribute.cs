@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class OptionalNotNullOrWhitespaceAttribute : ValidationAttribute
     {
         public override bool IsValid(object value)
