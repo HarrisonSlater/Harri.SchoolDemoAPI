@@ -1,9 +1,13 @@
 ﻿// Source from: https://github.com/dotnet/roslyn/blob/43b0b05cc4f492fd5de00f6f6717409091df8daa/src/Compilers/Core/Portable/Optional.cs
-// Only changes are the [BindNever] attributes
 using System;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
-{
+
+{    /// <summary>
+     /// Combines a value, <see cref="Value"/>, and a flag, <see cref="HasValue"/>, 
+     /// indicating whether or not that value is meaningful.
+     /// </summary>
+     /// <typeparam name="T">The type of the value.</typeparam>
     public readonly struct Optional<T>
     {
         private readonly bool _hasValue;

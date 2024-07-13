@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
+    /// <summary>
+    /// Attribute for validating a ComparativeQueryNullableDto&lt;decimal&gt;? GPA DTO
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class ValidGPAAttribute : ValidationAttribute
     {

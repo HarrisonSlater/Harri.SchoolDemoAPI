@@ -5,6 +5,10 @@ using Harri.SchoolDemoAPI.Models.Attributes;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
+    /// <summary>
+    /// DTO for patching a student
+    /// </summary>
+    /// Only properties that are explicitly set are serialized using the <see cref="GetObjectToSerialize"/> method
     public class StudentPatchDto
     {
         [OptionalNotNullOrWhitespace]

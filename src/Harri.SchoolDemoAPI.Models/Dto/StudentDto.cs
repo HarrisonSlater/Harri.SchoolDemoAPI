@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
 { 
+    /// <summary>
+    /// Response DTO for a complete student
+    /// </summary>
     public class StudentDto
     {
         /// <summary>
