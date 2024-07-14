@@ -1030,6 +1030,66 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to add a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to add a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "POST",
+        "path": "/students/"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to delete a student",
       "pending": false,
       "providerStates": [
@@ -1762,6 +1822,64 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to patch a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to patch a student with sId 123",
       "pending": false,
       "providerStates": [
@@ -2089,6 +2207,66 @@
           "header": {}
         },
         "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "PUT",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": null,
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "method": "PUT",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
       },
       "type": "Synchronous/HTTP"
     },
