@@ -9,6 +9,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private MockedHostedProvider _provider;
         private TextWriter? _writer;
         private string? _providerPactPath;
+
+        //This file is visible under attachments on the VerifySchoolDemoAPIHonoursPactsWithConsumer test run in azure devops
         private const string ProviderTestsOutputFileName = "ProviderTestsOutput.txt";
         private string ProviderTestOutputFullPath => $"{TestContext.CurrentContext.WorkDirectory}/{ProviderTestsOutputFileName}";
 
