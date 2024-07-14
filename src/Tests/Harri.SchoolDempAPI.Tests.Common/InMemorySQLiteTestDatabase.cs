@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.Data.Sqlite;
@@ -101,7 +100,6 @@ VALUES (001, 1001, 'Computer Science', 'Y');
         //public string Name { get; } = "InMemorySchoolDemoDatabase";
         public IDbConnection GetConnection()
         {
-            //TODO setup test data
             var sqliteConnection = new SqliteConnection($"Data Source=InMemorySchoolDemoDatabase;");
 
             if( _connection != null )
