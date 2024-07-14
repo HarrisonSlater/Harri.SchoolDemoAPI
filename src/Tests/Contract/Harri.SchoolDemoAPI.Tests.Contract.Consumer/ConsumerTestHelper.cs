@@ -12,6 +12,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             AssertErrorMessageExistsForProperty(propertyName, response);
         }
 
+        public static void ShouldContainErrorMessageForProperty(this RestResponse response, string propertyName)
+        {
+            AssertErrorMessageExistsForProperty(propertyName, response);
+        }
+
         private static void AssertErrorMessageExistsForProperty(string propertyName, RestResponse response)
         {
             var errorJson = GetErrorJson(response);

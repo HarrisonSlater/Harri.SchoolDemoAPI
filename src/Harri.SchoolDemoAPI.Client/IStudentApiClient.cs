@@ -8,7 +8,7 @@ namespace Harri.SchoolDemoApi.Client
         Task<int?> AddStudent(NewStudentDto student);
         Task<RestResponse<int?>> AddStudentRestResponse(NewStudentDto student);
         Task<bool> DeleteStudent(int sId);
-        Task<RestResponse<bool>> DeleteStudentRestResponse(int sId);
+        Task<RestResponse> DeleteStudentRestResponse(int sId);
         Task<StudentDto?> GetStudent(int sId);
         Task<RestResponse<StudentDto>> GetStudentRestResponse(int sId);
         Task<List<StudentDto>?> GetStudents();

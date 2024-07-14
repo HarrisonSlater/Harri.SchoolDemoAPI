@@ -1030,6 +1030,23 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to delete a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to delete a student with invalid sId -1234",
       "pending": false,
       "providerStates": [
@@ -1090,6 +1107,23 @@
           "header": {}
         },
         "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to delete a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
       },
       "type": "Synchronous/HTTP"
     },
@@ -1170,6 +1204,23 @@
       },
       "response": {
         "status": 409
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to get a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
       },
       "type": "Synchronous/HTTP"
     },
@@ -1480,6 +1531,23 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to get a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to get all students",
       "pending": false,
       "providerStates": [
@@ -1613,6 +1681,40 @@
           "header": {}
         },
         "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to get students",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to get students with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/"
+      },
+      "response": {
+        "status": 500
       },
       "type": "Synchronous/HTTP"
     },
@@ -1856,6 +1958,28 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to query students",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to query students by name and GPA",
       "pending": false,
       "providerStates": [
@@ -1877,6 +2001,28 @@
       },
       "response": {
         "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to query students with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/query",
+        "query": {
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 500
       },
       "type": "Synchronous/HTTP"
     },

@@ -4,6 +4,8 @@ using PactNet.Matchers;
 using System.Net;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Dynamic;
+using RestSharp;
+using FluentAssertions.Specialized;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -367,7 +369,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var response = await client.DeleteStudentRestResponse(sId);
 
                 // Client Assertions
-                response.Data.Should().BeFalse();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
                 response.ShouldContainErrorMessageForProperty("sId");
@@ -605,5 +606,130 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
+        // 500 Server error cases
+        private static IEnumerable<TestCaseData> StudentApiClientOperationsTestCases()
+        {
+            var sId = 123;
+            yield return new TestCaseData((IStudentApiClient c) => c.AddStudent(new NewStudentDto()), HttpMethod.Post, "/students/", "add a student");
+            yield return new TestCaseData((IStudentApiClient c) => c.AddStudentRestResponse(new NewStudentDto()), HttpMethod.Post, "/students/", "add a student with rest response");
+
+            yield return new TestCaseData((IStudentApiClient c) => c.GetStudent(sId), HttpMethod.Get, $"/students/{sId}", "get a student");
+            yield return new TestCaseData((IStudentApiClient c) => c.GetStudentRestResponse(sId), HttpMethod.Get, $"/students/{sId}", "get a student with rest response");
+
+            yield return new TestCaseData((IStudentApiClient c) => c.GetStudents(), HttpMethod.Get, $"/students/", "get students");
+            yield return new TestCaseData((IStudentApiClient c) => c.GetStudentsRestResponse(), HttpMethod.Get, $"/students/", "get students with rest response");
+
+            yield return new TestCaseData((IStudentApiClient c) => c.PatchStudent(sId, new StudentPatchDto()), HttpMethod.Patch, $"/students/{sId}", "patch a student");
+            yield return new TestCaseData((IStudentApiClient c) => c.PatchStudentRestResponse(sId, new StudentPatchDto()), HttpMethod.Patch, $"/students/{sId}", "patch a student with rest response");
+
+            yield return new TestCaseData((IStudentApiClient c) => c.UpdateStudent(sId, new UpdateStudentDto()), HttpMethod.Put, $"/students/{sId}", "update a student");
+            yield return new TestCaseData((IStudentApiClient c) => c.UpdateStudentRestResponse(sId, new UpdateStudentDto()), HttpMethod.Put, $"/students/{sId}", "update a student with rest response");
+
+            yield return new TestCaseData((IStudentApiClient c) => c.DeleteStudentRestResponse(sId), HttpMethod.Delete, $"/students/{sId}", "delete a student with rest response");
+        }
+
+        [TestCaseSource(nameof(StudentApiClientOperationsTestCases))]
+        public async Task StudentApiClientOperations_WhenCalled_AndServiceReturns500_DoNotThrow(Func<IStudentApiClient, dynamic> clientOperation, 
+            HttpMethod operationMethod, string operationRoute, string operationName)
+        {
+            var pactRequest = _pact.UponReceiving($"a request to {operationName}")
+                    .Given("the api returns a 500 internal server error")
+                    .WithRequest(operationMethod, operationRoute);
+
+            if (operationMethod != HttpMethod.Delete && operationMethod != HttpMethod.Get)
+            {
+                pactRequest.WithHeader("Content-Type", "application/json; charset=utf-8");
+
+            }
+
+            pactRequest.WillRespond()
+                 .WithStatus(HttpStatusCode.InternalServerError);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var responseObject = (object) await clientOperation(client);
+
+                // Client Assertions
+                AssertResponseObject(responseObject);
+            });
+        }
+
+        private static IEnumerable<TestCaseData> QueryString_StudentApiClientOperationsTestCases()
+        {
+            var sName = "Test Student";
+
+            yield return new TestCaseData((IStudentApiClient c) => c.QueryStudents(sName), HttpMethod.Get, $"/students/query", "query students", ("name", sName));
+            yield return new TestCaseData((IStudentApiClient c) => c.QueryStudentsRestResponse(sName), HttpMethod.Get, $"/students/query", "query students with rest response", ("name", sName));
+        }
+
+        [TestCaseSource(nameof(QueryString_StudentApiClientOperationsTestCases))]
+        public async Task QueryString_StudentApiClientOperations_WhenCalled_AndServiceReturns500_DoNotThrow(Func<IStudentApiClient, dynamic> clientOperation,
+            HttpMethod operationMethod, string operationRoute, string operationName, (string, string) queryString)
+        {
+            _pact.UponReceiving($"a request to {operationName}")
+                    .Given("the api returns a 500 internal server error")
+                    .WithRequest(operationMethod, operationRoute)
+                    .WithQuery(queryString.Item1, queryString.Item2)
+                    .WillRespond()
+                 .WithStatus(HttpStatusCode.InternalServerError);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var responseObject = (object)await clientOperation(client);
+
+                // Client Assertions
+                AssertResponseObject(responseObject);
+            });
+        }
+
+        private static IEnumerable<TestCaseData> BoolResponse_StudentApiClientOperationsTestCases()
+        {
+            var sId = 123;
+            yield return new TestCaseData((IStudentApiClient c) => c.DeleteStudent(sId), HttpMethod.Delete, $"/students/{sId}", "delete a student");
+        }
+
+        [TestCaseSource(nameof(BoolResponse_StudentApiClientOperationsTestCases))]
+        public async Task BoolResponse_StudentApiClientOperations_WhenCalled_AndServiceReturns500_DoNotThrow(Func<IStudentApiClient, dynamic> clientOperation,
+            HttpMethod operationMethod, string operationRoute, string operationName)
+        {
+            _pact.UponReceiving($"a request to {operationName}")
+                    .Given("the api returns a 500 internal server error")
+                    .WithRequest(operationMethod, operationRoute)
+                    .WillRespond()
+                 .WithStatus(HttpStatusCode.InternalServerError);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var responseObject = (object)await clientOperation(client);
+
+                // Client Assertions
+                if (responseObject is RestResponse restResponse)
+                {
+                    restResponse.Content.Should().BeEmpty();
+                    restResponse.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+                }
+                else
+                {
+                    var boolResponse = (bool)responseObject;
+                    boolResponse.Should().BeFalse();
+                }
+            });
+        }
+
+        public void AssertResponseObject(object? responseObject)
+        {
+            if (responseObject is RestResponse restResponse)
+            {
+                restResponse.Content.Should().BeEmpty();
+                restResponse.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            }
+            else
+            {
+                responseObject.Should().BeNull();
+            }
+        }
     }
 }

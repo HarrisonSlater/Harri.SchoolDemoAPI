@@ -84,12 +84,12 @@ namespace Harri.SchoolDemoApi.Client
             return restResponse.IsSuccessStatusCode;
         }
 
-        public async Task<RestResponse<bool>> DeleteStudentRestResponse(int sId)
+        public async Task<RestResponse> DeleteStudentRestResponse(int sId)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId);
             request.Method = Method.Delete;
 
-            var restResponse = await _restClient.ExecuteAsync<bool>(request);
+            var restResponse = await _restClient.ExecuteAsync(request);
             return restResponse;
         }
 
