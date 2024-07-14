@@ -42,7 +42,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var jsonBody = new { name = "Test Student", GPA = (decimal?)null };
             var patchJsonBody = new { name = "Test Student" };
 
-
             yield return new TestCaseData((IStudentApiClient c) => c.AddStudent(new NewStudentDto() { Name = sName }), HttpMethod.Post, "/students/", "add a student", jsonBody);
             yield return new TestCaseData((IStudentApiClient c) => c.AddStudentRestResponse(new NewStudentDto() { Name = sName }), HttpMethod.Post, "/students/", "add a student with rest response", jsonBody);
 
@@ -51,7 +50,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
             yield return new TestCaseData((IStudentApiClient c) => c.UpdateStudent(sId, new UpdateStudentDto() { Name = sName }), HttpMethod.Put, $"/students/{sId}", "update a student", jsonBody);
             yield return new TestCaseData((IStudentApiClient c) => c.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = sName }), HttpMethod.Put, $"/students/{sId}", "update a student with rest response", jsonBody);
-
         }
 
         [TestCaseSource(nameof(WithBody_StudentApiClientOperationsTestCases))]
