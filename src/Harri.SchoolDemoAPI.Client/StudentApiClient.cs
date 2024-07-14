@@ -7,7 +7,7 @@ namespace Harri.SchoolDemoApi.Client
     /// <summary>
     /// .NET 8 REST Client for Harri.SchoolDemoAPI using RestSharp.
     /// 
-    /// Does not throw exceptions on failed requests. TODO make sure this is asserted in tests
+    /// Does not throw exceptions on failed requests.
     /// </summary>
     public class StudentApiClient : IStudentApiClient
     {
