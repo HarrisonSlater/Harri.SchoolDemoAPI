@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
-    /// 
+    /// Generic DTO for querying on something greater than, less than, or equal to
     /// </summary>
     public class ComparativeQueryDto<T> where T : struct // struct constraint required to fix .net framework 4.8 warnings
     {

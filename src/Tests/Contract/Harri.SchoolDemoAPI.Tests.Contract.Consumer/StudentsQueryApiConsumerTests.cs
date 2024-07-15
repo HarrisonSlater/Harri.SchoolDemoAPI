@@ -67,7 +67,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             });
         }
-        //TODO fix query string test failure poor error messages "Expected students not to be <null>."
+
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
             yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });

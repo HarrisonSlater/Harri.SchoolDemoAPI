@@ -4,6 +4,11 @@ using RestSharp;
 
 namespace Harri.SchoolDemoApi.Client
 {
+    /// <summary>
+    /// .NET 8 REST Client for Harri.SchoolDemoAPI using RestSharp.
+    /// 
+    /// Does not throw exceptions on failed requests.
+    /// </summary>
     public class StudentApiClient : IStudentApiClient
     {
         private const string BaseRoute = "students/";
@@ -79,12 +84,12 @@ namespace Harri.SchoolDemoApi.Client
             return restResponse.IsSuccessStatusCode;
         }
 
-        public async Task<RestResponse<bool>> DeleteStudentRestResponse(int sId)
+        public async Task<RestResponse> DeleteStudentRestResponse(int sId)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId);
             request.Method = Method.Delete;
 
-            var restResponse = await _restClient.ExecuteAsync<bool>(request);
+            var restResponse = await _restClient.ExecuteAsync(request);
             return restResponse;
         }
 

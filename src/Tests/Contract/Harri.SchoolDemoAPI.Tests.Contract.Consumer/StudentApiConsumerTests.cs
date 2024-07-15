@@ -117,7 +117,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     })
                     .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
-                    .WithJsonBody(Match.Equality(new {
+                    .WithJsonBody(Match.Equality(new
+                    {
                         name = name,
                         GPA = GPA
                     }))
@@ -270,7 +271,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(sId,new UpdateStudentDto() { Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
                 response.Data.Should().BeFalse();
@@ -367,7 +368,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var response = await client.DeleteStudentRestResponse(sId);
 
                 // Client Assertions
-                response.Data.Should().BeFalse();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
                 response.ShouldContainErrorMessageForProperty("sId");
@@ -469,7 +469,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        
         [TestCase(1234, null, 3.81, "name")]
         [TestCase(4567, "", 3.81, "name")]
         [TestCase(8910, "Test Student", -2.2, "GPA")]
@@ -510,7 +509,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
-        
+
         [TestCase(4567, "Mocky Mockson", 3.81)]
         public async Task PatchStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
         {
@@ -577,7 +576,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 // Client Assertions
                 students.Should().NotBeNull().And.HaveCountGreaterThan(0);
 
-                foreach( var student in students )
+                foreach (var student in students)
                 {
                     student.SId.Should().NotBeNull().And.BeGreaterThan(0);
                     student.Name.Should().NotBeNullOrWhiteSpace();
@@ -604,6 +603,5 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 students.Should().BeNull();
             });
         }
-
     }
 }

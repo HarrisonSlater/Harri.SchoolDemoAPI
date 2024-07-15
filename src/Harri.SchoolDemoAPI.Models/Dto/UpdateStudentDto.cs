@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
-    /// 
+    /// DTO for updating an existing student
     /// </summary>
     public class UpdateStudentDto
     {

@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Repository;
-using Microsoft.AspNetCore.Http;
 using Moq;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
@@ -54,7 +46,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["some students exist"] = this.EnsureSomeStudentsExist,
                 ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
-                ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying
+                ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
+                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError
                 //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
@@ -246,6 +239,21 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     nameParam.Should().Be(name);
                     gpaQueryDtoParam.Should().BeEquivalentTo(expectedGpaQuery);
                 });
+
+            return Task.CompletedTask;
+        }
+
+        private Task TheApiReturnsA500InternalServerError(IDictionary<string, object> parameters)
+        {
+            var exceptionMessage = "Test Exception. Internal Server Error";
+            var testException = new Exception(exceptionMessage);
+
+            TestStartup.MockStudentRepo.Setup(s => s.AddStudent(It.IsAny<NewStudentDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents()).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
 
             return Task.CompletedTask;
         }

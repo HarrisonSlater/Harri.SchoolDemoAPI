@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Linq;
 
 namespace Harri.SchoolDemoAPI.Models.Attributes
 {
+    /// <summary>
+    /// Attribute wrapper for FluentValidation PrecisionScale
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class DecimalPrecisionAttribute : ValidationAttribute
     {

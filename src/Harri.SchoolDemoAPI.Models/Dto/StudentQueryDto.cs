@@ -3,7 +3,7 @@
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
-    /// 
+    /// DTO for querying students by any property
     /// </summary>
     public class StudentQueryDto
     {

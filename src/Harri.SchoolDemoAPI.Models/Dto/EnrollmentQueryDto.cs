@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
     /// <summary>
-    /// TODO
+    /// 
     /// </summary>
     public class EnrollmentQueryDto
     {
