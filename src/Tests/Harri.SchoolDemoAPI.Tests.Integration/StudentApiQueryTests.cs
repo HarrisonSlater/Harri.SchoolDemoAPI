@@ -21,27 +21,33 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static NewStudentDto _studentToMatchNameAndGpa;
         private static int _studentToMatchNameAndGpaId;
 
-        private static StudentDto ExpectedStudentToFindMatchingName => new()
-        {
-            SId = _studentToMatchNameId,
-            Name = _studentToMatchName.Name,
-            GPA = _studentToMatchName.GPA
-        };
+        //Test student 4
+        private static NewStudentDto _studentToMatchNameSpecial;
+        private static int _studentToMatchNameSpecialId;
 
-        private static StudentDto ExpectedStudentToFindMatchingGpa => new()
-        {
-            SId = _studentToMatchGpaId,
-            Name = _studentToMatchGpa.Name,
-            GPA = _studentToMatchGpa.GPA
-        };
+        //Test student 5
+        private static NewStudentDto _studentToMatchNameUnicode;
+        private static int _studentToMatchNameUnicodeId;
+
+        private static StudentDto ExpectedStudentToFindMatchingName => GetStudentDtoFor(_studentToMatchNameId, _studentToMatchName);
+
+        private static StudentDto ExpectedStudentToFindMatchingGpa => GetStudentDtoFor(_studentToMatchGpaId, _studentToMatchGpa);
         
-        private static StudentDto ExpectedStudentToFindMatchingNameAndGpa => new()
-        {
-            SId = _studentToMatchNameAndGpaId,
-            Name = _studentToMatchNameAndGpa.Name,
-            GPA = _studentToMatchNameAndGpa.GPA
-        };
+        private static StudentDto ExpectedStudentToFindMatchingNameAndGpa => GetStudentDtoFor(_studentToMatchNameAndGpaId, _studentToMatchNameAndGpa);
 
+        private static StudentDto ExpectedStudentToFindMatchingNameSpecial => GetStudentDtoFor(_studentToMatchNameSpecialId, _studentToMatchNameSpecial);
+
+        private static StudentDto ExpectedStudentToFindMatchingNameUnicode => GetStudentDtoFor(_studentToMatchNameUnicodeId, _studentToMatchNameUnicode);
+
+        private static StudentDto GetStudentDtoFor(int id, NewStudentDto newStudent)
+        {
+            return new StudentDto()
+            {
+                SId = id,
+                Name = newStudent.Name,
+                GPA = newStudent.GPA
+            };
+        }
 
         [OneTimeSetUp]
         public static async Task SetUp()
@@ -59,6 +65,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             _studentToMatchNameAndGpa = new NewStudentDto() { Name = Guid.NewGuid().ToString(), GPA = 3.01m };
             _studentToMatchNameAndGpaId = (await _client.AddStudent(_studentToMatchNameAndGpa)).Value;
 
+            _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
+            _studentToMatchNameSpecialId = (await _client.AddStudent(_studentToMatchNameSpecial)).Value;
+
+            _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
+            _studentToMatchNameUnicodeId = (await _client.AddStudent(_studentToMatchNameUnicode)).Value;
         }
 
         [OneTimeTearDown]
@@ -67,6 +78,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await CleanUpTestStudent(_studentToMatchNameId);
             await CleanUpTestStudent(_studentToMatchGpaId);
             await CleanUpTestStudent(_studentToMatchNameAndGpaId);
+            await CleanUpTestStudent(_studentToMatchNameSpecialId);
+            await CleanUpTestStudent(_studentToMatchNameUnicodeId);
         }
 
         private static IEnumerable<TestCaseData> BadRequestTestCases()
@@ -85,7 +98,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
-        //TODO cases for names with special characters and unicode symbols
         [TestCase("Johnnny")]
         [TestCase("johnnny")]
         [TestCase("'The Integrator'")]
@@ -96,19 +108,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("johnnny 'the integrator' testShoes")]
         [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
         public async Task QueryStudents_ShouldMatch_OnName(string name)
-        {
-            // Arrange
-            var expectedStudentToFind = ExpectedStudentToFindMatchingName;
-
-            // Act
-            var response = await _client.QueryStudentsRestResponse(name, null);
-
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
-        }
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
 
         [Test]
         public async Task QueryStudents_ShouldNotMatch_OnName()
@@ -305,6 +305,44 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().BeNull();
         }
+
+        [TestCase("Johnnny")]
+        [TestCase("johnnny")]
+        [TestCase("I.")]
+        [TestCase("Test-Shoes")]
+        [TestCase("Test")]
+        [TestCase("Shoes")]
+        [TestCase("(123456789)")]
+        [TestCase("123456789")]
+        [TestCase("12345")]
+        [TestCase("6789")]
+        [TestCase("Johnnny I. Test-Shoes (123456789)")]
+        public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name) 
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
+
+        [TestCase("Jöhnnny")]
+        [TestCase("jöhnnny")]
+        [TestCase("Äpfel")]
+        [TestCase("bücher")]
+        [TestCase("Äpfelbücher")]
+        [TestCase("äpfelbücher")]
+        [TestCase("ö")]
+        [TestCase("Jöhnnny Äpfelbücher")]
+        public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name) 
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
+
+        private async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
+        {
+            // Act
+            var response = await _client.QueryStudentsRestResponse(name, null);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+        }
+
         private async Task CleanUpTestStudent(int sId)
         {
             try
