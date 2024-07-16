@@ -5,11 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <PackageId>Harri.SchoolDemoApi.Client</PackageId>
-    <Version>1.0.8</Version>
+    <PackageId>Harri.SchoolDemoAPI.Client</PackageId>
+    <Version>1.0.10</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Harri.SchoolDemoAPI.Models\Harri.SchoolDemoAPI.Models.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <None Include="..\..\docs\nuget\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
