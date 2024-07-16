@@ -282,7 +282,7 @@ stages:
 
 - stage: 'PublishNuget'
   displayName: 'Publish nuget'
-#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   dependsOn: DeployAndTest
   jobs: 
     - job: 'PublishNuget'
