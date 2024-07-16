@@ -21,6 +21,14 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static NewStudentDto _studentToMatchNameAndGpa;
         private static int _studentToMatchNameAndGpaId;
 
+        //Test student 4
+        private static NewStudentDto _studentToMatchNameSpecial;
+        private static int _studentToMatchNameSpecialId;
+
+        //Test student 5
+        private static NewStudentDto _studentToMatchNameUnicode;
+        private static int _studentToMatchNameUnicodeId;
+
         private static StudentDto ExpectedStudentToFindMatchingName => new()
         {
             SId = _studentToMatchNameId,
@@ -42,6 +50,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             GPA = _studentToMatchNameAndGpa.GPA
         };
 
+        private static StudentDto ExpectedStudentToFindMatchingNameSpecial => new()
+        {
+            SId = _studentToMatchNameSpecialId,
+            Name = _studentToMatchNameSpecial.Name,
+            GPA = _studentToMatchNameSpecial.GPA
+        };
+
+        private static StudentDto ExpectedStudentToFindMatchingNameUnicode => new()
+        {
+            SId = _studentToMatchNameUnicodeId,
+            Name = _studentToMatchNameUnicode.Name,
+            GPA = _studentToMatchNameUnicode.GPA
+        };
 
         [OneTimeSetUp]
         public static async Task SetUp()
@@ -59,6 +80,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             _studentToMatchNameAndGpa = new NewStudentDto() { Name = Guid.NewGuid().ToString(), GPA = 3.01m };
             _studentToMatchNameAndGpaId = (await _client.AddStudent(_studentToMatchNameAndGpa)).Value;
 
+            _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
+            _studentToMatchNameSpecialId = (await _client.AddStudent(_studentToMatchNameSpecial)).Value;
+
+            _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
+            _studentToMatchNameUnicodeId = (await _client.AddStudent(_studentToMatchNameUnicode)).Value;
         }
 
         [OneTimeTearDown]
@@ -67,6 +93,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await CleanUpTestStudent(_studentToMatchNameId);
             await CleanUpTestStudent(_studentToMatchGpaId);
             await CleanUpTestStudent(_studentToMatchNameAndGpaId);
+            await CleanUpTestStudent(_studentToMatchNameSpecialId);
+            await CleanUpTestStudent(_studentToMatchNameUnicodeId);
         }
 
         private static IEnumerable<TestCaseData> BadRequestTestCases()
@@ -85,7 +113,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
-        //TODO cases for names with special characters and unicode symbols
         [TestCase("Johnnny")]
         [TestCase("johnnny")]
         [TestCase("'The Integrator'")]
@@ -305,6 +332,56 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Data.Should().BeNull();
         }
+
+        [TestCase("Johnnny")]
+        [TestCase("johnnny")]
+        [TestCase("I.")]
+        [TestCase("Test-Shoes")]
+        [TestCase("Test")]
+        [TestCase("Shoes")]
+        [TestCase("(123456789)")]
+        [TestCase("123456789")]
+        [TestCase("12345")]
+        [TestCase("6789")]
+        [TestCase("Johnnny I. Test-Shoes (123456789)")]
+        public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name)
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameSpecial;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(name, null);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+        }
+
+        [TestCase("Jöhnnny")]
+        [TestCase("jöhnnny")]
+        [TestCase("Äpfel")]
+        [TestCase("bücher")]
+        [TestCase("Äpfelbücher")]
+        [TestCase("äpfelbücher")]
+        [TestCase("ö")]
+        [TestCase("Jöhnnny Äpfelbücher")]
+        public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name)
+        {
+            // Arrange
+            var expectedStudentToFind = ExpectedStudentToFindMatchingNameUnicode;
+
+            // Act
+            var response = await _client.QueryStudentsRestResponse(name, null);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
+            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+        }
+
         private async Task CleanUpTestStudent(int sId)
         {
             try
