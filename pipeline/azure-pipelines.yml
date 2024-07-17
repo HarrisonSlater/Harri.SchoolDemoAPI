@@ -51,6 +51,7 @@ stages:
         displayName: 'dotnet test - Unit'
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage"'
           projects: '**/Harri.SchoolDemoAPI.Tests.Unit.csproj'
           testRunTitle: 'Run Unit Tests'
 
