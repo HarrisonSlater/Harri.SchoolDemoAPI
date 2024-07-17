@@ -10,6 +10,9 @@
               <Exclude>
                 <ModulePath>.*fluentvalidation.dll</ModulePath>
               </Exclude>
+              <Exclude>
+                <ModulePath>.*schooldemoapi.tests.*</ModulePath>
+              </Exclude>
             </ModulePaths>
 
             <!-- We recommend you do not change the following values: -->
