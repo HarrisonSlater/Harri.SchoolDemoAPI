@@ -252,7 +252,7 @@ stages:
         inputs:
           command: 'test'
           projects: '**/Harri.SchoolDemoAPI.Tests.E2E.csproj'
-          testRunTitle: 'E2E Tests'
+          testRunTitle: 'E2E Tests - Docker'
 
 - stage: 'Publish'
   displayName: 'Publish main'
