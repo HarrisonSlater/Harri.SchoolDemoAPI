@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using System.Linq;
 using System.Data;
-using System.Security.Cryptography;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;

@@ -1,7 +1,6 @@
 using Harri.SchoolDemoApi.Client;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
-using System.Security.Cryptography;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {

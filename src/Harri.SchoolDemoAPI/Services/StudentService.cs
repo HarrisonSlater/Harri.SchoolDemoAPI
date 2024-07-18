@@ -1,7 +1,6 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using System.Collections.Generic;
-using System.Data;
 using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Services
@@ -36,6 +35,7 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.DeleteStudent(sId);
         }
 
+        //TODO unit test
         public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
         {
             var existingStudent = await _studentRepository.GetStudent(sId);
