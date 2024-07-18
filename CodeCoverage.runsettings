@@ -11,6 +11,11 @@
                 <ModulePath>.*fluentvalidation.dll</ModulePath>
                 <ModulePath>.*schooldemoapi.tests.*</ModulePath>
               </Exclude>
+              <Include>
+                <ModulePath>.*harri.schooldemoapi.dll</ModulePath>
+                <ModulePath>.*harri.schooldemoapi.client.dll</ModulePath>
+                <ModulePath>.*harri.schooldemoapi.models.dll</ModulePath>
+              </Include>
             </ModulePaths>
 
             <!-- We recommend you do not change the following values: -->
