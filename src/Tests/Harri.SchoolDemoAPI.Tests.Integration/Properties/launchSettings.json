@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Harri.SchoolDemoAPI.Tests.Integration": {
+    "Harri.SchoolDemoAPI.Tests.E2E": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

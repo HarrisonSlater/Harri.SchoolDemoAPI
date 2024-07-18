@@ -3,16 +3,8 @@ using Harri.SchoolDemoApi.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
 using PactNet;
 using PactNet.Matchers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {

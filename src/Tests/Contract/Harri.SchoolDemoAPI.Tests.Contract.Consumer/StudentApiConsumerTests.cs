@@ -12,7 +12,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCase(1, "Mocky", 3)]
         [TestCase(1234, "Mocky McMockName", 3.81)]
         [TestCase(4567, "Mocky McMockName", null)]
-
         public async Task GetStudent_WhenCalled_ReturnsAStudent(int sId, string name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to get a student with id {sId}")

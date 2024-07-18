@@ -1,9 +1,11 @@
-﻿namespace Harri.SchoolDemoAPI.Tests.Integration
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    [Category("Integration")]
+    [Category("E2E")]
     [TestFixture]
 
-    public class IntegrationTestBase
+    public class E2ETestBase
     {
         public static string? APIUrlToTest {get;set;}
 
