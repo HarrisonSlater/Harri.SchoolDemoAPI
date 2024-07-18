@@ -59,6 +59,7 @@ stages:
         displayName: 'dotnet test - Consumer Contract Tests'
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
           projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
           testRunTitle: 'Run Contract Tests - Consumer'
 
