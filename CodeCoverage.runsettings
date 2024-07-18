@@ -9,8 +9,6 @@
             <ModulePaths>
               <Exclude>
                 <ModulePath>.*fluentvalidation.dll</ModulePath>
-              </Exclude>
-              <Exclude>
                 <ModulePath>.*schooldemoapi.tests.*</ModulePath>
               </Exclude>
             </ModulePaths>
