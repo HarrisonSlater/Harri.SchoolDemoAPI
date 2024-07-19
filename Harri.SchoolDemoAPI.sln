@@ -34,6 +34,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{D0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Unit", "src\Tests\Harri.SchoolDemoAPI.Tests.Unit\Harri.SchoolDemoAPI.Tests.Unit.csproj", "{EFA0EC1E-00F1-460E-ADED-D567871A4316}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Integration", "src\Tests\Harri.SchoolDemoAPI.Tests.Integration\Harri.SchoolDemoAPI.Tests.Integration.csproj", "{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,10 @@ Global
 		{EFA0EC1E-00F1-460E-ADED-D567871A4316}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFA0EC1E-00F1-460E-ADED-D567871A4316}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFA0EC1E-00F1-460E-ADED-D567871A4316}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{70242C75-2155-4D5B-B832-ED5BECDD091A} = {A6A9243C-8FA3-4D27-9BDB-723520C62049}
 		{D065AD2C-1B32-499B-BD56-186456E922F6} = {A6A9243C-8FA3-4D27-9BDB-723520C62049}
 		{EFA0EC1E-00F1-460E-ADED-D567871A4316} = {A6A9243C-8FA3-4D27-9BDB-723520C62049}
+		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF} = {A6A9243C-8FA3-4D27-9BDB-723520C62049}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49A5B443-5B70-4589-9543-77862ED9A1E4}

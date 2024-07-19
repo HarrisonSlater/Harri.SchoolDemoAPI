@@ -61,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery)
+        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery = null)
         {
             var builder = new SqlBuilder();
             

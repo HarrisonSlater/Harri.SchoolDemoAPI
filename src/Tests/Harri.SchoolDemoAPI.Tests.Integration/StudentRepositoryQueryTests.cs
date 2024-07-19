@@ -1,13 +1,13 @@
-ï»¿using FluentAssertions;
-using Harri.SchoolDemoApi.Client;
+using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Repository;
 using System.Net;
 
-namespace Harri.SchoolDemoAPI.Tests.E2E
+namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    public class StudentApiQueryTests : E2ETestBase
+    public class StudentRepositoryQueryTests : IntegrationTestBase
     {
-        private static StudentApiClient _client;
+        private static IStudentRepository _studentRepository;
 
         //Test student 1
         private static NewStudentDto _studentToMatchName;
@@ -32,7 +32,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         private static StudentDto ExpectedStudentToFindMatchingName => GetStudentDtoFor(_studentToMatchNameId, _studentToMatchName);
 
         private static StudentDto ExpectedStudentToFindMatchingGpa => GetStudentDtoFor(_studentToMatchGpaId, _studentToMatchGpa);
-        
+
         private static StudentDto ExpectedStudentToFindMatchingNameAndGpa => GetStudentDtoFor(_studentToMatchNameAndGpaId, _studentToMatchNameAndGpa);
 
         private static StudentDto ExpectedStudentToFindMatchingNameSpecial => GetStudentDtoFor(_studentToMatchNameSpecialId, _studentToMatchNameSpecial);
@@ -50,26 +50,26 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         }
 
         [OneTimeSetUp]
-        public static async Task SetUp()
+        public async Task OneTimeSetUp()
         {
-            if (APIUrlToTest is null) throw new ArgumentException("APIUrlToTest from appsettings.json cannot be null");
-
-            _client = new StudentApiClient(APIUrlToTest);
+            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
+            
+            _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
 
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
-            _studentToMatchNameId = (await _client.AddStudent(_studentToMatchName)).Value;
+            _studentToMatchNameId = await _studentRepository.AddStudent(_studentToMatchName);
 
-            _studentToMatchGpa = new NewStudentDto() { Name = "Garry Patrick Anderson", GPA = 2.92m};
-            _studentToMatchGpaId = (await _client.AddStudent(_studentToMatchGpa)).Value;
+            _studentToMatchGpa = new NewStudentDto() { Name = "Garry Patrick Anderson", GPA = 2.92m };
+            _studentToMatchGpaId = await _studentRepository.AddStudent(_studentToMatchGpa);
 
             _studentToMatchNameAndGpa = new NewStudentDto() { Name = Guid.NewGuid().ToString(), GPA = 3.01m };
-            _studentToMatchNameAndGpaId = (await _client.AddStudent(_studentToMatchNameAndGpa)).Value;
+            _studentToMatchNameAndGpaId = await _studentRepository.AddStudent(_studentToMatchNameAndGpa);
 
             _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
-            _studentToMatchNameSpecialId = (await _client.AddStudent(_studentToMatchNameSpecial)).Value;
+            _studentToMatchNameSpecialId = await _studentRepository.AddStudent(_studentToMatchNameSpecial);
 
-            _studentToMatchNameUnicode = new NewStudentDto() { Name = "JÃ¶hnnny Ã„pfelbÃ¼cher" };
-            _studentToMatchNameUnicodeId = (await _client.AddStudent(_studentToMatchNameUnicode)).Value;
+            _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
+            _studentToMatchNameUnicodeId = await _studentRepository.AddStudent(_studentToMatchNameUnicode);
         }
 
         [OneTimeTearDown]
@@ -82,20 +82,50 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             await CleanUpTestStudent(_studentToMatchNameUnicodeId);
         }
 
-        private static IEnumerable<TestCaseData> BadRequestTestCases()
-        {
-            yield return new TestCaseData(" \t\n  ", null);
-            yield return new TestCaseData(null, null);
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2 } });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2, IsNull = true } });
-        }
+        [TestCase("Johnnny")]
+        [TestCase("johnnny")]
+        [TestCase("'The Integrator'")]
+        [TestCase("'the integrator'")]
+        [TestCase("TestShoes")]
+        [TestCase("testshoes")]
+        [TestCase("johnnny 'the integrator' testShoes")]
+        [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
+        [TestCase("Johnnny 'The Integrator' TestShoes")]
+        public async Task QueryStudents_ShouldMatch_OnName(string name)
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
 
-        [TestCaseSource(nameof(BadRequestTestCases))]
-        public async Task QueryStudents_ByName_ShouldReturnBadRequest(string? name, GPAQueryDto? gpaQuery)
+        [TestCase("Johnnny")]
+        [TestCase("johnnny")]
+        [TestCase("I.")]
+        [TestCase("Test-Shoes")]
+        [TestCase("Test")]
+        [TestCase("Shoes")]
+        [TestCase("(123456789)")]
+        [TestCase("123456789")]
+        [TestCase("12345")]
+        [TestCase("6789")]
+        [TestCase("Johnnny I. Test-Shoes (123456789)")]
+        public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name)
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
+
+        [TestCase("Jöhnnny")]
+        [TestCase("jöhnnny")]
+        [TestCase("Äpfel")]
+        [TestCase("bücher")]
+        [TestCase("Äpfelbücher")]
+        [TestCase("äpfelbücher")]
+        [TestCase("ö")]
+        [TestCase("Jöhnnny Äpfelbücher")]
+
+        public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name)
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
+
+        public async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
-            var response = await _client.QueryStudentsRestResponse(name, gpaQuery);
-            response.Data.Should().BeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var response = await _studentRepository.QueryStudents(name);
+
+            response.Should().NotBeNullOrEmpty();
+            response.Should().ContainEquivalentOf(expectedStudentToFind);
         }
 
         [Test]
@@ -105,12 +135,10 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var searchName = Guid.NewGuid().ToString();
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(searchName, null);
+            var response = await _studentRepository.QueryStudents(searchName, null);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
-            response.Data.Should().BeNull();
+            response.Should().BeEmpty();
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAOnlyTestCases()
@@ -128,14 +156,13 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, gpaQueryDto);
+            var response = await _studentRepository.QueryStudents(null, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Should().NotBeNullOrEmpty();
+            response.Should().ContainEquivalentOf(expectedStudentToFind);
 
-            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -151,16 +178,15 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, gpaQueryDto);
+            var response = await _studentRepository.QueryStudents(null, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            response.Should().NotBeNull();
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.Count > 0)
             {
-                response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-                response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
-                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+                response.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
             }
         }
 
@@ -180,13 +206,12 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(name, gpaQueryDto);
+            var response = await _studentRepository.QueryStudents(name, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Should().NotBeNullOrEmpty();
 
-            response.Data.Should().NotBeNull().And.ContainSingle();
-            response.Data!.Single().Should().BeEquivalentTo(expectedStudentToFind);
+            response.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
 
         }
 
@@ -207,12 +232,10 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(name, gpaQueryDto);
+            var response = await _studentRepository.QueryStudents(name, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
-            response.Data.Should().BeNull();
+            response.Should().BeEmpty();
         }
 
         private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
@@ -227,14 +250,12 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
+            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Data.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+            response.Should().NotBeNullOrEmpty();
+            response.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Should().AllSatisfy(s => s.GPA.Should().BeNull());
         }
 
         [Test]
@@ -244,20 +265,16 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
 
             // Assert
-            response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
+            response.Should().NotBeNull();
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.Count > 0)
             {
-                response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-                response.Data.Should().NotContainEquivalentOf(expectedStudentToFind);
-                response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-            }
-            else
-            {
-                response.Data.Should().BeNull();
+                response.Should().NotBeNull().And.HaveCountGreaterThan(0);
+                response.Should().NotContainEquivalentOf(expectedStudentToFind);
+                response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
             }
         }
 
@@ -269,14 +286,12 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Data.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            response.Should().NotBeNullOrEmpty();
+            response.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
         }
 
         [Test]
@@ -286,47 +301,15 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
-            response.Data.Should().BeNull();
-        }
-
-        [TestCase("Johnnny 'The Integrator' TestShoes")]
-
-        public async Task QueryStudents_ShouldMatch_OnName(string name)
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
-
-        [TestCase("Johnnny I. Test-Shoes (123456789)")]
-        public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name) 
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
-
-        [TestCase("JÃ¶hnnny")]
-
-        public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name) 
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
-
-        private async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
-        {
-            // Act
-            var response = await _client.QueryStudentsRestResponse(name, null);
-
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            response.Data.Should().NotBeNull().And.HaveCountGreaterThan(0);
-            response.Data.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Should().BeEmpty();
         }
 
         private async Task CleanUpTestStudent(int sId)
         {
-            try
-            {
-                await _client.DeleteStudent(sId);
-            }
-            catch { }
+            await _studentRepository.DeleteStudent(sId);
         }
     }
 }
