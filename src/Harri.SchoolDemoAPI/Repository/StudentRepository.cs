@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using System.Linq;
 using System.Data;
-using System.Security.Cryptography;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -62,7 +61,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery)
+        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery = null)
         {
             var builder = new SqlBuilder();
             

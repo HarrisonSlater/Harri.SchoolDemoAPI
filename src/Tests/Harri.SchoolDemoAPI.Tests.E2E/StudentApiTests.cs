@@ -1,11 +1,10 @@
 using Harri.SchoolDemoApi.Client;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
-using System.Security.Cryptography;
 
-namespace Harri.SchoolDemoAPI.Tests.Integration
+namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    public class StudentApiTests : IntegrationTestBase
+    public class StudentApiTests : E2ETestBase
     {
         private static StudentApiClient _client;
 

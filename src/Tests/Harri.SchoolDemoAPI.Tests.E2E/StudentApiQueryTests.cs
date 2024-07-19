@@ -3,9 +3,9 @@ using Harri.SchoolDemoApi.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Net;
 
-namespace Harri.SchoolDemoAPI.Tests.Integration
+namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    public class StudentApiQueryTests : IntegrationTestBase
+    public class StudentApiQueryTests : E2ETestBase
     {
         private static StudentApiClient _client;
 
@@ -97,18 +97,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
-
-        [TestCase("Johnnny")]
-        [TestCase("johnnny")]
-        [TestCase("'The Integrator'")]
-        [TestCase("'the integrator'")]
-        [TestCase("TestShoes")]
-        [TestCase("testshoes")]
-        [TestCase("Johnnny 'The Integrator' TestShoes")]
-        [TestCase("johnnny 'the integrator' testShoes")]
-        [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
-        public async Task QueryStudents_ShouldMatch_OnName(string name)
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
 
         [Test]
         public async Task QueryStudents_ShouldNotMatch_OnName()
@@ -306,28 +294,17 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Data.Should().BeNull();
         }
 
-        [TestCase("Johnnny")]
-        [TestCase("johnnny")]
-        [TestCase("I.")]
-        [TestCase("Test-Shoes")]
-        [TestCase("Test")]
-        [TestCase("Shoes")]
-        [TestCase("(123456789)")]
-        [TestCase("123456789")]
-        [TestCase("12345")]
-        [TestCase("6789")]
+        [TestCase("Johnnny 'The Integrator' TestShoes")]
+
+        public async Task QueryStudents_ShouldMatch_OnName(string name)
+            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
+
         [TestCase("Johnnny I. Test-Shoes (123456789)")]
         public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name) 
             => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
 
         [TestCase("Jöhnnny")]
-        [TestCase("jöhnnny")]
-        [TestCase("Äpfel")]
-        [TestCase("bücher")]
-        [TestCase("Äpfelbücher")]
-        [TestCase("äpfelbücher")]
-        [TestCase("ö")]
-        [TestCase("Jöhnnny Äpfelbücher")]
+
         public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name) 
             => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
 

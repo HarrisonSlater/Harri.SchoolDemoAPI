@@ -13,6 +13,6 @@ namespace Harri.SchoolDemoAPI.Repository
         Task<bool> UpdateStudent(int sId, UpdateStudentDto newStudent);
 
         Task<List<StudentDto>> GetAllStudents();
-        Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? GPAQuery);
+        Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? GPAQuery = null);
     }
 }

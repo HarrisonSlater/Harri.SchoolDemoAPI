@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj" />
+    <ProjectReference Include="..\Harri.SchoolDemoAPI.Tests.Integration\Harri.SchoolDemoAPI.Tests.Integration.csproj" />
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@ variables:
   BuildConfiguration: 'Release'
   CommitIdForGitHub: $[coalesce(variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'])]
   APIPortToTest: 5001
-  APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides appsettings.json in integration tests
+  APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides appsettings.json in E2E tests
   DockerNamespace: harrisonslater
   DockerSQLImageName: harri-schooldemosql-database:latest
   DockerImageRepository: harri-schooldemoapi
@@ -51,6 +51,7 @@ stages:
         displayName: 'dotnet test - Unit'
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
           projects: '**/Harri.SchoolDemoAPI.Tests.Unit.csproj'
           testRunTitle: 'Run Unit Tests'
 
@@ -58,6 +59,7 @@ stages:
         displayName: 'dotnet test - Consumer Contract Tests'
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
           projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Consumer.csproj'
           testRunTitle: 'Run Contract Tests - Consumer'
 
@@ -72,6 +74,7 @@ stages:
         displayName: 'dotnet test - Provider Contract Tests'
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
           projects: '**/Harri.SchoolDemoAPI.Tests.Contract.Provider.csproj'
           testRunTitle: 'Run Contract Tests - Provider'
       
@@ -138,7 +141,7 @@ stages:
   dependsOn: Build
   jobs: 
     - job: 'DeployAndTestJob'
-      displayName: 'Deploy (in-agent) and run integration tests'
+      displayName: 'Deploy (in-agent) and run E2E tests'
       steps:
 
       - task: DownloadBuildArtifacts@1
@@ -150,7 +153,7 @@ stages:
           cleanDestinationFolder: false
 
 #      - script: 'ls $(System.DefaultWorkingDirectory)'
-#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
 
       - task: ExtractFiles@1
         inputs:
@@ -178,20 +181,27 @@ stages:
           
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
-
-      - task: FileTransform@1
-        displayName: appsettings.json transform
-        inputs:
-          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
-          fileType: 'json'
-          targetFiles: 'appsettings.json'
-      
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
         inputs:
           command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
           projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
           testRunTitle: 'Integration Tests'
+
+      - task: FileTransform@1
+        displayName: appsettings.json transform
+        inputs:
+          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
+          fileType: 'json'
+          targetFiles: 'appsettings.json'
+      
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - E2E
+        inputs:
+          command: 'test'
+          projects: '**/Harri.SchoolDemoAPI.Tests.E2E.csproj'
+          testRunTitle: 'E2E Tests'
 
       - script: 'kill $(dotnetProcessId)'
 
@@ -200,7 +210,7 @@ stages:
   dependsOn: Build
   jobs: 
     - job: 'DeployAndTestDockerJob'
-      displayName: 'Deploy Docker container (in-agent) and run integration tests'
+      displayName: 'Deploy Docker container (in-agent) and run E2E tests'
       steps:
 
       - task: DownloadBuildArtifacts@1
@@ -212,7 +222,7 @@ stages:
           cleanDestinationFolder: false
 
 #      - script: 'ls $(System.DefaultWorkingDirectory)'
-#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
 
       - task: DockerInstaller@0
         inputs:
@@ -240,16 +250,16 @@ stages:
       - task: FileTransform@1
         displayName: appsettings.json transform
         inputs:
-          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.Integration'
+          folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
           fileType: 'json'
           targetFiles: 'appsettings.json'
       
       - task: DotNetCoreCLI@2
-        displayName: dotnet test - Integration
+        displayName: dotnet test - E2E
         inputs:
           command: 'test'
-          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
-          testRunTitle: 'Integration Tests'
+          projects: '**/Harri.SchoolDemoAPI.Tests.E2E.csproj'
+          testRunTitle: 'E2E Tests - Docker'
 
 - stage: 'Publish'
   displayName: 'Publish main'
