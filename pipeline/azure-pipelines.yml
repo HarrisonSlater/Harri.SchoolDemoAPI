@@ -181,6 +181,13 @@ stages:
           
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - Integration
+        inputs:
+          command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+          testRunTitle: 'Integration Tests'
 
       - task: FileTransform@1
         displayName: appsettings.json transform
