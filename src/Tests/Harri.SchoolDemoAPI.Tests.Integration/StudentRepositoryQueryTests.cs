@@ -212,7 +212,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().NotBeNullOrEmpty();
 
             response.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
-
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAAndNameTestCases()

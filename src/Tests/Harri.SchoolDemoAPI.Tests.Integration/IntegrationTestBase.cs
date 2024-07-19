@@ -6,19 +6,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
     [TestFixture]
     public class IntegrationTestBase
     {
-        public static string? SqlConnectionStringToTest { get;set;}
+        public static string? SqlConnectionStringToTest { get; set;}
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             SqlConnectionStringToTest = config["SqlConnectionStringToTest"];
-        }
-
-        [OneTimeTearDown]
-        public static void OneTimeTearDown()
-        {
-
         }
     }
 }
