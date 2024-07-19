@@ -1,4 +1,4 @@
-using FluentAssertions;
+ï»¿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using System.Net;
@@ -68,7 +68,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
             _studentToMatchNameSpecialId = await _studentRepository.AddStudent(_studentToMatchNameSpecial);
 
-            _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
+            _studentToMatchNameUnicode = new NewStudentDto() { Name = "JÃ¶hnnny Ã„pfelbÃ¼cher" };
             _studentToMatchNameUnicodeId = await _studentRepository.AddStudent(_studentToMatchNameUnicode);
         }
 
@@ -108,14 +108,14 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name)
             => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
 
-        [TestCase("Jöhnnny")]
-        [TestCase("jöhnnny")]
-        [TestCase("Äpfel")]
-        [TestCase("bücher")]
-        [TestCase("Äpfelbücher")]
-        [TestCase("äpfelbücher")]
-        [TestCase("ö")]
-        [TestCase("Jöhnnny Äpfelbücher")]
+        [TestCase("JÃ¶hnnny")]
+        [TestCase("jÃ¶hnnny")]
+        [TestCase("Ã„pfel")]
+        [TestCase("bÃ¼cher")]
+        [TestCase("Ã„pfelbÃ¼cher")]
+        [TestCase("Ã¤pfelbÃ¼cher")]
+        [TestCase("Ã¶")]
+        [TestCase("JÃ¶hnnny Ã„pfelbÃ¼cher")]
 
         public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name)
             => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
