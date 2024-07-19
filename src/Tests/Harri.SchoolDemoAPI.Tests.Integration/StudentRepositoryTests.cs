@@ -11,17 +11,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static IStudentRepository _studentRepository;
 
         [OneTimeSetUp]
-        public async Task OneTimeSetUp()
+        public void OneTimeSetUp()
         {
             if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
             
             _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
-        }
-
-        [OneTimeTearDown]
-        public async Task TearDown()
-        {
-
         }
 
         // This test assumes a restored clean database
