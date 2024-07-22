@@ -10,7 +10,7 @@
     <AssemblyName>Harri.SchoolDemoAPI</AssemblyName>
     <PackageId>Harri.SchoolDemoAPI</PackageId>
     <UserSecretsId>80285141-3387-45ef-8e42-880868c4380a</UserSecretsId>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
   <ItemGroup>
@@ -18,7 +18,7 @@
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Dapper.SqlBuilder" Version="2.0.78" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0">
       <TreatAsUsed>true</TreatAsUsed>
