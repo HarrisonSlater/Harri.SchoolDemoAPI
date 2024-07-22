@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -28,6 +29,10 @@ namespace Harri.SchoolDemoAPI
                 {
                    webBuilder.UseStartup<Startup>()
                              .UseUrls("http://0.0.0.0:8080/");
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddApplicationInsights();
                 });
     }
 }

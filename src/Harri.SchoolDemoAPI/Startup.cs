@@ -11,7 +11,6 @@ using Microsoft.OpenApi.Models;
 using Harri.SchoolDemoAPI.Authentication;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
-using System.Text.Json.Serialization;
 using System.Text.Json;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
