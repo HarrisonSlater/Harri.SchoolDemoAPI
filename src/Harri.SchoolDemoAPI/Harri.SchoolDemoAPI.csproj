@@ -17,11 +17,14 @@
     <ProjectReference Include="../Harri.SchoolDemoAPI.Models/Harri.SchoolDemoAPI.Models.csproj" />
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Dapper.SqlBuilder" Version="2.0.78" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.22.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
 
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
 
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0">

@@ -93,6 +93,8 @@ namespace Harri.SchoolDemoAPI
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
 
+            services.AddApplicationInsightsTelemetry();
+
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IStudentService, StudentService>();

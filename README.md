@@ -96,11 +96,13 @@ Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.
 A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
 
-## Logging using Serilog
+## Logging using Application Insights & Serilog
 Configured with [.UseSerilogRequestLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) for optimised request logging
-Accessible via standard ILogger interface with .AddSerillog within the [.ConfigureLogging call](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Program.cs)
+Accessible via standard ILogger interface with .AddSerilog within the [.ConfigureLogging call](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Program.cs)
 
 Other than console and debug logs this also logs to:
 - Log file: /Logs/log.txt
-- Application Insights: set up for local usage within visual studio
+- Application Insights: set up for local usage within visual studio 
+	UseSerilogRequestLogging logs are excluded with a Serilog filter as App Insights logs its own requests by default
+-	Custom events logged to App Insights are done via Serilog
 - SEQ: TODO
