@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Serilog;
 
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
@@ -24,6 +25,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                                   webBuilder.UseUrls(this.ServerUri.ToString());
                                   webBuilder.UseStartup<TestStartup>(); //Use real app Startup with mocks injected
                               })
+                              .UseSerilog()
                               .Build();
 
             this.server.Start();
