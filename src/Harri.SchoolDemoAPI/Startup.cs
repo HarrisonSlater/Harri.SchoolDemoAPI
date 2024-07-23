@@ -15,6 +15,7 @@ using System.Text.Json;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Harri.SchoolDemoAPI.Services;
+using Serilog;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -117,6 +118,9 @@ namespace Harri.SchoolDemoAPI
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseSerilogRequestLogging();
+
             app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "openapi/{documentName}/openapi.json";
@@ -132,7 +136,7 @@ namespace Harri.SchoolDemoAPI
             app.UseRouting();
 
             app.UseCors();
-
+            
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

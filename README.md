@@ -12,6 +12,8 @@ So far the /students/ API is complete: [StudentsApiController.cs](https://github
 Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
+  - [Serilog](https://github.com/serilog/serilog)
+  - [SEQ TODO]()
   
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
@@ -93,3 +95,12 @@ Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.
 
 A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
+
+## Logging using Serilog
+Configured with [.UseSerilogRequestLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) for optimised request logging
+Accessible via standard ILogger interface with .AddSerillog within the [.ConfigureLogging call](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Program.cs)
+
+Other than console and debug logs this also logs to:
+- Log file: /Logs/log.txt
+- Application Insights: set up for local usage within visual studio
+- SEQ: TODO
