@@ -1,4 +1,4 @@
-# Harri.SchoolDemoAPI - ASP.NET Core 8.0 Server
+# Harri.SchoolDemoAPI - REST API - ASP.NET Core 8.0 Server
 
 Demo .NET 8 API about students, schools, and student's applications to schools
 
@@ -13,7 +13,7 @@ Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
   - [Serilog](https://github.com/serilog/serilog)
-  - [SEQ TODO]()
+  - [SEQ](https://datalust.co/seq)
   
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
