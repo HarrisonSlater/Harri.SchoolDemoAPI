@@ -1,4 +1,3 @@
-using Harri.SchoolDemoAPI.Logging;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
