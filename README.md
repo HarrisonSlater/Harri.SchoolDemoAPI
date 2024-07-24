@@ -97,12 +97,16 @@ A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
 
 ## Logging using Application Insights & Serilog
-Configured with [.UseSerilogRequestLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) for optimised request logging
+Configured with [.UseHttpLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) with request and response body logging
 Accessible via standard ILogger interface with .AddSerilog within the [.ConfigureLogging call](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Program.cs)
+Serilog is fully configured in the appsettings.json
 
 Other than console and debug logs this also logs to:
 - Log file: /Logs/log.txt
 - Application Insights: set up for local usage within visual studio 
-	UseSerilogRequestLogging logs are excluded with a Serilog filter as App Insights logs its own requests by default
--	Custom events logged to App Insights are done via Serilog
-- SEQ: TODO
+	- Custom events are logged via Serilog
+- SEQ: free personal edition that can be run in a container
+
+For App insights and SEQ:
+- Requests and responses with body are logged as custom events 
+	- `In a production scenario you probably don't want to do this as sensitive data may be logged`

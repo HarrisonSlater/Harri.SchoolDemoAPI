@@ -1,14 +1,10 @@
 using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Harri.SchoolDemoAPI.Authentication;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
 using System.Text.Json;
@@ -16,6 +12,7 @@ using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Harri.SchoolDemoAPI.Services;
 using Serilog;
+using Microsoft.AspNetCore.HttpLogging;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -93,7 +90,25 @@ namespace Harri.SchoolDemoAPI
                     c.OperationFilter<GeneratePathParamsValidationFilter>();
                 });
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(options => {
+                options.EnableRequestTrackingTelemetryModule = false; // Requests are tracked with request and response body with .AddHttpLogging below
+            });
+
+            services.AddHttpLogging(options =>
+            {
+                // LoggingFields includes the request and response body,
+                // in a production scenario you probably want to exclude body and only log santised data
+                options.LoggingFields = HttpLoggingFields.RequestQuery
+                    | HttpLoggingFields.RequestMethod
+                    | HttpLoggingFields.RequestPath
+                    | HttpLoggingFields.RequestBody
+                    | HttpLoggingFields.ResponseStatusCode
+                    | HttpLoggingFields.ResponseBody
+                    | HttpLoggingFields.Duration;
+                options.MediaTypeOptions.Clear();
+                options.MediaTypeOptions.AddText("application/json"); // Don't log the response body for swagger
+                options.CombineLogs = true;
+            });
 
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
@@ -116,12 +131,11 @@ namespace Harri.SchoolDemoAPI
             {
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.UseSerilogRequestLogging();
 
             app.UseSwagger(c =>
                 {
@@ -134,6 +148,8 @@ namespace Harri.SchoolDemoAPI
 
                     c.SwaggerEndpoint("/openapi/1.0.0/openapi.json", "Swagger School ADMIN - OpenAPI 3.0");
                 });
+
+            app.UseHttpLogging();
 
             app.UseRouting();
 
