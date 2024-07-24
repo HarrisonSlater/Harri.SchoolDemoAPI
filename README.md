@@ -97,8 +97,10 @@ A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
 
 ## Logging using Application Insights & Serilog
-Configured with [.UseHttpLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) with request and response body logging
-Accessible via standard ILogger interface with .AddSerilog within the [.ConfigureLogging call](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Program.cs)
+Logging accessible via standard ILogger interface
+
+[.UseHttpLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) is used for request and response body logging
+
 Serilog is fully configured in the appsettings.json
 
 Other than console and debug logs this also logs to:
