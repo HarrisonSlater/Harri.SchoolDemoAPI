@@ -1,4 +1,4 @@
-# Harri.SchoolDemoAPI - ASP.NET Core 8.0 Server
+# Harri.SchoolDemoAPI - REST API - ASP.NET Core 8.0 Server
 
 Demo .NET 8 API about students, schools, and student's applications to schools
 
@@ -12,6 +12,8 @@ So far the /students/ API is complete: [StudentsApiController.cs](https://github
 Using:
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
+  - [Serilog](https://github.com/serilog/serilog)
+  - [SEQ](https://datalust.co/seq)
   
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
@@ -93,3 +95,20 @@ Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.
 
 A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
+
+## Logging using Application Insights & Serilog
+Logging accessible via standard ILogger interface
+
+[.UseHttpLogging();](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Startup.cs) is used for request and response body logging
+
+Serilog is fully configured in the appsettings.json
+
+Other than console and debug logs this also logs to:
+- Log file: /Logs/log.txt
+- Application Insights: set up for local usage within visual studio 
+	- Custom events are logged via Serilog
+- SEQ: free personal edition that can be run in a container
+
+For App insights and SEQ:
+- Requests and responses with body are logged as custom events 
+	- `In a production scenario you probably don't want to do this as sensitive data may be logged`

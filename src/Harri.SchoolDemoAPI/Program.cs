@@ -1,5 +1,11 @@
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Serilog.Filters;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -28,6 +34,11 @@ namespace Harri.SchoolDemoAPI
                 {
                    webBuilder.UseStartup<Startup>()
                              .UseUrls("http://0.0.0.0:8080/");
+                })
+                .UseSerilog((ctx, services, lc) => lc.ReadFrom.Configuration(ctx.Configuration))
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddSerilog();
                 });
     }
 }
