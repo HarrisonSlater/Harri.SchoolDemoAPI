@@ -179,7 +179,7 @@ stages:
           cd $(System.DefaultWorkingDirectory)
         displayName: Run SchoolDemoAPI $(BuildConfiguration) build
           
-#      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
+      - script: 'curl -X GET -S -L $(APIUrlToTest)health'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
@@ -246,6 +246,8 @@ stages:
 #      - script: 'sleep 5'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S $(APIUrlToTest)students/123'
+
+      - script: 'curl -X GET -S -L $(APIUrlToTest)health'
 
       - task: FileTransform@1
         displayName: appsettings.json transform
