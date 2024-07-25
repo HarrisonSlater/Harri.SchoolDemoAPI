@@ -254,7 +254,7 @@ stages:
           fileType: 'json'
           targetFiles: 'appsettings.json'
 
-      - script: sleep 2 #ensure School Demo API container is running
+      - script: sleep 5 #ensure School Demo API container is running
       - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
       
       - task: DotNetCoreCLI@2
