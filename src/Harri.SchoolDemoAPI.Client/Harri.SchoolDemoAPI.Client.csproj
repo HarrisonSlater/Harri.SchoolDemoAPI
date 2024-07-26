@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 
     <PackageId>Harri.SchoolDemoAPI.Client</PackageId>
-    <Version>1.0.11</Version>
+    <Version>1.0.12</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

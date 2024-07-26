@@ -2,14 +2,14 @@
 using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
 
-namespace Harri.SchoolDemoApi.Client
+namespace Harri.SchoolDemoAPI.Client
 {
     /// <summary>
     /// .NET 8 REST Client for Harri.SchoolDemoAPI using RestSharp.
     /// 
     /// Does not throw exceptions on failed requests.
     /// </summary>
-    public class StudentApiClient : IStudentApiClient
+    public class StudentApiClient : IStudentApi
     {
         private const string BaseRoute = "students/";
         private readonly RestClient _restClient;
