@@ -19,7 +19,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public void ConfigureServices(IServiceCollection services)
         {
 
-            this.inner.ConfigureServices(services, (hcb) => {
+            this.inner.ConfigureServicesBase(services, (hcb) => {
                 hcb.AddCheck("sql", MockHealthCheck.Object);
             });
             services.AddScoped<IStudentRepository>((s) => MockStudentRepo.Object);
