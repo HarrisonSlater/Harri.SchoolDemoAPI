@@ -11,7 +11,6 @@ using System.Text.Json;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Harri.SchoolDemoAPI.Services;
-using Serilog;
 using Microsoft.AspNetCore.HttpLogging;
 using HealthChecks.UI.Client;
 
