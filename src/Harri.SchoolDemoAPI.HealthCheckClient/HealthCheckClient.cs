@@ -1,6 +1,9 @@
 ﻿using HealthChecks.UI.Core;
 using RestSharp;
+using RestSharp.Serializers.Json;
 using System.Security.Cryptography;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Harri.SchoolDemoAPI.HealthCheckClient
 {
@@ -11,13 +14,21 @@ namespace Harri.SchoolDemoAPI.HealthCheckClient
     /// </summary>
     public class HealthCheckApiClient : IHealthCheckApi
     {
-        private const string BaseRoute = "students/";
+        private const string BaseRoute = "";
         private readonly RestClient _restClient;
 
         public HealthCheckApiClient(string uri)
         {
             var options = new RestClientOptions(uri);
-            _restClient = new RestClient(options);
+
+            var configureSerialization = new ConfigureSerialization(
+                config => config.UseSystemTextJson(new JsonSerializerOptions(JsonSerializerDefaults.Web)
+                {
+                    Converters = { new JsonStringEnumConverter() }
+                }
+            ));
+            
+            _restClient = new RestClient(options, configureSerialization: configureSerialization);
         }
 
         public HealthCheckApiClient(HttpClient httpClient)
@@ -38,14 +49,10 @@ namespace Harri.SchoolDemoAPI.HealthCheckClient
 
         public async Task<RestResponse<UIHealthReport>> HealthCheckRestResponse()
         {
-            var request = new RestRequest(BaseRoute + "healthcheck");
+            var request = new RestRequest(BaseRoute + "health");
             var restResponse = await _restClient.ExecuteGetAsync<UIHealthReport>(request);
-            //if (!restResponse.IsSuccessStatusCode)
-            //{
-            //    restResponse.Data = null;
-            //}
-            return restResponse;
 
+            return restResponse;
         }
     }
 }

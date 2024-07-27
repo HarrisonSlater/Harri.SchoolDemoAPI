@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Harri.SchoolDemoAPI.Client\Harri.SchoolDemoAPI.Client.csproj" />
+    <ProjectReference Include="..\..\..\Harri.SchoolDemoAPI.HealthCheckClient\Harri.SchoolDemoAPI.HealthCheckClient.csproj" />
     <ProjectReference Include="..\..\..\Harri.SchoolDemoAPI.Models\Harri.SchoolDemoAPI.Models.csproj" />
   </ItemGroup>
 

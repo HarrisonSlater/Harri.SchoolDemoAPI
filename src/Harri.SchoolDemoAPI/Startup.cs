@@ -40,7 +40,8 @@ namespace Harri.SchoolDemoAPI
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services"></param>
-        public void ConfigureServices(IServiceCollection services)
+        /// <param name="healthChecksOverride">Action to set health checks instead of default checks</param>
+        public void ConfigureServices(IServiceCollection services, Action<IHealthChecksBuilder>? healthChecksOverride = null)
         {
             // Add framework services.
             services
@@ -63,7 +64,15 @@ namespace Harri.SchoolDemoAPI
             });
 
             var sqlServerConnectionString = Configuration["SQLConnectionString"];
-            services.AddHealthChecks().AddSqlServer(sqlServerConnectionString, name: "SQL Server");
+            var healthChecksBuilder = services.AddHealthChecks();
+            if (healthChecksOverride is null)
+            {
+                healthChecksBuilder.AddSqlServer(sqlServerConnectionString, name: "sql");
+            }
+            else
+            {
+                healthChecksOverride.Invoke(healthChecksBuilder);
+            }
             
             services
                 .AddSwaggerGen(c =>

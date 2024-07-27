@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
@@ -47,7 +48,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
                 ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
-                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError
+                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,
+                ["the api is healthy"] = this.TheApiIsHealthy,
+                ["the api is unhealthy"] = this.TheApiIsUnhealthy
                 //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
@@ -255,6 +258,24 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents()).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
 
+            return Task.CompletedTask;
+        }
+
+        private Task TheApiIsHealthy(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockHealthCheck.Setup(s => s.CheckHealthAsync(It.IsAny<HealthCheckContext>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(
+                    HealthCheckResult.Healthy()
+                ));
+            return Task.CompletedTask;
+        }
+
+        private Task TheApiIsUnhealthy(IDictionary<string, object> parameters)
+        {
+            TestStartup.MockHealthCheck.Setup(s => s.CheckHealthAsync(It.IsAny<HealthCheckContext>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(
+                    HealthCheckResult.Unhealthy(description:"Some error description", exception:new Exception("Some error description"))
+                ));
             return Task.CompletedTask;
         }
 
