@@ -36,12 +36,17 @@ namespace Harri.SchoolDemoAPI
         /// </summary>
         public IConfiguration Configuration { get; }
 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ConfigureServicesBase(services, null);
+        }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services"></param>
         /// <param name="healthChecksOverride">Action to set health checks instead of default checks</param>
-        public void ConfigureServices(IServiceCollection services, Action<IHealthChecksBuilder>? healthChecksOverride = null)
+        public void ConfigureServicesBase(IServiceCollection services, Action<IHealthChecksBuilder>? healthChecksOverride)
         {
             // Add framework services.
             services
