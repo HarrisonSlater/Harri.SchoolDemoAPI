@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Harri.SchoolDemoApi.Client;
+using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
 using PactNet;
 using PactNet.Matchers;

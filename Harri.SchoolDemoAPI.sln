@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Integration", "src\Tests\Harri.SchoolDemoAPI.Tests.Integration\Harri.SchoolDemoAPI.Tests.Integration.csproj", "{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harri.SchoolDemoAPI.HealthCheckClient", "src\Harri.SchoolDemoAPI.HealthCheckClient\Harri.SchoolDemoAPI.HealthCheckClient.csproj", "{8B8E00DD-773B-45A9-A878-B3601371B412}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E85C699-E1FF-4A7D-B71F-89A63F6162BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B8E00DD-773B-45A9-A878-B3601371B412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B8E00DD-773B-45A9-A878-B3601371B412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B8E00DD-773B-45A9-A878-B3601371B412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B8E00DD-773B-45A9-A878-B3601371B412}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

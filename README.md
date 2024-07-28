@@ -14,6 +14,7 @@ Using:
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
   - [Serilog](https://github.com/serilog/serilog)
   - [SEQ](https://datalust.co/seq)
+  - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
@@ -112,3 +113,23 @@ Other than console and debug logs this also logs to:
 For App insights and SEQ:
 - Requests and responses with body are logged as custom events 
 	- `In a production scenario you probably don't want to do this as sensitive data may be logged`
+
+## Health check endpoint /health
+Response implemented with [AspNetCore.HealthChecks.UI.Client](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/src/HealthChecks.UI.Client/UIResponseWriter.cs)
+to return a result like:
+```
+{
+  "status": "Healthy",
+  "totalDuration": "00:00:00.0858619",
+  "entries": {
+    "sql": {
+      "data": {},
+      "duration": "00:00:00.0856835",
+      "status": "Healthy",
+      "tags": []
+    }
+  }
+}
+```
+
+Also included is a RestSharp client in a separate project [Harri.SchoolDemoAPI.HealthCheckClient](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI/tree/HealthChecks/src/Harri.SchoolDemoAPI.HealthCheckClient) along with consumer driven contract tests

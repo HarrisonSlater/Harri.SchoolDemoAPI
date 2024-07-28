@@ -34,3 +34,8 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Harri.SchoolDemoAPI.dll"]
+
+RUN apt-get update && apt-get install -y curl
+
+HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit
+

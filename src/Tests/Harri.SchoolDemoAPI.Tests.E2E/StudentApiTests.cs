@@ -1,4 +1,4 @@
-using Harri.SchoolDemoApi.Client;
+using Harri.SchoolDemoAPI.Client;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 

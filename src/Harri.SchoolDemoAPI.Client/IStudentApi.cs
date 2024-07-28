@@ -1,9 +1,9 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
 
-namespace Harri.SchoolDemoApi.Client
+namespace Harri.SchoolDemoAPI.Client
 {
-    public interface IStudentApiClient
+    public interface IStudentApi
     {
         Task<int?> AddStudent(NewStudentDto student);
         Task<RestResponse<int?>> AddStudentRestResponse(NewStudentDto student);

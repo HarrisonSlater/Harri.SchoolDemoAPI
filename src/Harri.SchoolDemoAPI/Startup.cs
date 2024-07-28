@@ -11,8 +11,8 @@ using System.Text.Json;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Harri.SchoolDemoAPI.Services;
-using Serilog;
 using Microsoft.AspNetCore.HttpLogging;
+using HealthChecks.UI.Client;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -35,11 +35,17 @@ namespace Harri.SchoolDemoAPI
         /// </summary>
         public IConfiguration Configuration { get; }
 
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ConfigureServicesBase(services, null);
+        }
+
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services"></param>
-        public void ConfigureServices(IServiceCollection services)
+        /// <param name="healthChecksOverride">Action to set health checks instead of default checks</param>
+        public void ConfigureServicesBase(IServiceCollection services, Action<IHealthChecksBuilder>? healthChecksOverride)
         {
             // Add framework services.
             services
@@ -60,6 +66,18 @@ namespace Harri.SchoolDemoAPI
                         policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }
                     );
             });
+
+            var sqlServerConnectionString = Configuration["SQLConnectionString"];
+            var healthChecksBuilder = services.AddHealthChecks();
+            if (healthChecksOverride is null)
+            {
+                healthChecksBuilder.AddSqlServer(sqlServerConnectionString, name: "sql");
+            }
+            else
+            {
+                healthChecksOverride.Invoke(healthChecksBuilder);
+            }
+            
             services
                 .AddSwaggerGen(c =>
                 {
@@ -113,7 +131,7 @@ namespace Harri.SchoolDemoAPI
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IStudentService, StudentService>();
-            services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(Configuration["SQLConnectionString"]));
+            services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(sqlServerConnectionString));
         }
 
         /// <summary>
@@ -136,7 +154,6 @@ namespace Harri.SchoolDemoAPI
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-
             app.UseSwagger(c =>
                 {
                     c.RouteTemplate = "openapi/{documentName}/openapi.json";
@@ -158,6 +175,11 @@ namespace Harri.SchoolDemoAPI
             app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
+                    endpoints.MapHealthChecks("health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
+                    {
+                        Predicate = _ => true,
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
                 });
         }
     }
