@@ -71,7 +71,7 @@ namespace Harri.SchoolDemoAPI
             var healthChecksBuilder = services.AddHealthChecks();
             if (healthChecksOverride is null)
             {
-                healthChecksBuilder.AddSqlServer(sqlServerConnectionString, name: "sql");
+                healthChecksBuilder.AddSqlServer(sqlServerConnectionString, name: "sql", timeout: TimeSpan.FromSeconds(10));
             }
             else
             {
