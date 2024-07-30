@@ -6,12 +6,14 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Filters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Harri.SchoolDemoAPI
 {
     /// <summary>
     /// Program
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         /// <summary>
