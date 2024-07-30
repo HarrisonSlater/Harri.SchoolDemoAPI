@@ -1,17 +1,17 @@
 using System;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
-using System.Text.Json;
-using Harri.SchoolDemoAPI.Repository;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Harri.SchoolDemoAPI.Services;
-using Microsoft.AspNetCore.HttpLogging;
+using Harri.SchoolDemoAPI.Repository;
 using HealthChecks.UI.Client;
 
 namespace Harri.SchoolDemoAPI
@@ -21,10 +21,6 @@ namespace Harri.SchoolDemoAPI
     /// </summary>
     public class Startup
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -57,8 +53,6 @@ namespace Harri.SchoolDemoAPI
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                    //options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-                    //options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 });
             
             services.AddCors(options => {
