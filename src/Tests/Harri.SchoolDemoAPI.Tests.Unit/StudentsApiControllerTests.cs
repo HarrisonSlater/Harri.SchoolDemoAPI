@@ -22,26 +22,16 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
             _controller = new StudentsApiController(_mockStudentService.Object);
         }
 
-        [Test]
-        public async Task QueryStudents_ShouldReturnBadRequest()
+        [TestCase(null)]
+        [TestCase("Test Student")]
+        public async Task QueryStudents_ShouldReturnOk(string? name)
         {
             // Arrange
-            // Act
-            var result = await _controller.QueryStudents(null, new GPAQueryDto { GPA = null });
-
-            // Assert
-            result.Should().BeOfType(typeof(BadRequestResult));
-        }
-
-        [Test]
-        public async Task QueryStudents_ShouldReturnOk()
-        {
-            // Arrange
-            _mockStudentService.Setup(x => x.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .ReturnsAsync(new List<StudentDto>() { new StudentDto() });
 
             // Act
-            var result = await _controller.QueryStudents("Test STudent", new GPAQueryDto { GPA = null });
+            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(OkObjectResult));
@@ -51,11 +41,11 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         public async Task QueryStudents_ShouldReturnNotFound_WhenNoStudentsReturnedFromQuery()
         {
             // Arrange
-            _mockStudentService.Setup(x => x.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .ReturnsAsync([]);
 
             // Act
-            var result = await _controller.QueryStudents("Test Student", new() { GPA = null });
+            var result = await _controller.GetStudents("Test Student", new() { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(NotFoundResult));

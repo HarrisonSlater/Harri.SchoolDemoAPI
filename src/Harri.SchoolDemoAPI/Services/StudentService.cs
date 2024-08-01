@@ -51,14 +51,9 @@ namespace Harri.SchoolDemoAPI.Services
             }
         }
 
-        public async Task<List<StudentDto>> GetAllStudents()
+        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
         {
-            return await _studentRepository.GetAllStudents();
-        }
-
-        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery)
-        {
-            return await _studentRepository.QueryStudents(name, gpaQuery);
+            return await _studentRepository.GetStudents(name, gpaQuery);
         }
     }
 }

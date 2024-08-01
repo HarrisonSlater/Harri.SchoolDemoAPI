@@ -122,7 +122,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         public async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
-            var response = await _studentRepository.QueryStudents(name);
+            var response = await _studentRepository.GetStudents(name);
 
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
@@ -135,7 +135,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var searchName = Guid.NewGuid().ToString();
 
             // Act
-            var response = await _studentRepository.QueryStudents(searchName, null);
+            var response = await _studentRepository.GetStudents(searchName, null);
 
             // Assert
             response.Should().BeEmpty();
@@ -156,7 +156,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _studentRepository.QueryStudents(null, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(null, gpaQueryDto);
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -178,7 +178,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _studentRepository.QueryStudents(null, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(null, gpaQueryDto);
 
             // Assert
             response.Should().NotBeNull();
@@ -206,7 +206,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _studentRepository.QueryStudents(name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(name, gpaQueryDto);
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -231,7 +231,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _studentRepository.QueryStudents(name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(name, gpaQueryDto);
 
             // Assert
             response.Should().BeEmpty();
@@ -249,7 +249,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -264,7 +264,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
 
             // Assert
             response.Should().NotBeNull();
@@ -285,7 +285,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -300,7 +300,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _studentRepository.QueryStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
 
             // Assert
             response.Should().BeEmpty();
