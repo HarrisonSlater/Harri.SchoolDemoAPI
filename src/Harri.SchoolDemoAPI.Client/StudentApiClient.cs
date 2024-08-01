@@ -77,7 +77,6 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Delete
-
         public async Task<bool> DeleteStudent(int sId)
         {
             var restResponse = await DeleteStudentRestResponse(sId);
@@ -114,33 +113,15 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Get Students
-        public async Task<List<StudentDto>?> GetStudents()
+        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
         {
-            var restResponse = await GetStudentsRestResponse();
+            var restResponse = await GetStudentsRestResponse(name, gpaQuery);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse()
+        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null)
         {
             var request = new RestRequest(BaseRoute);
-            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
-            if (!restResponse.IsSuccessStatusCode)
-            {
-                restResponse.Data = null;
-            }
-            return restResponse;
-        }
-
-        // Query Students
-        public async Task<List<StudentDto>?> QueryStudents(string? name = null, GPAQueryDto? gpaQuery = null)
-        {
-            var restResponse = await QueryStudentsRestResponse(name, gpaQuery);
-            return restResponse.Data;
-        }
-
-        public async Task<RestResponse<List<StudentDto>>> QueryStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null)
-        {
-            var request = new RestRequest(BaseRoute + "query");
             if (name is not null)
             {
                 request.AddQueryParameter("name", name);

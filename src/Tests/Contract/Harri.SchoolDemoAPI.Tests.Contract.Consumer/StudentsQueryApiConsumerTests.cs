@@ -10,24 +10,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
     public class StudentsQueryApiConsumerTests : ConsumerTestBase
     {
-        [Test]
-        public async Task QueryStudents_WhenCalledWithoutArguments_Returns400()
-        {
-            _pact.UponReceiving($"a request without arguments to query students")
-                    .WithRequest(HttpMethod.Get, $"/students/query")
-                    .WillRespond()
-                    .WithStatus(HttpStatusCode.BadRequest);
-
-            await _pact.VerifyAsync(async ctx =>
-            {
-                var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.QueryStudentsRestResponse();
-
-                // Client Assertions
-                response.Data.Should().BeNull();
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            });
-        }
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
@@ -44,7 +26,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var name = "Test Student";
             var gpaString = JsonSerializer.Serialize(gpaQuery);
             _pact.UponReceiving($"a bad request to query students: {name}, {gpaString}")
-                    .WithRequest(HttpMethod.Get, $"/students/query")
+                    .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters("Test Student", gpaQuery)
                     .WillRespond()
                     .WithStatus(HttpStatusCode.BadRequest);
@@ -52,7 +34,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.QueryStudentsRestResponse(name, gpaQuery);
+                var response = await client.GetStudentsRestResponse(name, gpaQuery);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -85,7 +67,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         {"name", nameSerialized },
                         {"gpaQuery", gpaQuerySerialized },
                     })
-                    .WithRequest(HttpMethod.Get, $"/students/query")
+                    .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
@@ -115,7 +97,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.QueryStudents(name, gpaQuery);
+                var students = await client.GetStudents(name, gpaQuery);
 
                 // Client Assertions
                 students.Should().NotBeNull().And.HaveCountGreaterThan(0);
@@ -136,7 +118,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
             var pactBuilder = _pact.UponReceiving($"a request to query students by name and GPA")
                     .Given("no students exist for querying")
-                    .WithRequest(HttpMethod.Get, $"/students/query")
+                    .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound);
@@ -144,7 +126,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.QueryStudentsRestResponse(name, gpaQuery);
+                var response = await client.GetStudentsRestResponse(name, gpaQuery);
 
                 // Client Assertions
                 response.Data.Should().BeNull();

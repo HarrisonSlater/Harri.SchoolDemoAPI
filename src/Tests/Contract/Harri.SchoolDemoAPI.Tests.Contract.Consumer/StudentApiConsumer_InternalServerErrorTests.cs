@@ -71,8 +71,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             var sName = "Test Student";
 
-            yield return new TestCaseData((IStudentApi c) => c.QueryStudents(sName), HttpMethod.Get, $"/students/query", "query students", ("name", sName));
-            yield return new TestCaseData((IStudentApi c) => c.QueryStudentsRestResponse(sName), HttpMethod.Get, $"/students/query", "query students with rest response", ("name", sName));
+            yield return new TestCaseData((IStudentApi c) => c.GetStudents(sName), HttpMethod.Get, $"/students/", "filter students", ("name", sName));
+            yield return new TestCaseData((IStudentApi c) => c.GetStudentsRestResponse(sName), HttpMethod.Get, $"/students/", "filter students with rest response", ("name", sName));
         }
 
         [TestCaseSource(nameof(QueryString_StudentApiClientOperationsTestCases))]
