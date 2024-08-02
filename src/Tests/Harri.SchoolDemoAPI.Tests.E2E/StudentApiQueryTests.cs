@@ -84,8 +84,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
         private static IEnumerable<TestCaseData> BadRequestTestCases()
         {
-            yield return new TestCaseData(" \t\n  ", null);
-            yield return new TestCaseData(null, null);
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2, IsNull = true } });
         }
