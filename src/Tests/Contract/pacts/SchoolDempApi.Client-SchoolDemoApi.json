@@ -364,7 +364,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":4,\"eq\":null}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":4,\"eq\":null}} Test Case 6",
       "pending": false,
       "request": {
         "method": "GET",
@@ -387,7 +387,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":null,\"eq\":4}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":null,\"eq\":4}} Test Case 2",
       "pending": false,
       "request": {
         "method": "GET",
@@ -410,7 +410,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":4,\"eq\":4}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":4,\"eq\":4}} Test Case 1",
       "pending": false,
       "request": {
         "method": "GET",
@@ -433,7 +433,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":-1}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":-1}} Test Case 3",
       "pending": false,
       "request": {
         "method": "GET",
@@ -453,7 +453,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":0}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":0}} Test Case 4",
       "pending": false,
       "request": {
         "method": "GET",
@@ -473,7 +473,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":4}}",
+      "description": "a bad request to query students: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":4}} Test Case 5",
       "pending": false,
       "request": {
         "method": "GET",
@@ -1268,50 +1268,6 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to filter students",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "the api returns a 500 internal server error"
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "path": "/students/",
-        "query": {
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 500
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to filter students with rest response",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "the api returns a 500 internal server error"
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "path": "/students/",
-        "query": {
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 500
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
       "description": "a request to get a student",
       "pending": false,
       "providerStates": [
@@ -1974,6 +1930,50 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to get students with query",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to get students with query rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to get students with rest response",
       "pending": false,
       "providerStates": [
@@ -2581,7 +2581,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":null}",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":null} Test Case 2",
       "pending": false,
       "providerStates": [
         {
@@ -2712,7 +2712,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 10",
       "pending": false,
       "providerStates": [
         {
@@ -2851,7 +2851,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":2,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":2,\"eq\":null}} Test Case 4",
       "pending": false,
       "providerStates": [
         {
@@ -2993,7 +2993,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}}",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}} Test Case 1",
       "pending": false,
       "providerStates": [
         {
@@ -3132,7 +3132,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 8",
       "pending": false,
       "providerStates": [
         {
@@ -3271,7 +3271,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 9",
       "pending": false,
       "providerStates": [
         {
@@ -3407,7 +3407,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":0.99,\"gt\":0,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":0.99,\"gt\":0,\"eq\":null}} Test Case 6",
       "pending": false,
       "providerStates": [
         {
@@ -3546,7 +3546,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":2,\"gt\":4,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":2,\"gt\":4,\"eq\":null}} Test Case 5",
       "pending": false,
       "providerStates": [
         {
@@ -3685,7 +3685,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}}",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}} Test Case 3",
       "pending": false,
       "providerStates": [
         {
@@ -3821,7 +3821,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}}",
+      "description": "a valid request to query students by name and GPA: null, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 7",
       "pending": false,
       "providerStates": [
         {

@@ -10,22 +10,23 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
     public class StudentsQueryApiConsumerTests : ConsumerTestBase
     {
+        // testCase string is needed so the test explorer correctly counts these test cases as separate
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = -1 } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 0 } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = true } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = false } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } }, "Test Case 1");
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } }, "Test Case 2");
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = -1 } }, "Test Case 3");
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 0 } }, "Test Case 4");
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, IsNull = true } }, "Test Case 5");
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 4, IsNull = false } }, "Test Case 6");
         }
 
         [TestCaseSource(nameof(GetInvalidGPAQueryDtoTestCases))]
-        public async Task QueryStudents_WhenCalledWithoutInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery)
+        public async Task QueryStudents_WhenCalledWithoutInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery, string testCase)
         {
             var name = "Test Student";
             var gpaString = JsonSerializer.Serialize(gpaQuery);
-            _pact.UponReceiving($"a bad request to query students: {name}, {gpaString}")
+            _pact.UponReceiving($"a bad request to query students: {name}, {gpaString} {testCase}")
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters("Test Student", gpaQuery)
                     .WillRespond()
@@ -44,24 +45,24 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
         private static IEnumerable<TestCaseData> GetValidQueryTestCases()
         {
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 0.99m, Gt = 0 } });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = true } });
-            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = false } });
-            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = false } });
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Eq = 4 } }, "Test Case 1");
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = null }, "Test Case 2");
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 4 } }, "Test Case 3");
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { Lt = 4, Gt = 2 } }, "Test Case 4");
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 2, Gt = 4 } }, "Test Case 5");
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Lt = 0.99m, Gt = 0 } }, "Test Case 6");
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = true } }, "Test Case 7");
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = true } }, "Test Case 8");
+            yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { IsNull = false } }, "Test Case 9");
+            yield return new TestCaseData("Test Student", new GPAQueryDto() { GPA = new() { IsNull = false } }, "Test Case 10");
         }
 
         [TestCaseSource(nameof(GetValidQueryTestCases))]
-        public async Task QueryStudents_WhenCalled_ReturnsMatchingStudents(string? name, GPAQueryDto? gpaQuery)
+        public async Task QueryStudents_WhenCalled_ReturnsMatchingStudents(string? name, GPAQueryDto? gpaQuery, string testCase)
         {
             var nameSerialized = name ?? "null";
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
-            var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {nameSerialized}, {gpaQuerySerialized}")
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {nameSerialized}, {gpaQuerySerialized} {testCase}")
                     .Given("some students exist for querying", new Dictionary<string, string>() {
                         //Passed to provider to asserting on the mocked respository
                         {"name", nameSerialized },
