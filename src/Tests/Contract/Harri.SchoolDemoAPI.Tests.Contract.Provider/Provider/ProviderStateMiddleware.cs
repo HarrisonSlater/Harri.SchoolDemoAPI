@@ -201,7 +201,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents())
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn));
 
             return Task.CompletedTask;
@@ -209,7 +209,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureNoStudentsExist(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents())
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .Returns(Task.FromResult(new List<StudentDto>()));
 
             return Task.CompletedTask;
@@ -217,7 +217,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureNoStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .Returns(Task.FromResult(new List<StudentDto>()));
 
             return Task.CompletedTask;
@@ -235,7 +235,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 expectedGpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString() ?? "");
             }
 
-            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn))
                 .Callback<string, GPAQueryDto>((nameParam, gpaQueryDtoParam) =>
                 {
@@ -255,8 +255,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.GetAllStudents()).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.QueryStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
 
             return Task.CompletedTask;
         }

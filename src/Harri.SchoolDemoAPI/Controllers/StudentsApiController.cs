@@ -151,32 +151,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <summary>
         /// Get students
         /// </summary>
-        /// <remarks>Get all  students</remarks>
-        /// <response code="200">Successful operation</response>
-        /// <response code="404">No students found</response>
-        [HttpGet]
-        [Route("/students")]
-        [SwaggerOperation(OperationId = "GetStudents")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
-        [Tags("Students")]
-        public async Task<IActionResult> GetStudents()
-        {
-            var students = await _studentService.GetAllStudents();
-
-            if (students.IsNullOrEmpty())
-            {
-                return NotFound();
-            }
-            else
-            {
-                return Ok(students);
-            }
-        }
-
-        /// <summary>
-        /// Get students
-        /// </summary>
-        /// <remarks>Get students by query</remarks>
+        /// <remarks>Get all  students by optional query</remarks>
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
         /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
         /// See <see cref="ComparativeQueryDto{T}"></see></param>
@@ -184,18 +159,18 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
         [HttpGet]
-        [Route("/students/query")]
-        [SwaggerOperation(OperationId = "QueryStudents")]
+        [Route("/students")]
+        [SwaggerOperation(OperationId = "GetStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public async virtual Task<IActionResult> QueryStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
+        public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
         {
-            if (name is null && gpaQuery.GPA is null)
-            {
-                return BadRequest();
-            }
+            //if (name is null && gpaQuery.GPA is null)
+            //{
+            //    return BadRequest();
+            //}
 
-            var students = await _studentService.QueryStudents(name, gpaQuery);
+            var students = await _studentService.GetStudents(name, gpaQuery);
 
             if (students.IsNullOrEmpty())
             {

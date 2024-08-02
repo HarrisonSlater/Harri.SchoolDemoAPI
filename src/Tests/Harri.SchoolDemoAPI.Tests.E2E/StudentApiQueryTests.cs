@@ -84,8 +84,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
         private static IEnumerable<TestCaseData> BadRequestTestCases()
         {
-            yield return new TestCaseData(" \t\n  ", null);
-            yield return new TestCaseData(null, null);
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2 } });
             yield return new TestCaseData(null, new GPAQueryDto() { GPA = new() { Eq = 2, Gt = 2, IsNull = true } });
         }
@@ -93,7 +91,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         [TestCaseSource(nameof(BadRequestTestCases))]
         public async Task QueryStudents_ByName_ShouldReturnBadRequest(string? name, GPAQueryDto? gpaQuery)
         {
-            var response = await _client.QueryStudentsRestResponse(name, gpaQuery);
+            var response = await _client.GetStudentsRestResponse(name, gpaQuery);
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -105,7 +103,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var searchName = Guid.NewGuid().ToString();
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(searchName, null);
+            var response = await _client.GetStudentsRestResponse(searchName, null);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -128,7 +126,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -151,7 +149,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(null, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
@@ -180,7 +178,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(name, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -207,7 +205,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(name, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -227,7 +225,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -244,7 +242,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _client.GetStudentsRestResponse(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
 
             // Assert
             response.StatusCode.Should().BeOneOf(HttpStatusCode.OK, HttpStatusCode.NotFound);
@@ -269,7 +267,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+            var response = await _client.GetStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -286,7 +284,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _client.QueryStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+            var response = await _client.GetStudentsRestResponse(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -311,7 +309,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         private async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
             // Act
-            var response = await _client.QueryStudentsRestResponse(name, null);
+            var response = await _client.GetStudentsRestResponse(name, null);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);

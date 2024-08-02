@@ -11,12 +11,10 @@ namespace Harri.SchoolDemoAPI.Client
         Task<RestResponse> DeleteStudentRestResponse(int sId);
         Task<StudentDto?> GetStudent(int sId);
         Task<RestResponse<StudentDto>> GetStudentRestResponse(int sId);
-        Task<List<StudentDto>?> GetStudents();
-        Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse();
+        Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null);
+        Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null);
         Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
         Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student);
-        Task<List<StudentDto>?> QueryStudents(string? name = null, GPAQueryDto? gpaQuery = null);
-        Task<RestResponse<List<StudentDto>>> QueryStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null);
         Task<bool?> UpdateStudent(int sId, UpdateStudentDto student);
         Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student);
     }

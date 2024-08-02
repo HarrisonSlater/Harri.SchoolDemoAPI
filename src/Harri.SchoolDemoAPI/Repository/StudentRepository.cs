@@ -53,15 +53,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> GetAllStudents()
-        {
-            using (var connection = _dbConnectionFactory.GetConnection())
-            {
-                return (await connection.QueryAsync<StudentDto>("SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student ORDER BY sId")).ToList();
-            }
-        }
-
-        public async Task<List<StudentDto>> QueryStudents(string? name, GPAQueryDto? gpaQuery = null)
+        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
         {
             var builder = new SqlBuilder();
             
