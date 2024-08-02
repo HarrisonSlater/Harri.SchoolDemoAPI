@@ -165,11 +165,6 @@ namespace Harri.SchoolDemoAPI.Controllers
         [Tags("Students")]
         public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
         {
-            //if (name is null && gpaQuery.GPA is null)
-            //{
-            //    return BadRequest();
-            //}
-
             var students = await _studentService.GetStudents(name, gpaQuery);
 
             if (students.IsNullOrEmpty())
