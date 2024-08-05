@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     
     <PackageId>Harri.SchoolDemoAPI.HealthCheckClient</PackageId>
-    <Version>1.0.13-prerelease</Version>
+    <Version>1.0.13-prerelease1</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
