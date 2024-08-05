@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <PackageId>Harri.SchoolDemoAPI.Client</PackageId>
+    <PackageId>Harri.SchoolDemoAPI.HealthCheckClient</PackageId>
     <Version>1.0.13-prerelease</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
