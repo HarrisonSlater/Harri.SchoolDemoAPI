@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <PackageId>Harri.SchoolDemoAPI.Client</PackageId>
-    <Version>1.0.12</Version>
+    <PackageId>Harri.SchoolDemoAPI.HealthCheckClient</PackageId>
+    <Version>1.0.13</Version>
     <Authors>harri.dev</Authors>
     <Company>harri.dev</Company>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

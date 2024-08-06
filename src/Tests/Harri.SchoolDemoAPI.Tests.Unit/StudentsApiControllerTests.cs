@@ -2,8 +2,6 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Controllers;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -24,7 +22,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
 
         [TestCase(null)]
         [TestCase("Test Student")]
-        public async Task QueryStudents_ShouldReturnOk(string? name)
+        public async Task GetStudents_ShouldReturnOk(string? name)
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
@@ -38,7 +36,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [Test]
-        public async Task QueryStudents_ShouldReturnNotFound_WhenNoStudentsReturnedFromQuery()
+        public async Task GetStudents_ShouldReturnNotFound_WhenNoStudentsReturned()
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))

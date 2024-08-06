@@ -97,7 +97,15 @@ stages:
           includesymbols: true
           includesource: true
           versioningScheme: 'off'
-
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/Harri.SchoolDemoAPI.HealthCheckClient.csproj'
+          packDirectory: '$(Build.ArtifactStagingDirectory)/Nuget'
+          nobuild: true
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'off'
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
