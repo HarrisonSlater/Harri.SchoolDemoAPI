@@ -39,7 +39,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         }
 
         [Test]
-        public async Task QueryStudents_ShouldReturnBadRequest()
+        public async Task GetStudents_ShouldReturnBadRequest()
         {
             var response = await _client.GetStudentsRestResponse(_studentToMatchName, new GPAQueryDto { GPA = new() { Eq = 2, Gt = 2 } });
             response.Data.Should().BeNull();
@@ -48,7 +48,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
         private static IEnumerable<TestCaseData> NotMatchingTestCases()
         {
-            var testName = "QueryStudents_ShouldNotMatch";
+            var testName = "GetStudents_ShouldNotMatch";
             yield return new TestCaseData(_studentToMatchName, new GPAQueryDto() { GPA = new() { Gt = 3.91m, Lt = 3.91m } }) { TestName = testName};
 
             yield return new TestCaseData(_studentToMatchName, new GPAQueryDto() { GPA = new() { Eq = 2.93m } }) { TestName = testName};
@@ -57,7 +57,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         }
 
         [TestCaseSource(nameof(NotMatchingTestCases))]
-        public async Task QueryStudents_ShouldNotMatch(string? name, GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldNotMatch(string? name, GPAQueryDto gpaQueryDto)
         {
             // Arrange
             // Act
@@ -76,7 +76,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         }
 
         [TestCaseSource(nameof(MatchingTestCases))]
-        public async Task QueryStudents_ShouldMatch_OnGPA(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldMatch_OnGPA(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             // Act
