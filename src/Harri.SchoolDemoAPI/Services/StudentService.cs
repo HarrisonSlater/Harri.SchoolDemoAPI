@@ -35,7 +35,6 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.DeleteStudent(sId);
         }
 
-        //TODO unit test
         public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
         {
             var existingStudent = await _studentRepository.GetStudent(sId);
