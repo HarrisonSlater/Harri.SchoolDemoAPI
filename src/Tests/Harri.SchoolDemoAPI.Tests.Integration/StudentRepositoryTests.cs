@@ -2,7 +2,6 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Microsoft.Data.SqlClient;
-using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {

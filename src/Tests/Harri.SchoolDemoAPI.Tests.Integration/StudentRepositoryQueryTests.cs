@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
-using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
