@@ -1,23 +1,13 @@
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
+using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 using Microsoft.Data.SqlClient;
-using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    public class StudentRepositoryTests : IntegrationTestBase
+    public class StudentRepositoryTests : StudentRepositoryTestBase
     {
-        private static IStudentRepository _studentRepository;
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
-            
-            _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
-        }
-
         // This test assumes a restored clean database
         [Test]
         public async Task GetStudent_ShouldReturnStudent()
@@ -190,11 +180,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
-        }
-
-        private async Task CleanUpTestStudent(int sId)
-        {
-            await _studentRepository.DeleteStudent(sId);
         }
     }
 }

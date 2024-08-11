@@ -1,14 +1,12 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
-using System.Net;
+using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    public class StudentRepositoryQueryTests : IntegrationTestBase
+    public class StudentRepositoryQueryTests : StudentRepositoryTestBase
     {
-        private static IStudentRepository _studentRepository;
-
         //Test student 1
         private static NewStudentDto _studentToMatchName;
         private static int _studentToMatchNameId;
@@ -39,23 +37,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static StudentDto ExpectedStudentToFindMatchingNameUnicode => GetStudentDtoFor(_studentToMatchNameUnicodeId, _studentToMatchNameUnicode);
 
-        private static StudentDto GetStudentDtoFor(int id, NewStudentDto newStudent)
-        {
-            return new StudentDto()
-            {
-                SId = id,
-                Name = newStudent.Name,
-                GPA = newStudent.GPA
-            };
-        }
 
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
-            
-            _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
-
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
             _studentToMatchNameId = await _studentRepository.AddStudent(_studentToMatchName);
 
@@ -91,8 +76,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("johnnny 'the integrator' testShoes")]
         [TestCase("JOHNNNY 'THE INTEGRATOR' TESTSHOES")]
         [TestCase("Johnnny 'The Integrator' TestShoes")]
-        public async Task QueryStudents_ShouldMatch_OnName(string name)
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
+        public async Task GetStudents_ShouldMatch_OnName(string name)
+            => await GetStudents_ShouldMatch(name, ExpectedStudentToFindMatchingName);
 
         [TestCase("Johnnny")]
         [TestCase("johnnny")]
@@ -105,8 +90,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("12345")]
         [TestCase("6789")]
         [TestCase("Johnnny I. Test-Shoes (123456789)")]
-        public async Task QueryStudents_ShouldMatch_OnNameSpecial(string name)
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
+        public async Task GetStudents_ShouldMatch_OnNameSpecial(string name)
+            => await GetStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameSpecial);
 
         [TestCase("Jöhnnny")]
         [TestCase("jöhnnny")]
@@ -117,10 +102,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase("ö")]
         [TestCase("Jöhnnny Äpfelbücher")]
 
-        public async Task QueryStudents_ShouldMatch_OnNameUnicode(string name)
-            => await QueryStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
+        public async Task GetStudents_ShouldMatch_OnNameUnicode(string name)
+            => await GetStudents_ShouldMatch(name, ExpectedStudentToFindMatchingNameUnicode);
 
-        public async Task QueryStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
+        public async Task GetStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
             var response = await _studentRepository.GetStudents(name);
 
@@ -129,7 +114,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task QueryStudents_ShouldNotMatch_OnName()
+        public async Task GetStudents_ShouldNotMatch_OnName()
         {
             // Arrange
             var searchName = Guid.NewGuid().ToString();
@@ -150,7 +135,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [TestCaseSource(nameof(MatchingGPAOnlyTestCases))]
-        public async Task QueryStudents_ShouldMatch_OnGPA(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldMatch_OnGPA(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
@@ -172,7 +157,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [TestCaseSource(nameof(NotMatchingGPAOnlyTestCases))]
-        public async Task QueryStudents_ShouldNotMatch_OnGPA(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldNotMatch_OnGPA(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
@@ -199,7 +184,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [TestCaseSource(nameof(MatchingGPAAndNameTestCases))]
-        public async Task QueryStudents_ShouldMatch_OnNameAndGPA(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldMatch_OnNameAndGPA(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
@@ -224,7 +209,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [TestCaseSource(nameof(NotMatchingGPAAndNameTestCases))]
-        public async Task QueryStudents_ShouldNotMatch_OnNameAndGPA(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldNotMatch_OnNameAndGPA(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
@@ -243,7 +228,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [TestCaseSource(nameof(MatchingNullGPATestCases))]
-        public async Task QueryStudents_ShouldMatch_OnNullGpa_WhenIsNull_True(GPAQueryDto gpaQueryDto)
+        public async Task GetStudents_ShouldMatch_OnNullGpa_WhenIsNull_True(GPAQueryDto gpaQueryDto)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
@@ -258,7 +243,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task QueryStudents_ShouldNotMatch_OnNullGpa_WhenIsNull_False()
+        public async Task GetStudents_ShouldNotMatch_OnNullGpa_WhenIsNull_False()
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
@@ -279,7 +264,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         [TestCase(false)]
         [TestCase(null)]
-        public async Task QueryStudents_ShouldMatch_OnGpa_WhenIsNull_False_OrNull(bool? isNull)
+        public async Task GetStudents_ShouldMatch_OnGpa_WhenIsNull_False_OrNull(bool? isNull)
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
@@ -294,7 +279,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task QueryStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
+        public async Task GetStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
@@ -304,11 +289,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             response.Should().BeEmpty();
-        }
-
-        private async Task CleanUpTestStudent(int sId)
-        {
-            await _studentRepository.DeleteStudent(sId);
         }
     }
 }
