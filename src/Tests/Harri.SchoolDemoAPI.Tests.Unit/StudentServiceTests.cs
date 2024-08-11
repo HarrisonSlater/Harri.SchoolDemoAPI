@@ -40,7 +40,6 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [TestCaseSource(nameof(PatchStudentTestCases))]
-
         public async Task PatchStudent_ShouldApplyPatchCorrectly(StudentPatchDto patchDto, StudentDto existingStudent, StudentDto expectedPatchedStudent)
         {
             // Arrange
@@ -60,7 +59,6 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [Test]
-
         public async Task PatchStudent_WhenStudentNotFound_ShouldReturnNull()
         {
             // Arrange
