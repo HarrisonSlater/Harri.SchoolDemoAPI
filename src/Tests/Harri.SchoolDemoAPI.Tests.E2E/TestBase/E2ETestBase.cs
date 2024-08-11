@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Harri.SchoolDemoAPI.Tests.E2E
+namespace Harri.SchoolDemoAPI.Tests.E2E.TestBase
 {
     [Category("E2E")]
     [TestFixture]

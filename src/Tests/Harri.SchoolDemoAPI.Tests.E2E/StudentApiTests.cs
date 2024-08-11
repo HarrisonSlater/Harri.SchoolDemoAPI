@@ -1,21 +1,12 @@
 using Harri.SchoolDemoAPI.Client;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Tests.E2E.TestBase;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    public class StudentApiTests : E2ETestBase
+    public class StudentApiTests : StudentApiTestBase
     {
-        private static StudentApiClient _client;
-
-        [OneTimeSetUp]
-        public static void Setup()
-        {
-            if (APIUrlToTest is null) throw new ArgumentException("APIUrlToTest from appsettings.json cannot be null");
-
-            _client = new StudentApiClient(new HttpClient() { BaseAddress = new Uri(APIUrlToTest) });
-        }
-
         // This test assumes a restored clean database
         [Test]
         public async Task GetStudent_ShouldReturnStudent()
@@ -161,15 +152,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
-        }
-
-        private async Task CleanUpTestStudent(int sId)
-        {
-            try
-            {
-                await _client.DeleteStudent(sId);
-            }
-            catch { }
         }
     }
 }

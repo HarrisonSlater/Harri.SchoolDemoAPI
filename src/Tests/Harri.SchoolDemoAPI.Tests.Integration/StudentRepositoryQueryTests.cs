@@ -1,13 +1,12 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
+using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    public class StudentRepositoryQueryTests : IntegrationTestBase
+    public class StudentRepositoryQueryTests : StudentRepositoryTestBase
     {
-        private static IStudentRepository _studentRepository;
-
         //Test student 1
         private static NewStudentDto _studentToMatchName;
         private static int _studentToMatchNameId;
@@ -38,23 +37,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static StudentDto ExpectedStudentToFindMatchingNameUnicode => GetStudentDtoFor(_studentToMatchNameUnicodeId, _studentToMatchNameUnicode);
 
-        private static StudentDto GetStudentDtoFor(int id, NewStudentDto newStudent)
-        {
-            return new StudentDto()
-            {
-                SId = id,
-                Name = newStudent.Name,
-                GPA = newStudent.GPA
-            };
-        }
 
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
-            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
-            
-            _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
-
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
             _studentToMatchNameId = await _studentRepository.AddStudent(_studentToMatchName);
 
@@ -303,11 +289,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             response.Should().BeEmpty();
-        }
-
-        private async Task CleanUpTestStudent(int sId)
-        {
-            await _studentRepository.DeleteStudent(sId);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Tests.E2E.TestBase;
 using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E
@@ -17,7 +18,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             _studentToMatchName = Guid.NewGuid().ToString();
         }
-
 
         private static StudentDto ExpectedStudentToFind => GetStudentDtoFor(_studentToMatchId, _studentToMatch);
 
