@@ -6,7 +6,7 @@ using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    public class StudentApiQueryTests : E2ETestBase
+    public class StudentApiQueryTests : StudentApiTestBase
     {
         private static StudentApiClient _client;
 
@@ -87,25 +87,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             response.Data.Should().NotBeNull().And.ContainSingle();
             response.Data!.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
-        }
-
-        private async Task CleanUpTestStudent(int sId)
-        {
-            try
-            {
-                await _client.DeleteStudent(sId);
-            }
-            catch { }
-        }
-
-        private static StudentDto GetStudentDtoFor(int id, NewStudentDto newStudent)
-        {
-            return new StudentDto()
-            {
-                SId = id,
-                Name = newStudent.Name,
-                GPA = newStudent.GPA
-            };
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Harri.SchoolDemoAPI.Client;
+using Harri.SchoolDemoAPI.Models.Dto;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E.TestBase
 {
@@ -18,5 +19,16 @@ namespace Harri.SchoolDemoAPI.Tests.E2E.TestBase
         {
             await _client.DeleteStudent(sId);
         }
+
+        public static StudentDto GetStudentDtoFor(int id, NewStudentDto newStudent)
+        {
+            return new StudentDto()
+            {
+                SId = id,
+                Name = newStudent.Name,
+                GPA = newStudent.GPA
+            };
+        }
+
     }
 }

@@ -234,7 +234,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingName.Name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, gpaQueryDto);
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -249,7 +249,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingName.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
 
             // Assert
             response.Should().NotBeNull();
@@ -270,7 +270,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -282,8 +282,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
         {
             // Arrange
-            var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
-
             // Act
             var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
 
