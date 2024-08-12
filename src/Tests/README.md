@@ -4,7 +4,7 @@ Standard Unit test project with mocked dependencies
 # [Harri.SchoolDemoAPI.Tests.Integration](Harri.SchoolDemoAPI.Tests.Integration)
 Tests the integration between the repository module and the actual database.
 
-This project covers testing:
+This project covers database testing of:
  - Stored procedures
  - Direct SQL queries via Dapper
  - Mapping of domain models with Dapper
