@@ -9,8 +9,14 @@ This project covers database testing of:
  - Stored procedures
  - Direct SQL queries via Dapper
  - Mapping of domain models with Dapper
+
 See [Running the database from container](../../README.md#running-the-database-from-container) for setting up a database to run these tests
 If this API made calls to another REST API for example, that could be covered here also or in E2E tests below.
+
+The benefits by writing these tests as direct integration tests targeting the repository classes instead of E2E tests:
+ - Faster execution time
+ - Collect code coverage for the repository classes
+ - Direct assertions on the response object from respository methods
 
 # [Harri.SchoolDemoAPI.Tests.E2E](Harri.SchoolDemoAPI.Tests.E2E)
 
