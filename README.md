@@ -85,7 +85,7 @@ Included are Unit, Contract, Integration, and E2E test projects.
 See the full [Test README here](src/Tests/README.md) or 
 [Contract Test README.md](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md)
 
-All test projects are run as part of the Azure DevOps pipeline as part of the Deploy & Test stage, and are run in-agent.
+All test projects are run as part of the Azure DevOps pipeline as part of the Build stage (for Unit and Contract) or the 'Deploy & Test' stage (For Integration and E2E), and are run in-agent.
 
 ## Build pipeline
 Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
@@ -94,7 +94,7 @@ A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
 
 ## Pipeline deploying
-In a real world pipeline Deploy & Test would be separate stages where Deploy actually deploys to an environment. In this pipeline 'Deploy' just runs the container image / .net dll in-agent. This is done to reduce ongoing costs of this project
+In a real world pipeline Deploy & Test would be separate stages where Deploy actually deploys to an environment. In this pipeline 'Deploy' just runs the container image / .NET dll in-agent. This is done to remove ongoing hosting costs
 
 ## Logging using Application Insights & Serilog
 Logging accessible via standard ILogger interface
