@@ -20,7 +20,7 @@ You need a running instance of the SchoolDemoAPI and SQL database to run these t
 
 This project covers testing:
  - Scenarios for each route/feature in the API
- - Sanity check/ Smoke checks to be performed after deployment
+ - Sanity checks/ Smoke checks to be performed after deployment
 
 # Integration & E2E notes:
 Both these projects create new students in a real database and clean up after each test.
@@ -30,7 +30,7 @@ This is an especially useful property for E2E tests as part of a deployment pipe
 
 # Contract Tests 
 ## ([Harri.SchoolDemoAPI.Tests.Contract.Consumer](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer) & [Harri.SchoolDemoAPI.Tests.Contract.Provider](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider))
-See the contract test readme: [README.md](Contract/README.md)
+See the contract test [README.md](Contract/README.md)
 
 # [Harri.SchoolDempAPI.Tests.Common](Harri.SchoolDempAPI.Tests.Common)
 Currently unused. Common code and helpers used across some or all test projects can live here.
