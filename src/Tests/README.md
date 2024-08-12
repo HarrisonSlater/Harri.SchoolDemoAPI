@@ -3,12 +3,13 @@ Standard Unit test project with mocked dependencies
  
 # [Harri.SchoolDemoAPI.Tests.Integration](Harri.SchoolDemoAPI.Tests.Integration)
 Tests the integration between the repository module and the actual database.
+Integration tests are run in-agent using a preconfigured containerised SQL server: [harri-schooldemosql-database](https://hub.docker.com/repository/docker/harrisonslater/harri-schooldemosql-database/general)
 
 This project covers database testing of:
  - Stored procedures
  - Direct SQL queries via Dapper
  - Mapping of domain models with Dapper
-
+See [#running-the-database-from-container](../../README.md#running-the-database-from-container) for setting up a database to run these tests
 If this API made calls to another REST API for example, that could be covered here also or in E2E tests below.
 
 # [Harri.SchoolDemoAPI.Tests.E2E](Harri.SchoolDemoAPI.Tests.E2E)
