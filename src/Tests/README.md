@@ -17,8 +17,10 @@ Tests the functionality of the API with realistic use cases.
 
 These tests instantiate the Harri.SchoolDemoAPI.Client to make REST requests to the API and assert an appropriate response is received.
 You need a running instance of the SchoolDemoAPI and SQL database to run these tests.
+
 This project covers testing:
- - Scenarios for each route in the API
+ - Scenarios for each route/feature in the API
+ - Sanity check/ Smoke checks to be performed after deployment
 
 # Integration & E2E notes:
 Both these projects create new students in a real database and clean up after each test.
