@@ -2,19 +2,20 @@
 
 Demo .NET 8 API about students, schools, and student's applications to schools
 
-This repository is intended as a demonstration of a RESTful API with a SQL Server database focusing on automated testing to validate the API functionality.
+This repository is intended as a demonstration of a RESTful API with a SQL Server database focusing on [automated testing](#automated-testing) to validate the API functionality.
 
 Also see a front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
 
 ## WIP - API
 So far the /students/ API is complete: [StudentsApiController.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
 
-Using:
+### Nuget packages used
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
+  - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
+- #### Logging
   - [Serilog](https://github.com/serilog/serilog)
   - [SEQ](https://datalust.co/seq)
-  - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
   
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
@@ -77,25 +78,23 @@ And to run the database container:
 
 > `docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
 
-## See Contract Tests 
-[Contract Test README.md](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md)
+## Automated Testing
+A heavy emphasis on automated testing has been used when developing this demo API. 
 
-Using:
-  - [Pact Net](https://github.com/pact-foundation/pact-net)
-  - [NUnit](https://github.com/nunit/nunit)
-  - [Moq](https://github.com/devlooped/moq)
-  - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
+Included are Unit, Contract, Integration, and E2E test projects.
+See the full [Test README here](src/Tests/README.md) or 
+[Contract Test README.md](src/Tests/Contract/README.md)
 
-## See Integration Tests
-[StudentApiTests.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Harri.SchoolDemoAPI.Tests.Integration/StudentApiTests.cs)
-
-Integration tests are run in-agent using a preconfigured containerised SQL server: [harri-schooldemosql-database](https://hub.docker.com/repository/docker/harrisonslater/harri-schooldemosql-database/general)
+All test projects are run as part of the Azure DevOps pipeline as part of the Build stage (for Unit and Contract) or the 'Deploy & Test' stage (For Integration and E2E), and are run in-agent.
 
 ## Build pipeline
 Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
 
 A successful pipeline run based on main looks like:
 ![image](docs/img/readme/ADOPipelineCapture.PNG)
+
+## Pipeline deploying
+In a real world pipeline Deploy & Test would be separate stages where Deploy actually deploys to an environment. In this pipeline 'Deploy' just runs the container image / .NET dll in-agent. This is done to remove ongoing hosting costs
 
 ## Logging using Application Insights & Serilog
 Logging accessible via standard ILogger interface
@@ -115,7 +114,7 @@ For App insights and SEQ:
 	- `In a production scenario you probably don't want to do this as sensitive data may be logged`
 
 ## Health check endpoint /health
-Response implemented with [AspNetCore.HealthChecks.UI.Client](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/src/HealthChecks.UI.Client/UIResponseWriter.cs)
+Response implemented with [AspNetCore.HealthChecks.UI.Client/UIResponseWriter.cs](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks/blob/master/src/HealthChecks.UI.Client/UIResponseWriter.cs)
 to return a result like:
 ```
 {
