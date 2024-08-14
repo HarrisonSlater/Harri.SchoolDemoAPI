@@ -83,7 +83,7 @@ A heavy emphasis on automated testing has been used when developing this demo AP
 
 Included are Unit, Contract, Integration, and E2E test projects.
 See the full [Test README here](src/Tests/README.md) or 
-[Contract Test README.md](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/README.md)
+[Contract Test README.md](src/Tests/Contract/README.md)
 
 All test projects are run as part of the Azure DevOps pipeline as part of the Build stage (for Unit and Contract) or the 'Deploy & Test' stage (For Integration and E2E), and are run in-agent.
 
