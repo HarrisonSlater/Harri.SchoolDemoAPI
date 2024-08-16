@@ -37,8 +37,8 @@ style UT3 stroke:green,stroke-width:4px,fill:lightgreen
 style API stroke:black,stroke-width:4px,fill:lightyellow
 
 ```
+This diagram shows what parts of this REST API are covered by each type of test below.
 
-The coverage for each test type is shown in green 
 # [Harri.SchoolDemoAPI.Tests.Unit](Harri.SchoolDemoAPI.Tests.Unit)
 Standard Unit test project with mocked dependencies
  
