@@ -8,7 +8,20 @@ Also see a front-end Blazor WASM SPA developed for this API here: [Blazor Admin 
 
 ## WIP - API
 So far the /students/ API is complete: [StudentsApiController.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
+## Project Diagram
+```mermaid
+flowchart LR
+Client[C# Client]
+SQL[(SQL)]
 
+subgraph API[REST API]
+direction LR
+Controller---Service---Repository
+end
+Client-- Network ---Controller
+Repository-- Network ---SQL
+
+```
 ### Nuget packages used
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client

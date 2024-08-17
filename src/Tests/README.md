@@ -1,3 +1,44 @@
+# Test Coverage Diagram
+```mermaid
+block-beta
+columns 8
+
+space:3 API[/"REST API"\]:3 space:3
+
+Client space Controller Service Repository space SQL[("SQL")]
+
+space:9
+
+space:2 UT1["Unit Test"] UT2["Unit Test"] UT3["Unit Test"]
+
+space space space
+space:8
+
+CT["Contract Tests"]:4 space:4
+
+space:8
+
+space:4 INT["Integration Tests"]:3 space
+
+space:8
+
+E2E["End-to-End Tests"]:7
+
+Client-- "Network" --> Controller
+
+Repository-- "Network" --> SQL
+
+style CT stroke:green,stroke-width:4px,fill:lightgreen
+style E2E stroke:green,stroke-width:4px,fill:lightgreen
+style INT stroke:green,stroke-width:4px,fill:lightgreen
+style UT1 stroke:green,stroke-width:4px,fill:lightgreen
+style UT2 stroke:green,stroke-width:4px,fill:lightgreen
+style UT3 stroke:green,stroke-width:4px,fill:lightgreen
+style API stroke:black,stroke-width:4px,fill:lightyellow
+
+```
+This diagram shows what parts of this REST API are covered by each type of test below.
+
 # [Harri.SchoolDemoAPI.Tests.Unit](Harri.SchoolDemoAPI.Tests.Unit)
 Standard Unit test project with mocked dependencies
  
