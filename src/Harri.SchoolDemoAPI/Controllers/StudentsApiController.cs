@@ -155,6 +155,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
         /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
         /// See <see cref="ComparativeQueryDto{T}"></see></param>
+        /// <param name="orderBy">ASC or DESC. Default sort order is ASC</param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
@@ -163,7 +164,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "GetStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
+        public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery, [FromQuery] SortOrder orderBy = SortOrder.ASC)
         {
             var students = await _studentService.GetStudents(name, gpaQuery);
 
