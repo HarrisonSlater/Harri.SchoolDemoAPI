@@ -1,9 +1,9 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Harri.SchoolDemoAPI.Controllers
+namespace Harri.SchoolDemoAPI.Models.Enums
 {
     /// <summary>
-    /// ASC or DESC
+    /// Ascending or descending
     /// </summary>
     public enum SortOrder
     {

@@ -8,6 +8,8 @@ using Swashbuckle.AspNetCore.Annotations;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
+using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Models;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -164,9 +166,12 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "GetStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery, [FromQuery] SortOrder orderBy = SortOrder.ASC)
+        public async Task<IActionResult> GetStudents(
+            [FromQuery(Name = APIConstants.Student.Name)] string? name,
+            [FromQuery] GPAQueryDto gpaQuery,
+            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy)
         {
-            var students = await _studentService.GetStudents(name, gpaQuery);
+            var students = await _studentService.GetStudents(name, gpaQuery, orderBy);
 
             if (students.IsNullOrEmpty())
             {

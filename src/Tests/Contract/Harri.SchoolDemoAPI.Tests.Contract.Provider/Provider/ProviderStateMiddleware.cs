@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 
@@ -201,7 +202,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn));
 
             return Task.CompletedTask;
@@ -209,7 +210,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureNoStudentsExist(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(new List<StudentDto>()));
 
             return Task.CompletedTask;
@@ -217,30 +218,49 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureNoStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(new List<StudentDto>()));
 
             return Task.CompletedTask;
         }
 
+        //TODO refactor
         private Task EnsureStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
             //Either parameter could be null
             string? name = ((JsonElement?)parameters["name"])?.ToString();
             var gpaQueryString = (JsonElement?)parameters["gpaQuery"];
 
+            string? orderBy = null;
+            if (parameters.ContainsKey("orderBy"))
+            {
+                orderBy = ((JsonElement?)parameters["orderBy"])?.ToString();
+            }
+
             GPAQueryDto? expectedGpaQuery = new GPAQueryDto() { GPA = null };
             if (gpaQueryString is not null)
             {
                 expectedGpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString() ?? "");
             }
+            SortOrder? expectedOrderBy = null;
+            if (orderBy is not null)
+            {
+                SortOrder parsedOrderBy; 
+                if (Enum.TryParse(orderBy, out parsedOrderBy))
+                {
+                    expectedOrderBy = parsedOrderBy;
+                }
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+                //expectedOrderBy = JsonSerializer.Deserialize<SortOrder?>(orderBy ?? "null");
+            }
+
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn))
-                .Callback<string, GPAQueryDto>((nameParam, gpaQueryDtoParam) =>
+                .Callback<string, GPAQueryDto, SortOrder?>((nameParam, gpaQueryDtoParam, orderByParam) =>
                 {
                     nameParam.Should().Be(name);
                     gpaQueryDtoParam.Should().BeEquivalentTo(expectedGpaQuery);
+                    orderByParam.Should().Be(expectedOrderBy);
                 });
 
             return Task.CompletedTask;
@@ -255,8 +275,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>())).Throws(testException);
 
             return Task.CompletedTask;
         }

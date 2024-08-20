@@ -1,4 +1,5 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -50,9 +51,9 @@ namespace Harri.SchoolDemoAPI.Services
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
+        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
         {
-            return await _studentRepository.GetStudents(name, gpaQuery);
+            return await _studentRepository.GetStudents(name, gpaQuery, orderBy);
         }
     }
 }

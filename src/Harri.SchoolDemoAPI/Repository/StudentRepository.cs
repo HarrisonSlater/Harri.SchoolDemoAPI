@@ -4,6 +4,7 @@ using System.Data;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Harri.SchoolDemoAPI.Models.Enums;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -53,8 +54,14 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
+        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
         {
+            if (orderBy is null)
+            {
+                orderBy = SortOrder.ASC;
+            }
+
+            //TODO implement order By
             var builder = new SqlBuilder();
             
             if (name != null)

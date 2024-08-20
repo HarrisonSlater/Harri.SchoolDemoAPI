@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Client;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using PactNet;
 using PactNet.Matchers;
 using System.Net;
@@ -64,7 +66,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {nameSerialized}, {gpaQuerySerialized} {testCase}")
                     .Given("some students exist for querying", new Dictionary<string, string>() {
-                        //Passed to provider to asserting on the mocked respository
+                        //Passed to provider for asserting on the mocked respository
                         {"name", nameSerialized },
                         {"gpaQuery", gpaQuerySerialized },
                     })
@@ -134,11 +136,78 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.StatusCode.Should().Be(HttpStatusCode.NotFound); 
             });
         }
+
+        // Sorting
+        //TODO optimise tests
+        private static IEnumerable<TestCaseData> GetValidOrderedQueryTestCases()
+        {
+            yield return new TestCaseData(SortOrder.ASC, "Test Case 1");
+            yield return new TestCaseData(SortOrder.DESC, "Test Case 2");
+            yield return new TestCaseData(null, "Test Case 3");
+        }
+        
+        [TestCaseSource(nameof(GetValidOrderedQueryTestCases))]
+        public async Task QueryStudents_WhenCalled_WithSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string testCase)
+        {
+            var name = "Test Student";
+            var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort order {sortOrder}, {testCase}")
+                    .Given("some students exist for querying", new Dictionary<string, string>() {
+                        //Passed to provider for asserting on the mocked respository
+                        {"name", name },
+                        {"gpaQuery", gpaQuerySerialized },
+                        {"orderBy", sortOrder.ToString() },
+                    })
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(name, gpaQuery, sortOrder)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(new List<object>()
+                 {
+                     new
+                     {
+                        sId = Match.Equality(1),
+                        name = Match.Equality("Test student 1"),
+                        GPA = Match.Equality(3.99)
+                     },
+                     new
+                     {
+                        sId = Match.Equality(2),
+                        name = Match.Equality("Test student 2"),
+                        GPA = Match.Equality(3.89)
+                     },
+                     new
+                     {
+                        sId = Match.Equality(3),
+                        name = Match.Equality("Test student 3"),
+                        GPA = Match.Equality(3.79)
+                     },
+                 });
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents(name, gpaQuery, sortOrder);
+
+                // Client Assertions
+                students.Should().NotBeNull().And.HaveCountGreaterThan(0);
+
+                foreach (var student in students)
+                {
+                    student.SId.Should().NotBeNull().And.BeGreaterThan(0);
+                    student.Name.Should().NotBeNullOrWhiteSpace();
+                    student.GPA.Should().NotBeNull().And.BeGreaterThan(3.7m);
+                }
+            });
+        }
+
     }
 
     public static class PactTestExtension
     {
-        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery)
+        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, SortOrder? sortOrder = null)
         {
             if (name is not null)
             {
@@ -162,6 +231,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             if (gpaQuery.GPA.IsNull is not null)
             {
                 pactBuilder.WithQuery("GPA.isNull", gpaQuery.GPA.IsNull.ToString());
+            }
+            if(sortOrder is not null)
+            {
+                pactBuilder.WithQuery(APIConstants.Query.OrderBy, sortOrder?.ToString());
             }
             return pactBuilder;
         }

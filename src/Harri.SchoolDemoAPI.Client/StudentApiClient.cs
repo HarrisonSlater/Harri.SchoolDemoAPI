@@ -1,5 +1,6 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using RestSharp;
 
 namespace Harri.SchoolDemoAPI.Client
@@ -113,13 +114,13 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Get Students
-        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
+        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
         {
-            var restResponse = await GetStudentsRestResponse(name, gpaQuery);
+            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null)
+        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
         {
             var request = new RestRequest(BaseRoute);
             if (name is not null)
@@ -144,6 +145,10 @@ namespace Harri.SchoolDemoAPI.Client
                 {
                     request.AddQueryParameter($"{APIConstants.Student.GPA}.{APIConstants.Query.IsNull}", gpaQuery.GPA.IsNull.ToString());
                 }
+            }
+            if(orderBy is not null)
+            {
+                request.AddQueryParameter($"{APIConstants.Query.OrderBy}", orderBy.ToString());
             }
 
             var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
