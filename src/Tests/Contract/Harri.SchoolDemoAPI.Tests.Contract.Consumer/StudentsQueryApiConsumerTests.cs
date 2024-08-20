@@ -141,13 +141,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         //TODO optimise tests
         private static IEnumerable<TestCaseData> GetValidOrderedQueryTestCases()
         {
-            yield return new TestCaseData(SortOrder.ASC, "Test Case 1");
-            yield return new TestCaseData(SortOrder.DESC, "Test Case 2");
-            yield return new TestCaseData(null, "Test Case 3");
+            yield return new TestCaseData(SortOrder.ASC, "ASC", "Test Case 1");
+            yield return new TestCaseData(SortOrder.DESC,"DESC", "Test Case 2");
+            yield return new TestCaseData(null, null, "Test Case 3");
         }
         
         [TestCaseSource(nameof(GetValidOrderedQueryTestCases))]
-        public async Task QueryStudents_WhenCalled_WithSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string testCase)
+        public async Task QueryStudents_WhenCalled_WithSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string? sortOrderString, string testCase)
         {
             var name = "Test Student";
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
@@ -157,10 +157,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         //Passed to provider for asserting on the mocked respository
                         {"name", name },
                         {"gpaQuery", gpaQuerySerialized },
-                        {"orderBy", sortOrder.ToString() },
+                        {"orderBy", sortOrderString ?? "null" }
                     })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery, sortOrder)
+                    .SetQueryStringParameters(name, gpaQuery, sortOrderString)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -207,7 +207,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
     public static class PactTestExtension
     {
-        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, SortOrder? sortOrder = null)
+        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, string? sortOrder = null)
         {
             if (name is not null)
             {
@@ -234,7 +234,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             }
             if(sortOrder is not null)
             {
-                pactBuilder.WithQuery(APIConstants.Query.OrderBy, sortOrder?.ToString());
+                pactBuilder.WithQuery(APIConstants.Query.OrderBy, sortOrder);
             }
             return pactBuilder;
         }

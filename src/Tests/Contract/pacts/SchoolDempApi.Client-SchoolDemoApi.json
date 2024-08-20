@@ -3972,7 +3972,7 @@
               }
             },
             "name": "Test Student",
-            "orderBy": ""
+            "orderBy": null
           }
         }
       ],
