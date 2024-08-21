@@ -3,7 +3,6 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
-using Microsoft.Identity.Client;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
@@ -291,6 +290,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().BeEmpty();
         }
 
+        // Sorting tests
         [TestCase(null)]
         [TestCase(SortOrder.ASC)]
         public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy)
@@ -319,5 +319,34 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             ids.Count.Should().BeGreaterThan(1);
             ids.Should().BeInDescendingOrder();
         }
+        
+        [Test]
+        public async Task GetStudents_ShouldOrderByAscendingWhenFiltering()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.ASC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInAscendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldOrderByDescending_WhenFiltering()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.DESC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInDescendingOrder();
+        }
+
     }
 }
