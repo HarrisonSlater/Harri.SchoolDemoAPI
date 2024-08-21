@@ -246,7 +246,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             if (orderBy is not null)
             {
                 SortOrder parsedOrderBy; 
-                if (Enum.TryParse(orderBy, out parsedOrderBy))
+                if (Enum.TryParse(orderBy, true, out parsedOrderBy))
                 {
                     expectedOrderBy = parsedOrderBy;
                 }

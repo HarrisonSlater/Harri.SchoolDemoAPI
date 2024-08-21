@@ -186,19 +186,19 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             yield return new TestCaseData(SortOrder.ASC, "asc", "Test Case 1");
             yield return new TestCaseData(SortOrder.ASC, "Asc", "Test Case 1");
-            yield return new TestCaseData(SortOrder.DESC,"desc", "Test Case 2");
-            yield return new TestCaseData(SortOrder.DESC,"Desc", "Test Case 2");
+            yield return new TestCaseData(SortOrder.DESC, "desc", "Test Case 2");
+            yield return new TestCaseData(SortOrder.DESC, "Desc", "Test Case 2");
         }
 
         [TestCaseSource(nameof(GetValidOrderedQueryCaseInsensitiveTestCases))]
         public async Task QueryStudents_WhenCalled_WithCaseInsensitiveSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string? sortOrderString, string testCase)
         {
-            var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort order {sortOrder}, {testCase}")
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students with case insensitive sort order {sortOrder}, {testCase}")
                     .Given("some students exist for querying", new Dictionary<string, string>() {
                         //Passed to provider for asserting on the mocked respository
                         {"name", "null" },
                         {"gpaQuery", "null" },
-                        {"orderBy", sortOrderString ?? "null" }
+                        {"orderBy", sortOrderString }
                     })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .WithQuery(APIConstants.Query.OrderBy, sortOrderString)
