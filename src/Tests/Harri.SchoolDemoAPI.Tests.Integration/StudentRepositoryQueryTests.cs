@@ -149,6 +149,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().ContainEquivalentOf(expectedStudentToFind);
 
             response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -173,6 +175,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             {
                 response.Should().NotContainEquivalentOf(expectedStudentToFind);
                 response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+                AssertInAscendingOrder(response);
             }
         }
 
@@ -241,6 +244,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
             response.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         [Test]
@@ -260,6 +265,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 response.Should().NotBeNull().And.HaveCountGreaterThan(0);
                 response.Should().NotContainEquivalentOf(expectedStudentToFind);
                 response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+                AssertInAscendingOrder(response);
             }
         }
 
@@ -277,6 +284,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
             response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         [Test]
@@ -291,6 +300,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         // Sorting tests
+        public void AssertInAscendingOrder(List<StudentDto> response)
+        {
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(0);
+            ids.Should().BeInAscendingOrder();
+        }
+
         [TestCase(null)]
         [TestCase(SortOrder.ASC)]
         public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy)
@@ -347,6 +363,5 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             ids.Count.Should().BeGreaterThan(1);
             ids.Should().BeInDescendingOrder();
         }
-
     }
 }
