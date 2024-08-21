@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
+using Microsoft.Identity.Client;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
@@ -287,6 +289,35 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             response.Should().BeEmpty();
+        }
+
+        [TestCase(null)]
+        [TestCase(SortOrder.ASC)]
+        public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy)
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(orderBy: orderBy);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInAscendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldOrderByDescending()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(orderBy: SortOrder.DESC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInDescendingOrder();
         }
     }
 }

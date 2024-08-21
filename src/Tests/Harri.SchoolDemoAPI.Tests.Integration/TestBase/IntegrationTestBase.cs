@@ -11,7 +11,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
         [OneTimeSetUp]
         public void OneTimeSetUpBase()
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var config = new ConfigurationBuilder().AddJsonFile("testappsettings.json").Build();
             SqlConnectionStringToTest = config["SqlConnectionStringToTest"];
         }
     }
