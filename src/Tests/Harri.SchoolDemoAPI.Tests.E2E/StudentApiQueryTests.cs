@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.E2E.TestBase;
 using System.Net;
 
@@ -30,6 +31,35 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         public async Task TearDown()
         {
             await CleanUpTestStudent(_studentToMatchId);
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents();
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInAscendingOrder();
+        }
+
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents_Descending()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents(orderBy: SortOrder.DESC);
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInDescendingOrder();
         }
 
         [Test]
