@@ -142,6 +142,5 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             studentResponse.IsSuccessStatusCode.Should().BeFalse();
             studentResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
         }
-
     }
 }

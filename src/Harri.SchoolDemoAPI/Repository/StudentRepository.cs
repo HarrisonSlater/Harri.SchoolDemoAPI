@@ -61,7 +61,6 @@ namespace Harri.SchoolDemoAPI.Repository
                 orderBy = SortOrder.ASC;
             }
 
-            //TODO implement order By
             var builder = new SqlBuilder();
             
             if (name != null)
@@ -95,7 +94,7 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var baseQuery = "SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId";
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId {orderBy}";
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())
