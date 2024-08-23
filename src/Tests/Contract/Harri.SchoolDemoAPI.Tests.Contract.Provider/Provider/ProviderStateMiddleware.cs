@@ -33,6 +33,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             _next = next;
             //_studentRepository = studentRepository;
 
+            //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
                 ["a student with sId {sId} exists"] = this.EnsureStudentExists,
@@ -64,18 +65,17 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         /// <returns>Awaitable</returns>
         private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
-            var sId = (JsonElement?)parameters["sId"];
-            var name = (JsonElement?)parameters["name"];
-            var gpa = (JsonElement?)parameters["GPA"];
+            //TODO check stateObject exists
+            var studentToMock = JsonSerializer.Deserialize<StudentDto>(((JsonElement?)parameters["stateObject"]).ToString());
 
-            var studentToMock = new StudentDto()
-            {
-                SId = sId?.GetInt32(),
-                Name = name?.GetString(),
-                GPA = gpa?.GetDecimal()
-            };
+            //var studentToMock = new StudentDto()
+            //{
+            //    SId = sId?.GetInt32(),
+            //    Name = name?.GetString(),
+            //    GPA = gpa?.GetDecimal()
+            //};
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult(studentToMock));
             return Task.CompletedTask;
 
         }

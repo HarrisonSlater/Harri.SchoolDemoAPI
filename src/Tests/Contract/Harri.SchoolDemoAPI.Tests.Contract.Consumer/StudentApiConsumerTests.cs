@@ -4,9 +4,27 @@ using PactNet.Matchers;
 using System.Net;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Dynamic;
+using PactNet;
+using System.Text.Json;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
+
+    public static class PactBuilderExtensions {
+
+        public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject)
+        {
+            //TODO type check the provider state against T before serialising
+            pact.Given(providerState, new Dictionary<string, string>()
+            {
+                { "stateObject", JsonSerializer.Serialize(stateObject) }
+            });
+            return pact;
+        }
+        //IRequestBuilderV4 Given(string providerState, IDictionary<string, string> parameters);
+
+    }
+
     public class StudentApiConsumerTests : ConsumerTestBase
     {
         [TestCase(1, "Mocky", 3)]
@@ -15,11 +33,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task GetStudent_WhenCalled_ReturnsAStudent(int sId, string name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to get a student with id {sId}")
-                    .Given("a student with sId {sId} exists", new Dictionary<string, string>() {
-                        { "sId", sId.ToString() },
-                        { "name", name },
-                        { "GPA", GPA?.ToString() ?? "null" },
-                    })
+                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = name, GPA = GPA })
                     .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
