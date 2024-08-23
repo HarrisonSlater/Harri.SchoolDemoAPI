@@ -11,7 +11,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E.TestBase
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var config = new ConfigurationBuilder().AddJsonFile("testappsettings.json").Build();
             APIUrlToTest = config["APIUrlToTest"];
         }
     }

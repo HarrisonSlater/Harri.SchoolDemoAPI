@@ -4,6 +4,7 @@ using System.Data;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Harri.SchoolDemoAPI.Models.Enums;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -53,8 +54,13 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null)
+        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
         {
+            if (orderBy is null)
+            {
+                orderBy = SortOrder.ASC;
+            }
+
             var builder = new SqlBuilder();
             
             if (name != null)
@@ -88,7 +94,7 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var baseQuery = "SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId";
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId {orderBy}";
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())

@@ -142,16 +142,5 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             studentResponse.IsSuccessStatusCode.Should().BeFalse();
             studentResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
         }
-
-        [Test]
-        public async Task GetStudents_ShouldGetAllStudents()
-        {
-            // Arrange
-            // Act
-            var students = await _client.GetStudents();
-
-            // Assert
-            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.E2E.TestBase;
 using System.Net;
 
@@ -8,8 +9,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 {
     public class StudentApiQueryTests : StudentApiTestBase
     {
-        private static StudentApiClient _client;
-
         private static NewStudentDto _studentToMatch;
         private static int _studentToMatchId;
         private static string _studentToMatchName;
@@ -24,10 +23,6 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         [OneTimeSetUp]
         public static async Task SetUp()
         {
-            if (APIUrlToTest is null) throw new ArgumentException("APIUrlToTest from appsettings.json cannot be null");
-
-            _client = new StudentApiClient(APIUrlToTest);
-
             _studentToMatch = new NewStudentDto() { Name = _studentToMatchName, GPA = 3.91m };
             _studentToMatchId = (await _client.AddStudent(_studentToMatch)).Value;
         }
@@ -36,6 +31,35 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         public async Task TearDown()
         {
             await CleanUpTestStudent(_studentToMatchId);
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents();
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInAscendingOrder();
+        }
+
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents_Descending()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents(orderBy: SortOrder.DESC);
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInDescendingOrder();
         }
 
         [Test]

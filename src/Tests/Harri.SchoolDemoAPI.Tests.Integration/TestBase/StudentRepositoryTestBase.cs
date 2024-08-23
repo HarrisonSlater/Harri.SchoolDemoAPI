@@ -11,7 +11,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
         [OneTimeSetUp]
         public static void OneTimeSetUpRepositoryBase()
         {
-            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from appsettings.json cannot be null");
+            if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from testappsettings.json cannot be null");
 
             _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
         }

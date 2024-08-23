@@ -1,4 +1,5 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using RestSharp;
 
 namespace Harri.SchoolDemoAPI.Client
@@ -11,8 +12,8 @@ namespace Harri.SchoolDemoAPI.Client
         Task<RestResponse> DeleteStudentRestResponse(int sId);
         Task<StudentDto?> GetStudent(int sId);
         Task<RestResponse<StudentDto>> GetStudentRestResponse(int sId);
-        Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null);
-        Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null);
+        Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null);
+        Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null);
         Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
         Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student);
         Task<bool?> UpdateStudent(int sId, UpdateStudentDto student);

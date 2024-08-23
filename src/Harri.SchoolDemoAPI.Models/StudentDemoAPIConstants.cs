@@ -28,6 +28,7 @@
             public const string Gt = "gt";
             public const string Eq = "eq";
             public const string IsNull = "isNull";
+            public const string OrderBy = "orderBy";
         }
     }
 }

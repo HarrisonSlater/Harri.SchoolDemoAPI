@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 
@@ -148,6 +149,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().ContainEquivalentOf(expectedStudentToFind);
 
             response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -172,6 +175,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             {
                 response.Should().NotContainEquivalentOf(expectedStudentToFind);
                 response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+                AssertInAscendingOrder(response);
             }
         }
 
@@ -240,6 +244,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
             response.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         [Test]
@@ -259,6 +265,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 response.Should().NotBeNull().And.HaveCountGreaterThan(0);
                 response.Should().NotContainEquivalentOf(expectedStudentToFind);
                 response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+                AssertInAscendingOrder(response);
             }
         }
 
@@ -276,6 +284,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
             response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+
+            AssertInAscendingOrder(response);
         }
 
         [Test]
@@ -287,6 +297,71 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             response.Should().BeEmpty();
+        }
+
+        // Sorting tests
+        public void AssertInAscendingOrder(List<StudentDto> response)
+        {
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(0);
+            ids.Should().BeInAscendingOrder();
+        }
+
+        [TestCase(null)]
+        [TestCase(SortOrder.ASC)]
+        public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy)
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(orderBy: orderBy);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInAscendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldOrderByDescending()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(orderBy: SortOrder.DESC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInDescendingOrder();
+        }
+        
+        [Test]
+        public async Task GetStudents_ShouldOrderByAscendingWhenFiltering()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.ASC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInAscendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldOrderByDescending_WhenFiltering()
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.DESC);
+
+            // Assert
+            response.Should().NotBeEmpty();
+
+            var ids = response.Select(x => x.SId).ToList();
+            ids.Count.Should().BeGreaterThan(1);
+            ids.Should().BeInDescendingOrder();
         }
     }
 }

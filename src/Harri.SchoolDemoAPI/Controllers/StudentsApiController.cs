@@ -8,6 +8,8 @@ using Swashbuckle.AspNetCore.Annotations;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
+using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Models;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -155,6 +157,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
         /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
         /// See <see cref="ComparativeQueryDto{T}"></see></param>
+        /// <param name="orderBy">ASC or DESC. Default sort order is ASC</param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
@@ -163,9 +166,12 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "GetStudents")]
         [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
-        public async Task<IActionResult> GetStudents([FromQuery(Name = "name")] string? name, [FromQuery] GPAQueryDto gpaQuery)
+        public async Task<IActionResult> GetStudents(
+            [FromQuery(Name = APIConstants.Student.Name)] string? name,
+            [FromQuery] GPAQueryDto gpaQuery,
+            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy)
         {
-            var students = await _studentService.GetStudents(name, gpaQuery);
+            var students = await _studentService.GetStudents(name, gpaQuery, orderBy);
 
             if (students.IsNullOrEmpty())
             {

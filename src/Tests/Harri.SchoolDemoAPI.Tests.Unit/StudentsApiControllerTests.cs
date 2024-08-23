@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Controllers;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -25,11 +26,11 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         public async Task GetStudents_ShouldReturnOk(string? name)
         {
             // Arrange
-            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .ReturnsAsync(new List<StudentDto>() { new StudentDto() });
 
             // Act
-            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null });
+            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null }, null);
 
             // Assert
             result.Should().BeOfType(typeof(OkObjectResult));
@@ -39,11 +40,11 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         public async Task GetStudents_ShouldReturnNotFound_WhenNoStudentsReturned()
         {
             // Arrange
-            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .ReturnsAsync([]);
 
             // Act
-            var result = await _controller.GetStudents("Test Student", new() { GPA = null });
+            var result = await _controller.GetStudents("Test Student", new() { GPA = null }, null);
 
             // Assert
             result.Should().BeOfType(typeof(NotFoundResult));

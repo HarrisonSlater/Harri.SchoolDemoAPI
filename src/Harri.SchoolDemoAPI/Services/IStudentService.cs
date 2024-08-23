@@ -1,4 +1,5 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,6 +13,6 @@ namespace Harri.SchoolDemoAPI.Services
         Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
         Task<bool> UpdateStudent(int sId, UpdateStudentDto student);
 
-        Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null);
+        Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null);
     }
 }
