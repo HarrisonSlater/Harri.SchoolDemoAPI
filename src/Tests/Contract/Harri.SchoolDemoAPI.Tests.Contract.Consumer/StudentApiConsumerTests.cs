@@ -394,11 +394,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var existingName = "EXISTING STUDENT NAME";
             var existingGPA = 3.91m;
             _pact.UponReceiving($"a request to patch a student with sId {sId}")
-                    .Given("a student with sId {sId} exists", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                        { "name", existingName },
-                        { "GPA", existingGPA.ToString() },
-                    })
+                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
                     .Given("a student with sId {sId} will be updated", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                         { "name", newName },
@@ -441,11 +437,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var existingName = "EXISTING STUDENT NAME";
             var existingGPA = 3.91m;
             _pact.UponReceiving($"a request to patch a student with sId {sId}")
-                    .Given("a student with sId {sId} exists", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                        { "name", existingName },
-                        { "GPA", existingGPA.ToString() },
-                    })
+                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
                     .Given("a student with sId {sId} will be updated", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                         { "name", existingName },
