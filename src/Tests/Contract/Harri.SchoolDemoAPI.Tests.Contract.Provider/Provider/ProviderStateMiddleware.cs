@@ -5,6 +5,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
+using PactNet.Exceptions;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 {
@@ -58,22 +59,27 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             };
         }
 
-        /// <summary>
-        /// Ensure an event exists
-        /// </summary>
-        /// <param name="parameters">Event parameters</param>
-        /// <returns>Awaitable</returns>
+        private static T? GetStateObject<T>(IDictionary<string, object> parameters)
+        {
+            if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
+            if (!parameters.ContainsKey("stateObjectType")) throw new ProviderStateMiddlewareArgumentException("'stateObjectType' key not set. Something went wrong.");
+
+            Type typeToDeserialize = typeof(T);
+            var stateObjectType = ((JsonElement?)parameters["stateObjectType"]).ToString();
+            if (stateObjectType is null || stateObjectType != typeToDeserialize.Name) 
+            {
+                // Misconfiguration between consumer test and provider test
+                throw new PactFailureException("'stateObjectType' type does not match the type being deserialized to in provider state setup, please configure the contract test or provider state middleware");
+            }
+
+            var stateObject = JsonSerializer.Deserialize<T>(((JsonElement?)parameters["stateObject"]).ToString()!);
+
+            return stateObject;
+        }
+
         private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
-            //TODO check stateObject exists
-            var studentToMock = JsonSerializer.Deserialize<StudentDto>(((JsonElement?)parameters["stateObject"]).ToString());
-
-            //var studentToMock = new StudentDto()
-            //{
-            //    SId = sId?.GetInt32(),
-            //    Name = name?.GetString(),
-            //    GPA = gpa?.GetDecimal()
-            //};
+            var studentToMock = GetStateObject<StudentDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult(studentToMock));
             return Task.CompletedTask;

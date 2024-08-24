@@ -15,14 +15,15 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject)
         {
             //TODO type check the provider state against T before serialising
+            Type stateObjectType = typeof(T);
+
             pact.Given(providerState, new Dictionary<string, string>()
             {
-                { "stateObject", JsonSerializer.Serialize(stateObject) }
+                { "stateObject", JsonSerializer.Serialize(stateObject) },
+                { "stateObjectType", stateObjectType.Name }
             });
             return pact;
         }
-        //IRequestBuilderV4 Given(string providerState, IDictionary<string, string> parameters);
-
     }
 
     public class StudentApiConsumerTests : ConsumerTestBase
@@ -437,7 +438,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var existingName = "EXISTING STUDENT NAME";
             var existingGPA = 3.91m;
             _pact.UponReceiving($"a request to patch a student with sId {sId}")
-                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
+                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA }) //TODO runtime check that type here is correct
                     .Given("a student with sId {sId} will be updated", new Dictionary<string, string>() {
                         {"sId", sId.ToString() },
                         { "name", existingName },
