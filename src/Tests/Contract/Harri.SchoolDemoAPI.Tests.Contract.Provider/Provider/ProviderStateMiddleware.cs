@@ -37,16 +37,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
-                ["a student with sId {sId} exists"] = this.EnsureStudentExists,
-                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
-                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
-                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
-                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
-                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
-                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
-                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
+                ["a student with sId {sId} exists"] = this.EnsureStudentExists,/*checked*/
+                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist, /*checked*/
+                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,/*checked*/
+                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,/*checked*/
+                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,/*checked*/
+                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,/*checked*/
+                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,/*checked*/
+                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,/*checked*/
+                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,/*checked*/
+                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,/*checked*/
                 ["some students exist"] = this.EnsureSomeStudentsExist,
                 ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
@@ -59,31 +59,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             };
         }
 
-        private static T? GetStateObject<T>(IDictionary<string, object> parameters)
-        {
-            if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
-            if (!parameters.ContainsKey("stateObjectType")) throw new ProviderStateMiddlewareArgumentException("'stateObjectType' key not set. Something went wrong.");
-
-            Type typeToDeserialize = typeof(T);
-            var stateObjectType = ((JsonElement?)parameters["stateObjectType"]).ToString();
-            if (stateObjectType is null || stateObjectType != typeToDeserialize.Name) 
-            {
-                // Misconfiguration between consumer test and provider test
-                throw new PactFailureException("'stateObjectType' type does not match the type being deserialized to in provider state setup, please configure the contract test or provider state middleware");
-            }
-
-            var stateObject = JsonSerializer.Deserialize<T>(((JsonElement?)parameters["stateObject"]).ToString()!);
-
-            return stateObject;
-        }
-
         private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
             var studentToMock = GetStateObject<StudentDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult(studentToMock));
             return Task.CompletedTask;
-
         }
 
         private Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
@@ -91,36 +72,31 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(false));
             return Task.CompletedTask;
-
         }
 
         private Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(new Exception("UpdateStudent should not be called"));
             return Task.CompletedTask;
-
         }
 
         private Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(new Exception("DeleteStudent should not be called"));
             return Task.CompletedTask;
-
         }
 
         private Task EnsureStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
             var sId = (JsonElement?)parameters["sId"];
-            var name = (JsonElement?)parameters["name"];
-            var gpa = (JsonElement?)parameters["GPA"];
+            var expectedUpdatedStudent = GetStateObject<UpdateStudentDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>()))
             .Returns(Task.FromResult(true))
-            .Callback<int, UpdateStudentDto>((id, ns) =>
+            .Callback<int, UpdateStudentDto>((id, us) =>
             {
                 id.Should().Be(sId?.GetInt32());
-                ns.Name.Should().Be(name?.ToString());
-                ns.GPA.Should().Be(gpa?.GetDecimal());
+                us.Should().BeEquivalentTo(expectedUpdatedStudent);
             });
 
             return Task.CompletedTask;
@@ -129,60 +105,44 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureStudentWillBeCreated(IDictionary<string, object> parameters)
         {
             var sIdNew = (JsonElement?)parameters["sIdNew"];
-            var name = (JsonElement?)parameters["name"];
-            var gpa = (JsonElement?)parameters["GPA"];
+            var expectedNewStudent = GetStateObject<NewStudentDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.AddStudent(It.IsAny<NewStudentDto>()))
                 .Returns(Task.FromResult(sIdNew.Value.GetInt32()))
-                .Callback<NewStudentDto>(ns =>
-                {
-                    ns.Name.Should().Be(name.ToString());
-                    ns.GPA.Should().Be(gpa?.GetDecimal());
-                });
+                .Callback<NewStudentDto>(ns => ns.Should().BeEquivalentTo(expectedNewStudent));
             return Task.CompletedTask;
-
         }
 
         private Task EnsureStudentWillBeDeleted(IDictionary<string, object> parameters)
         {
-            var sId = (JsonElement?)parameters["sId"];
+
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
                 .Returns(Task.FromResult((bool?)true))
-                .Callback<int>(sId =>
-                {
-                    sId.Should().Be(sId);
-                });
+                .Callback<int>(sId => sId.Should().Be(sId));
 
             return Task.CompletedTask;
-
         }
 
         private Task EnsureStudentDoesNotExistAndWillBeNotDeleted(IDictionary<string, object> parameters)
         {
-
-            var sId = (JsonElement?)parameters["sId"];
+            var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
                 .Returns(Task.FromResult((bool?)false))
-                .Callback<int>(sId =>
-                {
-                    sId.Should().Be(sId);
-                });
+                .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 
         }
 
         private Task EnsureStudentHasConflictAndCanNotNotDeleted(IDictionary<string, object> parameters)
         {
-            var sId = (JsonElement?)parameters["sId"];
+            var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
                 .Returns(Task.FromResult((bool?)null))
-                .Callback<int>(sId =>
-                {
-                    sId.Should().Be(sId);
-                });
+                .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 
         }
+
         private List<StudentDto> _mockStudentsToReturn =
         [
             new StudentDto()
@@ -207,7 +167,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
-
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn));
 
@@ -303,6 +262,24 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     HealthCheckResult.Unhealthy(description:"Some error description", exception:new Exception("Some error description"))
                 ));
             return Task.CompletedTask;
+        }
+
+        private static T? GetStateObject<T>(IDictionary<string, object> parameters)
+        {
+            if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
+            if (!parameters.ContainsKey("stateObjectType")) throw new ProviderStateMiddlewareArgumentException("'stateObjectType' key not set. Something went wrong.");
+
+            Type typeToDeserialize = typeof(T);
+            var stateObjectType = ((JsonElement?)parameters["stateObjectType"]).ToString();
+            if (stateObjectType is null || stateObjectType != typeToDeserialize.Name) 
+            {
+                // Misconfiguration between consumer test and provider test
+                throw new PactFailureException("'stateObjectType' type does not match the type being deserialized to in provider state setup, please configure the contract test or provider state middleware");
+            }
+
+            var stateObject = JsonSerializer.Deserialize<T>(((JsonElement?)parameters["stateObject"]).ToString()!);
+
+            return stateObject;
         }
 
         /// <summary>

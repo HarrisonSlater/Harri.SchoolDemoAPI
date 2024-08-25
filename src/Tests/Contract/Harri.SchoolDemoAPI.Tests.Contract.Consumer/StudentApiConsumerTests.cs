@@ -12,17 +12,34 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
     public static class PactBuilderExtensions {
 
+        // Provider state dictionary object setup helpers
         public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject)
         {
-            //TODO type check the provider state against T before serialising
+            pact.Given(providerState, CreateBaseProviderStateDictionary(stateObject));
+            return pact;
+        }
+
+        public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject, KeyValuePair<string, string> keyPair)
+        {
+            var dictionary = CreateBaseProviderStateDictionary(stateObject);
+            dictionary.Add(keyPair.Key, keyPair.Value);
+
+            pact.Given(providerState, dictionary);
+            return pact;
+        }
+
+        private static Dictionary<string, string> CreateBaseProviderStateDictionary<T>(T stateObject)
+        {
+            //TODO type check the provider state against T before serialising, currently if the types don't match they fail when running the provider state setup methods
             Type stateObjectType = typeof(T);
 
-            pact.Given(providerState, new Dictionary<string, string>()
+            var dictionary = new Dictionary<string, string>
             {
                 { "stateObject", JsonSerializer.Serialize(stateObject) },
-                { "stateObjectType", stateObjectType.Name }
-            });
-            return pact;
+                { "stateObjectType", stateObjectType.Name },
+            };
+
+            return dictionary;
         }
     }
 
@@ -65,9 +82,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             var sId = 0404;
             _pact.UponReceiving($"a request to get a student with id {sId}")
-                    .Given("a student with sId {sId} does not exist", new Dictionary<string, string>() {
-                        { "sId", sId.ToString() }
-                    })
+                    .Given("a student with sId {sId} does not exist")
                     .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound)
@@ -124,11 +139,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task AddStudent_WhenCalledWithNewStudent_ReturnsSuccess_AndAddsANewStudent(int sIdNew, string name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to add a new student with name {name}")
-                    .Given("a student with sId {sIdNew} will be created", new Dictionary<string, string>() {
-                        {"sIdNew", sIdNew.ToString() },
-                        { "name", name },
-                        { "GPA", GPA?.ToString() ?? "null" },
-                    })
+                    .Given("a student with sId {sIdNew} will be created", new NewStudentDto() {Name = name, GPA = GPA }, new ("sIdNew", sIdNew.ToString()))
                     .WithRequest(HttpMethod.Post, $"/students/")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -197,11 +208,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task UpdateStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndUpdatesStudent(int sId, string? name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to update a student with sId {sId}")
-                    .Given("a student with sId {sId} exists and will be updated", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                        { "name", name },
-                        { "GPA", GPA?.ToString() ?? "null" },
-                    })
+                    .Given("a student with sId {sId} exists and will be updated", new UpdateStudentDto() { Name = name, GPA = GPA }, new ("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -298,9 +305,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent(int sId)
         {
             _pact.UponReceiving($"a request to delete a student with sId {sId}")
-                    .Given("a student with sId {sId} exists and will be deleted", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                    })
+                    .Given("a student with sId {sId} exists and will be deleted", sId)
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK);
@@ -319,9 +324,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task DeleteStudent_WhenCalledWithANonExistantStudentId_Returns404(int sId)
         {
             _pact.UponReceiving($"a request to delete a student with sId {sId}")
-                    .Given("a student with sId {sId} does not exist and will not be deleted", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                    })
+                    .Given("a student with sId {sId} does not exist and will not be deleted", sId)
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound);
@@ -340,9 +343,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task DeleteStudent_WhenCalledWithValidStudentIdWithExistingApplications_Returns409(int sId)
         {
             _pact.UponReceiving($"a request to delete a student with sId {sId}")
-                    .Given("a student with sId {sId} exists but can not be deleted", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                    })
+                    .Given("a student with sId {sId} exists but can not be deleted", sId)
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.Conflict);
@@ -396,11 +397,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var existingGPA = 3.91m;
             _pact.UponReceiving($"a request to patch a student with sId {sId}")
                     .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
-                    .Given("a student with sId {sId} will be updated", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                        { "name", newName },
-                        { "GPA", existingGPA.ToString() },
-                    })
+                    .Given("a student with sId {sId} will be updated", new UpdateStudentDto() { Name = newName, GPA = existingGPA }, new ("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -438,12 +435,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var existingName = "EXISTING STUDENT NAME";
             var existingGPA = 3.91m;
             _pact.UponReceiving($"a request to patch a student with sId {sId}")
-                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA }) //TODO runtime check that type here is correct
-                    .Given("a student with sId {sId} will be updated", new Dictionary<string, string>() {
-                        {"sId", sId.ToString() },
-                        { "name", existingName },
-                        { "GPA", gpa.ToString() },
-                    })
+                    .Given("a student with sId {sId} exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
+                    .Given("a student with sId {sId} will be updated", new UpdateStudentDto() { Name = existingName, GPA = gpa }, new ("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
