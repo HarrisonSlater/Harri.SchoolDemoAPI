@@ -22,7 +22,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private readonly IDictionary<string, Func<IDictionary<string, object>, Task>> providerStates;
         private readonly RequestDelegate _next;
-        //private readonly IStudentRepository _studentRepository;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ProviderStateMiddleware"/> class.
@@ -32,30 +31,26 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public ProviderStateMiddleware(RequestDelegate next)
         {
             _next = next;
-            //_studentRepository = studentRepository;
-
             //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
-                ["a student with sId {sId} exists"] = this.EnsureStudentExists,/*checked*/
-                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist, /*checked*/
-                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,/*checked*/
-                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,/*checked*/
-                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,/*checked*/
-                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,/*checked*/
-                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,/*checked*/
-                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,/*checked*/
-                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,/*checked*/
-                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,/*checked*/
-                ["some students exist"] = this.EnsureSomeStudentsExist,/*checked*/
-                ["no students exist"] = this.EnsureNoStudentsExist,/*checked*/
+                ["a student with sId {sId} exists"] = this.EnsureStudentExists,
+                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
+                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
+                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
+                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
+                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
+                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
+                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
+                ["some students exist"] = this.EnsureSomeStudentsExist,
+                ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
                 ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
-                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,/*checked*/
-                ["the api is healthy"] = this.TheApiIsHealthy,/*checked*/
-                ["the api is unhealthy"] = this.TheApiIsUnhealthy/*checked*/
-                //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
-
+                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,
+                ["the api is healthy"] = this.TheApiIsHealthy,
+                ["the api is unhealthy"] = this.TheApiIsUnhealthy
             };
         }
 
@@ -189,7 +184,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             return Task.CompletedTask;
         }
 
-        //TODO refactor
         private Task EnsureStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
             var studentQueryDto = GetStateObject<StudentQueryDto>(parameters);
@@ -239,6 +233,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Deserialises the provider state object set by the Given method extension in consumer contract tests.  
+        /// </summary>
+        /// <remarks>State object is used to set up the provider state and may be used for mocking or asserting on in provider tests. See <see cref="Contract.Consumer.PactBuilderExtensions"/></remarks>
+        /// <returns></returns>
+        /// <exception cref="ProviderStateMiddlewareArgumentException"></exception>
+        /// <exception cref="PactFailureException"></exception>
         private static T? GetStateObject<T>(IDictionary<string, object> parameters)
         {
             if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
