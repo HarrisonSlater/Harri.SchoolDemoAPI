@@ -1,11 +1,11 @@
-using FluentAssertions;
-using Harri.SchoolDemoAPI.Client;
-using PactNet.Matchers;
 using System.Net;
-using Harri.SchoolDemoAPI.Models.Dto;
 using System.Dynamic;
-using PactNet;
 using System.Text.Json;
+using FluentAssertions;
+using PactNet;
+using PactNet.Matchers;
+using Harri.SchoolDemoAPI.Client;
+using Harri.SchoolDemoAPI.Models.Dto;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
