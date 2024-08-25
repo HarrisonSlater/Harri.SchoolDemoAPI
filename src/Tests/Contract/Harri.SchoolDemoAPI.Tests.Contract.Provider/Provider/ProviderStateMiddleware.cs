@@ -47,13 +47,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,/*checked*/
                 ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,/*checked*/
                 ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,/*checked*/
-                ["some students exist"] = this.EnsureSomeStudentsExist,
-                ["no students exist"] = this.EnsureNoStudentsExist,
+                ["some students exist"] = this.EnsureSomeStudentsExist,/*checked*/
+                ["no students exist"] = this.EnsureNoStudentsExist,/*checked*/
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
                 ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
-                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,
-                ["the api is healthy"] = this.TheApiIsHealthy,
-                ["the api is unhealthy"] = this.TheApiIsUnhealthy
+                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,/*checked*/
+                ["the api is healthy"] = this.TheApiIsHealthy,/*checked*/
+                ["the api is unhealthy"] = this.TheApiIsUnhealthy/*checked*/
                 //["a student with sId {sId} will be patched"] = this.EnsureStudentWillBePatched
 
             };
@@ -192,40 +192,15 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         //TODO refactor
         private Task EnsureStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
-            //Either parameter could be null
-            string? name = ((JsonElement?)parameters["name"])?.ToString();
-            var gpaQueryString = (JsonElement?)parameters["gpaQuery"];
-
-            string? orderBy = null;
-            if (parameters.ContainsKey("orderBy"))
-            {
-                orderBy = ((JsonElement?)parameters["orderBy"])?.ToString();
-            }
-
-            GPAQueryDto? expectedGpaQuery = new GPAQueryDto() { GPA = null };
-            if (gpaQueryString is not null)
-            {
-                expectedGpaQuery = JsonSerializer.Deserialize<GPAQueryDto>(gpaQueryString.ToString() ?? "");
-            }
-            SortOrder? expectedOrderBy = null;
-            if (orderBy is not null)
-            {
-                SortOrder parsedOrderBy; 
-                if (Enum.TryParse(orderBy, true, out parsedOrderBy))
-                {
-                    expectedOrderBy = parsedOrderBy;
-                }
-
-                //expectedOrderBy = JsonSerializer.Deserialize<SortOrder?>(orderBy ?? "null");
-            }
+            var studentQueryDto = GetStateObject<StudentQueryDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
                 .Returns(Task.FromResult(_mockStudentsToReturn))
                 .Callback<string, GPAQueryDto, SortOrder?>((nameParam, gpaQueryDtoParam, orderByParam) =>
                 {
-                    nameParam.Should().Be(name);
-                    gpaQueryDtoParam.Should().BeEquivalentTo(expectedGpaQuery);
-                    orderByParam.Should().Be(expectedOrderBy);
+                    nameParam.Should().Be(studentQueryDto.Name);
+                    gpaQueryDtoParam.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
+                    orderByParam.Should().Be(studentQueryDto.OrderBy);
                 });
 
             return Task.CompletedTask;
