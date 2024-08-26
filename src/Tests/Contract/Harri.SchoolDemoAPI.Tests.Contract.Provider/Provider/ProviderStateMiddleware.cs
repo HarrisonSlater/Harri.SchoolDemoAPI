@@ -34,16 +34,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
-                ["a student with sId {sId} exists"] = this.EnsureStudentExists,
-                ["a student with sId {sId} does not exist"] = this.EnsureStudentDoesNotExist,
+                ["a student with sId exists"] = this.EnsureStudentExists,
+                ["a student with sId does not exist"] = this.EnsureStudentDoesNotExist,
                 ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
-                ["a student with sId {sId} exists and will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["a student with sId {sId} will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["a student with sId exists and will be updated"] = this.EnsureStudentWillBeUpdated,
+                ["a student with sId will be updated"] = this.EnsureStudentWillBeUpdated,
                 ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
                 ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
-                ["a student with sId {sId} exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
-                ["a student with sId {sId} does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
-                ["a student with sId {sId} exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
+                ["a student with sId exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
+                ["a student with sId does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
+                ["a student with sId exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
                 ["some students exist"] = this.EnsureSomeStudentsExist,
                 ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
