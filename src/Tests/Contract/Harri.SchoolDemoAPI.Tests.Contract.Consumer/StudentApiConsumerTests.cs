@@ -7,7 +7,6 @@ using Harri.SchoolDemoAPI.Models.Dto;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
-
     public class StudentApiConsumerTests : ConsumerTestBase
     {
         [TestCase(1, "Mocky", 3)]

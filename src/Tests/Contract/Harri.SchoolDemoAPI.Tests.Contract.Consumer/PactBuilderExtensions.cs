@@ -4,7 +4,6 @@ using PactNet;
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
     public static class PactBuilderExtensions {
-
         // Provider state dictionary object setup helpers
         public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject)
         {
