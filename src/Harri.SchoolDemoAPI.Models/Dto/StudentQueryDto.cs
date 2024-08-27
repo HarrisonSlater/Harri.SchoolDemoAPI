@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Harri.SchoolDemoAPI.Models.Attributes;
+using Harri.SchoolDemoAPI.Models.Enums;
+using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
 {
@@ -11,11 +13,10 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         [JsonPropertyName(APIConstants.Student.Name)]
         public string? Name { get; set; }
 
-        /// <summary>
-        /// GPA Query DTO 
-        /// </summary>
-        [JsonPropertyName(APIConstants.Student.GPA)]
-        public ComparativeQueryNullableDto<decimal>? GPA { get; set; }
+        [JsonPropertyName(APIConstants.Query.GpaQuery)]
+        public GPAQueryDto? GPAQueryDto { get; set; }
 
+        [JsonPropertyName(APIConstants.Query.OrderBy)]
+        public SortOrder? OrderBy { get; set; }
     }
 }

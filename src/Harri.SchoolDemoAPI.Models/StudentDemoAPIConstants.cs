@@ -24,6 +24,7 @@
 
         public static class Query
         {
+            public const string GpaQuery = "gpaQuery"; //GPAQueryDto
             public const string Lt = "lt";
             public const string Gt = "gt";
             public const string Eq = "eq";
