@@ -12,6 +12,6 @@ namespace Harri.SchoolDemoAPI.Repository
         Task<StudentDto?> GetStudent(int sId);
         Task<bool> UpdateStudent(int sId, UpdateStudentDto newStudent);
 
-        Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? GPAQuery = null, SortOrder? orderBy = null);
+        Task<List<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto);
     }
 }

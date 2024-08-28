@@ -100,7 +100,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {name}, {gpaQuerySerialized} {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { Name = name,  GPAQueryDto = gpaQuery })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery)
                  .WillRespond()
@@ -155,7 +155,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort order {sortOrder}, {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { Name = name,  GPAQueryDto = gpaQuery, OrderBy = sortOrder })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery, OrderBy = sortOrder })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery, sortOrderString)
                  .WillRespond()
@@ -184,7 +184,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task QueryStudents_WhenCalled_WithCaseInsensitiveSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string? sortOrderString, string testCase)
         {
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with case insensitive sort order {sortOrderString}, {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { GPAQueryDto = new GPAQueryDto(), OrderBy = sortOrder })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto(), OrderBy = sortOrder })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .WithQuery(APIConstants.Query.OrderBy, sortOrderString)
                  .WillRespond()
