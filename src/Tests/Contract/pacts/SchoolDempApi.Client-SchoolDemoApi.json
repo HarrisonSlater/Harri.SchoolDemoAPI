@@ -2429,9 +2429,10 @@
                 }
               },
               "name": null,
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -2569,9 +2570,10 @@
                 }
               },
               "name": null,
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -2712,9 +2714,10 @@
                 }
               },
               "name": null,
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -2855,9 +2858,10 @@
                 }
               },
               "name": null,
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -2995,9 +2999,10 @@
                 }
               },
               "name": null,
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3130,9 +3135,10 @@
                 "GPA": null
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3270,9 +3276,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3413,9 +3420,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3559,9 +3567,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3702,9 +3711,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3840,9 +3850,10 @@
                 "GPA": null
               },
               "name": null,
-              "orderBy": 0
+              "orderBy": 0,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -3975,9 +3986,10 @@
                 "GPA": null
               },
               "name": null,
-              "orderBy": 1
+              "orderBy": 1,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -4110,9 +4122,10 @@
                 "GPA": null
               },
               "name": null,
-              "orderBy": 0
+              "orderBy": 0,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -4245,9 +4258,10 @@
                 "GPA": null
               },
               "name": null,
-              "orderBy": 1
+              "orderBy": 1,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -4385,9 +4399,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": null
+              "orderBy": null,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -4528,9 +4543,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": 0
+              "orderBy": 0,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],
@@ -4674,9 +4690,10 @@
                 }
               },
               "name": "Test Student",
-              "orderBy": 1
+              "orderBy": 1,
+              "sortColumn": null
             },
-            "stateObjectType": "StudentQueryDto"
+            "stateObjectType": "GetStudentsQueryDto"
           }
         }
       ],

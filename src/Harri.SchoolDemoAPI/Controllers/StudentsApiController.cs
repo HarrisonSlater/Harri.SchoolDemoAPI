@@ -173,8 +173,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
             [FromQuery(Name = APIConstants.Query.SortColumn)] string? sortColumn)
         {
-            //TODO wrap this in a type
-            var students = await _studentService.GetStudents(name, gpaQuery, orderBy);
+            var students = await _studentService.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn });
 
             if (students.IsNullOrEmpty())
             {

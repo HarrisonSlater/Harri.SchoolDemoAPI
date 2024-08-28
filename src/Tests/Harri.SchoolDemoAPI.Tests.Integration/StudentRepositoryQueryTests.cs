@@ -108,7 +108,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         public async Task GetStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
-            var response = await _studentRepository.GetStudents(name);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name });
 
             response.Should().NotBeNullOrEmpty();
             response.Should().ContainEquivalentOf(expectedStudentToFind);
@@ -121,7 +121,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var searchName = Guid.NewGuid().ToString();
 
             // Act
-            var response = await _studentRepository.GetStudents(searchName, null);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = searchName });
 
             // Assert
             response.Should().BeEmpty();
@@ -142,7 +142,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _studentRepository.GetStudents(null, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -166,7 +166,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
 
             // Act
-            var response = await _studentRepository.GetStudents(null, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
 
             // Assert
             response.Should().NotBeNull();
@@ -195,7 +195,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _studentRepository.GetStudents(name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -220,7 +220,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var name = expectedStudentToFind.Name;
 
             // Act
-            var response = await _studentRepository.GetStudents(name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
 
             // Assert
             response.Should().BeEmpty();
@@ -238,7 +238,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, gpaQueryDto);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = expectedStudentToFind.Name, GPAQueryDto = gpaQueryDto});
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -255,7 +255,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
             // Act
-            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, new GPAQueryDto() { GPA = new() { IsNull = false } });
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
+            {
+                Name = expectedStudentToFind.Name, 
+                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = false } } 
+            });
 
             // Assert
             response.Should().NotBeNull();
@@ -278,7 +282,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
             // Act
-            var response = await _studentRepository.GetStudents(expectedStudentToFind.Name, new GPAQueryDto() { GPA = new() { IsNull = isNull } });
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
+            {
+                Name = expectedStudentToFind.Name, 
+                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = isNull } } 
+            });
 
             // Assert
             response.Should().NotBeNullOrEmpty();
@@ -293,7 +301,12 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             // Act
-            var response = await _studentRepository.GetStudents(ExpectedStudentToFindMatchingNameAndGpa.Name, new GPAQueryDto() { GPA = new() { IsNull = true } });
+
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
+            {
+                Name = ExpectedStudentToFindMatchingNameAndGpa.Name,
+                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = true } } 
+            });
 
             // Assert
             response.Should().BeEmpty();
@@ -312,7 +325,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy)
         {
             // Act
-            var response = await _studentRepository.GetStudents(orderBy: orderBy);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy });
 
             // Assert
             response.Should().NotBeEmpty();
@@ -326,7 +339,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldOrderByDescending()
         {
             // Act
-            var response = await _studentRepository.GetStudents(orderBy: SortOrder.DESC);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = SortOrder.DESC });
 
             // Assert
             response.Should().NotBeEmpty();
@@ -340,7 +353,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldOrderByAscendingWhenFiltering()
         {
             // Act
-            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.ASC);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC });
 
             // Assert
             response.Should().NotBeEmpty();
@@ -354,7 +367,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldOrderByDescending_WhenFiltering()
         {
             // Act
-            var response = await _studentRepository.GetStudents(name: "Smith", orderBy: SortOrder.DESC);
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC });
 
             // Assert
             response.Should().NotBeEmpty();
