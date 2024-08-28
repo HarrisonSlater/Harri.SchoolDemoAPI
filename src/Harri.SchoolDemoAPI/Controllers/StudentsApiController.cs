@@ -158,6 +158,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). 
         /// See <see cref="ComparativeQueryDto{T}"></see></param>
         /// <param name="orderBy">ASC or DESC. Default sort order is ASC</param>
+        /// <param name="sortColumn">String name of column to sort on</param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
@@ -169,8 +170,10 @@ namespace Harri.SchoolDemoAPI.Controllers
         public async Task<IActionResult> GetStudents(
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
             [FromQuery] GPAQueryDto gpaQuery,
-            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy)
+            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
+            [FromQuery(Name = APIConstants.Query.SortColumn)] string? sortColumn)
         {
+            //TODO wrap this in a type
             var students = await _studentService.GetStudents(name, gpaQuery, orderBy);
 
             if (students.IsNullOrEmpty())
