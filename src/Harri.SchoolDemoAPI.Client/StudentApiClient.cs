@@ -114,13 +114,14 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Get Students
-        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
+        //TODO add method using the DTO query type 
+        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null, string? sortColumn = null)
         {
-            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy);
+            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy, sortColumn);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
+        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null, string? sortColumn = null)
         {
             var request = new RestRequest(BaseRoute);
             if (name is not null)
@@ -149,6 +150,10 @@ namespace Harri.SchoolDemoAPI.Client
             if(orderBy is not null)
             {
                 request.AddQueryParameter($"{APIConstants.Query.OrderBy}", orderBy.ToString());
+            }
+            if(sortColumn is not null)
+            {
+                request.AddQueryParameter($"{APIConstants.Query.SortColumn}", sortColumn.ToString());
             }
 
             var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
