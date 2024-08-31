@@ -1,4 +1,5 @@
-﻿using Harri.SchoolDemoAPI.Models.Enums;
+﻿using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
+using Harri.SchoolDemoAPI.Models.Enums;
 using System.Text.Json.Serialization;
 
 namespace Harri.SchoolDemoAPI.Models.Dto
@@ -19,6 +20,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         public SortOrder? OrderBy { get; set; }
 
         [JsonPropertyName(APIConstants.Query.SortColumn)]
+        [ValidStudentSortColumn]
         public string? SortColumn { get; set; }
     }
 }

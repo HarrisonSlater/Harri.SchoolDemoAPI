@@ -10,6 +10,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Services;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
+using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -171,7 +172,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
             [FromQuery] GPAQueryDto gpaQuery,
             [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
-            [FromQuery(Name = APIConstants.Query.SortColumn)] string? sortColumn)
+            [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string? sortColumn)
         {
             var students = await _studentService.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn });
 

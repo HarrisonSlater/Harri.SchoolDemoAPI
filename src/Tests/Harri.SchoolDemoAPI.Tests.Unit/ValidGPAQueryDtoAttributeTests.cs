@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Models.Attributes;
+using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
 using Harri.SchoolDemoAPI.Models.Dto;
 
 namespace Harri.SchoolDemoAPI.Tests.Unit
