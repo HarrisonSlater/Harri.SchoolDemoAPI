@@ -7,6 +7,7 @@ namespace Harri.SchoolDemoAPI.Models.Attributes.SortColumn
     /// <summary>
     /// Attribute for validating a string of a student column to sort on 
     /// </summary>
+    // TODO Generalise this attribute + unit tests
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter)]
     public class ValidStudentSortColumnAttribute : ValidationAttribute
     {
