@@ -5,6 +5,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Models;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -94,7 +95,12 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId {queryDto.OrderBy}";
+            var sortColumn = queryDto.SortColumn ?? APIConstants.Student.SId;// TODO clean case
+            var orderBy = queryDto.OrderBy;
+
+            builder.OrderBy($"{sortColumn} {orderBy}");
+
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ /**orderby**/";
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())
