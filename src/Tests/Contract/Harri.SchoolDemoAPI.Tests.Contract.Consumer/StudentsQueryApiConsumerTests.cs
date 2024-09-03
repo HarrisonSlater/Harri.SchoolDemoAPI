@@ -51,6 +51,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             // testCase string is needed so the test explorer correctly counts these test cases as separate
+            // TODO find a better solution for this
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Gt = 4 } }, "Test Case 1");
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 4, Lt = 4 } }, "Test Case 2");
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = -1 } }, "Test Case 3");
@@ -100,7 +101,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {name}, {gpaQuerySerialized} {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { Name = name,  GPAQueryDto = gpaQuery })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery)
                  .WillRespond()
@@ -155,7 +156,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort order {sortOrder}, {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { Name = name,  GPAQueryDto = gpaQuery, OrderBy = sortOrder })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery, OrderBy = sortOrder })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(name, gpaQuery, sortOrderString)
                  .WillRespond()
@@ -175,16 +176,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         private static IEnumerable<TestCaseData> GetValidOrderedQueryCaseInsensitiveTestCases()
         {
             yield return new TestCaseData(SortOrder.ASC, "asc", "Test Case 1");
-            yield return new TestCaseData(SortOrder.ASC, "Asc", "Test Case 1");
-            yield return new TestCaseData(SortOrder.DESC, "desc", "Test Case 2");
-            yield return new TestCaseData(SortOrder.DESC, "Desc", "Test Case 2");
+            yield return new TestCaseData(SortOrder.ASC, "Asc", "Test Case 2");
+            yield return new TestCaseData(SortOrder.DESC, "desc", "Test Case 3");
+            yield return new TestCaseData(SortOrder.DESC, "Desc", "Test Case 4");
         }
 
         [TestCaseSource(nameof(GetValidOrderedQueryCaseInsensitiveTestCases))]
         public async Task QueryStudents_WhenCalled_WithCaseInsensitiveSortOrder_ReturnsMatchingStudents(SortOrder? sortOrder, string? sortOrderString, string testCase)
         {
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with case insensitive sort order {sortOrderString}, {testCase}")
-                    .Given("some students exist for querying", new StudentQueryDto() { GPAQueryDto = new GPAQueryDto(), OrderBy = sortOrder })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto(), OrderBy = sortOrder })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .WithQuery(APIConstants.Query.OrderBy, sortOrderString)
                  .WillRespond()
@@ -204,6 +205,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 AssertStudentsResponseIsCorrect(response.Data);
             });
         }
+
         private static IEnumerable<TestCaseData> GetBadRequestOrderedQueryTestCases()
         {
             yield return new TestCaseData("asdf", "Test Case 1");
@@ -235,11 +237,106 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest); 
             });
         }
+
+        // Sorting by column
+        private static IEnumerable<TestCaseData> GetValidOrdered_WithSortColumnQueryTestCases()
+        {
+            yield return new TestCaseData("sId", "Test Case 1");
+            yield return new TestCaseData("name", "Test Case 2");
+            yield return new TestCaseData("GPA", "Test Case 3");
+            yield return new TestCaseData(null, "Test Case 4");
+            yield return new TestCaseData("", "Test Case 5");
+
+            //Case insensitive tests
+            yield return new TestCaseData("sid", "Test Case 6");
+            yield return new TestCaseData("Name", "Test Case 7");
+            yield return new TestCaseData("NAME", "Test Case 8");
+            yield return new TestCaseData("Gpa", "Test Case 9");
+            yield return new TestCaseData("gpa", "Test Case 10");
+        }
+
+        [TestCaseSource(nameof(GetValidOrdered_WithSortColumnQueryTestCases))]
+        public async Task QueryStudents_WhenCalled_WithSortColumn_ReturnsMatchingStudents(string? sortColumn, string testCase)
+        {
+            var name = "Test Student";
+            var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort column {sortColumn}, {testCase}")
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, SortColumn = sortColumn })
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(name, gpaQuery, sortColumn: sortColumn)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(ExpectedStudentsJsonBody);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents(name, gpaQuery, sortColumn: sortColumn);
+
+                AssertStudentsResponseIsCorrect(students);
+            });
+        }
+
+        private static IEnumerable<TestCaseData> GetBadRequestOrdered_WithSortColumnQueryTestCases()
+        {
+            yield return new TestCaseData("asdf", "Test Case 1");
+            yield return new TestCaseData("DSC", "Test Case 2");
+            yield return new TestCaseData("2", "Test Case 3");
+        }
+
+        [TestCaseSource(nameof(GetBadRequestOrdered_WithSortColumnQueryTestCases))]
+        public async Task QueryStudents_WhenCalled_WithBadSortColumn_ReturnsBadRequest(string? sortColumn, string testCase)
+        {
+            var pactBuilder = _pact.UponReceiving($"a bad request to query students with sort column {sortColumn}, {testCase}")
+                    //.Given("some students exist for querying")
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .WithQuery(APIConstants.Query.SortColumn, sortColumn)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.BadRequest);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.GetStudentsRestResponse(sortColumn: sortColumn);
+
+                // Client Assertions
+                response.Data.Should().BeNull();
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            });
+        }
+
+        [Test]
+        public async Task QueryStudents_WhenCalled_WithAllParametersReturnsMatchingStudents()
+        {
+            var name = "Test Student";
+            var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var orderBy = SortOrder.ASC;
+            var sortColumn = "GPA";
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students with all parameters set")
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn })
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(name, gpaQuery, orderBy.ToString(), sortColumn: sortColumn)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(ExpectedStudentsJsonBody);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn);
+
+                AssertStudentsResponseIsCorrect(students);
+            });
+        }
     }
 
     public static class PactTestExtension
     {
-        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, string? sortOrder = null)
+        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, string? sortOrder = null, string? sortColumn = null)
         {
             if (name is not null)
             {
@@ -267,6 +364,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             if(sortOrder is not null)
             {
                 pactBuilder.WithQuery(APIConstants.Query.OrderBy, sortOrder);
+            }
+            if(sortColumn is not null)
+            {
+                pactBuilder.WithQuery(APIConstants.Query.SortColumn, sortColumn);
             }
             return pactBuilder;
         }

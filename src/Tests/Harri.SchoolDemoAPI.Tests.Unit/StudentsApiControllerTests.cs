@@ -26,11 +26,11 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         public async Task GetStudents_ShouldReturnOk(string? name)
         {
             // Arrange
-            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
                 .ReturnsAsync(new List<StudentDto>() { new StudentDto() });
 
             // Act
-            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null }, null);
+            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null }, null, null);
 
             // Assert
             result.Should().BeOfType(typeof(OkObjectResult));
@@ -40,11 +40,11 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         public async Task GetStudents_ShouldReturnNotFound_WhenNoStudentsReturned()
         {
             // Arrange
-            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<string>(), It.IsAny<GPAQueryDto>(), It.IsAny<SortOrder?>()))
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
                 .ReturnsAsync([]);
 
             // Act
-            var result = await _controller.GetStudents("Test Student", new() { GPA = null }, null);
+            var result = await _controller.GetStudents("Test Student", new() { GPA = null }, null, null);
 
             // Assert
             result.Should().BeOfType(typeof(NotFoundResult));

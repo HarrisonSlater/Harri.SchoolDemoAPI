@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Client;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.E2E.TestBase;
@@ -111,6 +112,36 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             response.Data.Should().NotBeNull().And.ContainSingle();
             response.Data!.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
+        }
+
+        // Ordering tests
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudentsAscending_ByName()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
+
+            var names = students!.Select(x => x.Name).ToList();
+            names.Should().BeInAscendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudentsDescending_ByName()
+        {
+            // Arrange
+            // Act
+            var students = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
+
+            var names = students!.Select(x => x.Name).ToList();
+            names.Should().BeInDescendingOrder();
         }
     }
 }

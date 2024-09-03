@@ -5,6 +5,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Models;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -54,22 +55,22 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
+        public async Task<List<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
         {
-            if (orderBy is null)
+            if (queryDto.OrderBy is null)
             {
-                orderBy = SortOrder.ASC;
+                queryDto.OrderBy = SortOrder.ASC;
             }
 
             var builder = new SqlBuilder();
             
-            if (name != null)
+            if (queryDto.Name != null)
             {
-                builder.Where("sName LIKE @searchString", new { searchString = $"%{name}%" });
+                builder.Where("sName LIKE @searchString", new { searchString = $"%{queryDto.Name}%" });
             }
-            if (gpaQuery?.GPA != null)
+            if (queryDto.GPAQueryDto?.GPA != null)
             {
-                var gpa = gpaQuery.GPA;
+                var gpa = queryDto.GPAQueryDto.GPA;
 
                 if (gpa.IsNull.HasValue && gpa.IsNull == true)
                 {
@@ -94,7 +95,12 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ ORDER BY sId {orderBy}";
+            var sortColumn = queryDto.SortColumn ?? APIConstants.Student.SId;// TODO clean case
+            var orderBy = queryDto.OrderBy;
+
+            builder.OrderBy($"{sortColumn} {orderBy}");
+
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ /**orderby**/";
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())

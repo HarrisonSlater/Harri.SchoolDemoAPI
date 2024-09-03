@@ -51,9 +51,9 @@ namespace Harri.SchoolDemoAPI.Services
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null)
+        public async Task<List<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto)
         {
-            return await _studentRepository.GetStudents(name, gpaQuery, orderBy);
+            return await _studentRepository.GetStudents(getStudentsQueryDto);
         }
     }
 }
