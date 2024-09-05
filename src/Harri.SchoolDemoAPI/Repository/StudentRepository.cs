@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
+using System;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -95,7 +96,7 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var sortColumn = queryDto.SortColumn ?? APIConstants.Student.SId;// TODO clean case
+            var sortColumn = GetCleanSortColumn(queryDto.SortColumn); // TODO clean case
             var orderBy = queryDto.OrderBy;
 
             builder.OrderBy($"{sortColumn} {orderBy}");
@@ -107,6 +108,21 @@ namespace Harri.SchoolDemoAPI.Repository
             {
                 return (await connection.QueryAsync<StudentDto>(fullQuery.RawSql, fullQuery.Parameters)).ToList();
             }
+        }
+
+        //TODO unit test
+        private static string GetCleanSortColumn(string? sortColumn)
+        {
+            if (sortColumn is null) return APIConstants.Student.SId;
+
+            var cleanedColumn = sortColumn.ToLower() switch
+            {
+                var s when s == APIConstants.Student.SId.ToLower() => APIConstants.Student.SId,
+                var s when s == APIConstants.Student.Name.ToLower() => APIConstants.Student.Name,
+                var s when s == APIConstants.Student.GPA.ToLower() => APIConstants.Student.GPA,
+                _ => throw new ArgumentException()
+            };
+            return cleanedColumn;
         }
     }
 }
