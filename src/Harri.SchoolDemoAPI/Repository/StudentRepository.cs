@@ -96,7 +96,7 @@ namespace Harri.SchoolDemoAPI.Repository
                 }
             }
 
-            var sortColumn = GetCleanSortColumn(queryDto.SortColumn); // TODO clean case
+            var sortColumn = GetCleanSortColumn(queryDto.SortColumn);
             var orderBy = queryDto.OrderBy;
 
             builder.OrderBy($"{sortColumn} {orderBy}");
@@ -110,8 +110,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        //TODO unit test
-        private static string GetCleanSortColumn(string? sortColumn)
+        internal static string GetCleanSortColumn(string? sortColumn)
         {
             if (sortColumn is null) return APIConstants.Student.SId;
 
