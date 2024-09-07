@@ -1,9 +1,6 @@
-﻿
-using FluentAssertions;
+﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Repository;
-using Moq;
-using System.Data.Common;
 
 namespace Harri.SchoolDemoAPI.Tests.Unit
 {
