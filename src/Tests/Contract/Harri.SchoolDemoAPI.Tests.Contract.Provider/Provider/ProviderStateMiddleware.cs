@@ -31,7 +31,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public ProviderStateMiddleware(RequestDelegate next)
         {
             _next = next;
-            //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
                 ["a student with sId exists"] = this.EnsureStudentExists,
