@@ -60,8 +60,11 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             if (queryDto.OrderBy is null)
             {
-                queryDto.OrderBy = SortOrder.ASC;
+                queryDto.OrderBy = SortOrder.ASC; //TODO move default orderby to controller
             }
+            if (queryDto.Page is null || queryDto.PageSize is null) throw new ArgumentException("Page and PageSize must be set");
+
+            //TODO page and pageSize
 
             var builder = new SqlBuilder();
             

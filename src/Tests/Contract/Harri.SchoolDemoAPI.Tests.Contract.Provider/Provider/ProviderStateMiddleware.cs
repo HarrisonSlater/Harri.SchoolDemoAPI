@@ -194,6 +194,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                     queryDto.Name.Should().Be(studentQueryDto.Name);
                     queryDto.GPAQueryDto.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
                     queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy);
+                    queryDto.Page.Should().Be(studentQueryDto.Page ?? 1);
+                    queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? 10);
                 });
 
             return Task.CompletedTask;

@@ -336,30 +336,32 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
     public static class PactTestExtension
     {
-        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name, GPAQueryDto? gpaQuery, string? sortOrder = null, string? sortColumn = null)
+        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name = null, GPAQueryDto? gpaQuery = null,
+            string? sortOrder = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
             if (name is not null)
             {
                 pactBuilder.WithQuery("name", name);
             }
 
-            if (gpaQuery?.GPA is null) return pactBuilder;
-
-            if (gpaQuery.GPA.Lt is not null)
+            if (gpaQuery?.GPA is not null)
             {
-                pactBuilder.WithQuery("GPA.lt", gpaQuery.GPA.Lt.ToString());
-            }
-            if (gpaQuery.GPA.Gt is not null)
-            {
-                pactBuilder.WithQuery("GPA.gt", gpaQuery.GPA.Gt.ToString());
-            }
-            if (gpaQuery.GPA.Eq is not null)
-            {
-                pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
-            }
-            if (gpaQuery.GPA.IsNull is not null)
-            {
-                pactBuilder.WithQuery("GPA.isNull", gpaQuery.GPA.IsNull.ToString());
+                if (gpaQuery.GPA.Lt is not null)
+                {
+                    pactBuilder.WithQuery("GPA.lt", gpaQuery.GPA.Lt.ToString());
+                }
+                if (gpaQuery.GPA.Gt is not null)
+                {
+                    pactBuilder.WithQuery("GPA.gt", gpaQuery.GPA.Gt.ToString());
+                }
+                if (gpaQuery.GPA.Eq is not null)
+                {
+                    pactBuilder.WithQuery("GPA.eq", gpaQuery.GPA.Eq.ToString());
+                }
+                if (gpaQuery.GPA.IsNull is not null)
+                {
+                    pactBuilder.WithQuery("GPA.isNull", gpaQuery.GPA.IsNull.ToString());
+                }
             }
             if(sortOrder is not null)
             {
@@ -368,6 +370,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             if(sortColumn is not null)
             {
                 pactBuilder.WithQuery(APIConstants.Query.SortColumn, sortColumn);
+            }
+            if(page is not null)
+            {
+                pactBuilder.WithQuery(APIConstants.Query.Page, page.ToString());
+            }
+            if(pageSize is not null)
+            {
+                pactBuilder.WithQuery(APIConstants.Query.PageSize, pageSize.ToString());
             }
             return pactBuilder;
         }

@@ -172,9 +172,19 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
             [FromQuery] GPAQueryDto gpaQuery,
             [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
-            [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string? sortColumn)
+            [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string? sortColumn,
+            [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = 1,
+            [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = 10)
         {
-            var students = await _studentService.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn });
+            var students = await _studentService.GetStudents(new GetStudentsQueryDto() 
+            {
+                Name = name,
+                GPAQueryDto = gpaQuery,
+                OrderBy = orderBy,
+                SortColumn = sortColumn,
+                Page = page,
+                PageSize = pageSize
+            });
 
             if (students.IsNullOrEmpty())
             {

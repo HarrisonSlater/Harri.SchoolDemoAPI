@@ -2481,6 +2481,8 @@
               },
               "name": null,
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -2622,6 +2624,8 @@
               },
               "name": null,
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -2766,6 +2770,8 @@
               },
               "name": null,
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -2910,6 +2916,8 @@
               },
               "name": null,
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3051,6 +3059,8 @@
               },
               "name": null,
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3187,6 +3197,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3328,6 +3340,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3472,6 +3486,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3619,6 +3635,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3763,6 +3781,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3907,6 +3927,8 @@
               },
               "name": "Test Student",
               "orderBy": 0,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "GPA"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4052,6 +4074,8 @@
               },
               "name": null,
               "orderBy": 0,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4188,6 +4212,8 @@
               },
               "name": null,
               "orderBy": 1,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4324,6 +4350,8 @@
               },
               "name": null,
               "orderBy": 0,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4460,6 +4488,8 @@
               },
               "name": null,
               "orderBy": 1,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4472,6 +4502,280 @@
         "query": {
           "orderBy": [
             "desc"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students with page  and page size , Test Case 2",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": null,
+              "orderBy": null,
+              "page": 1,
+              "pageSize": 10,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/"
+      },
+      "response": {
+        "body": {
+          "content": [
+            {
+              "GPA": 3.99,
+              "name": "Test student 1",
+              "sId": 1
+            },
+            {
+              "GPA": 3.89,
+              "name": "Test student 2",
+              "sId": 2
+            },
+            {
+              "GPA": 3.79,
+              "name": "Test student 3",
+              "sId": 3
+            }
+          ],
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students with page 1 and page size 10, Test Case 1",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": null,
+              "orderBy": null,
+              "page": 1,
+              "pageSize": 10,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "1"
+          ],
+          "pageSize": [
+            "10"
           ]
         }
       },
@@ -4601,6 +4905,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4745,6 +5051,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": ""
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4892,6 +5200,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "GPA"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5039,6 +5349,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "Gpa"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5186,6 +5498,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "NAME"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5333,6 +5647,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "Name"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5480,6 +5796,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "gpa"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5627,6 +5945,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "name"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5774,6 +6094,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "sId"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5921,6 +6243,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": "sid"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6068,6 +6392,8 @@
               },
               "name": "Test Student",
               "orderBy": null,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6212,6 +6538,8 @@
               },
               "name": "Test Student",
               "orderBy": 0,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6359,6 +6687,8 @@
               },
               "name": "Test Student",
               "orderBy": 1,
+              "page": null,
+              "pageSize": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
