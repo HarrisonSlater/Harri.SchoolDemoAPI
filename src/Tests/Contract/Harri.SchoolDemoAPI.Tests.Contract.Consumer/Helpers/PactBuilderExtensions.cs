@@ -1,9 +1,10 @@
 ﻿using System.Text.Json;
 using PactNet;
 
-namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
+namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers
 {
-    public static class PactBuilderExtensions {
+    public static class PactBuilderExtensions
+    {
         // Provider state dictionary object setup helpers
         public static IRequestBuilderV4 Given<T>(this IRequestBuilderV4 pact, string providerState, T stateObject)
         {

@@ -137,7 +137,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         }
 
-        private List<StudentDto> _mockStudentsToReturn =
+        private static List<StudentDto> MockStudentsToReturn =
         [
             new StudentDto()
             {
@@ -159,10 +159,19 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             }
         ];
 
+        private static PagedList<StudentDto> MockPagedList = new()
+        {
+            Items = MockStudentsToReturn.ToList(),
+            Page = 1,
+            PageSize = 3,
+            TotalCount = 3
+        };
+
+
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(_mockStudentsToReturn));
+                .Returns(Task.FromResult(MockPagedList));
 
             return Task.CompletedTask;
         }
@@ -170,7 +179,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureNoStudentsExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(new List<StudentDto>()));
+                .Returns(Task.FromResult(new PagedList<StudentDto>()));
 
             return Task.CompletedTask;
         }
@@ -178,7 +187,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureNoStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(new List<StudentDto>()));
+                .Returns(Task.FromResult(new PagedList<StudentDto>()));
 
             return Task.CompletedTask;
         }
@@ -188,7 +197,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var studentQueryDto = GetStateObject<GetStudentsQueryDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(_mockStudentsToReturn))
+                .Returns(Task.FromResult(MockPagedList))
                 .Callback<GetStudentsQueryDto>((queryDto) =>
                 {
                     queryDto.Name.Should().Be(studentQueryDto.Name);

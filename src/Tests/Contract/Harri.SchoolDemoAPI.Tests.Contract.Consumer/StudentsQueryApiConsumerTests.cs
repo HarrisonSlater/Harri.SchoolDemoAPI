@@ -3,6 +3,7 @@ using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
 using PactNet;
 using PactNet.Matchers;
 using RestSharp;
@@ -13,41 +14,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
     public class StudentsQueryApiConsumerTests : ConsumerTestBase
     {
-        private static dynamic ExpectedStudentsJsonBody = new List<object>()
-        {
-            new
-            {
-                sId = Match.Equality(1),
-                name = Match.Equality("Test student 1"),
-                GPA = Match.Equality(3.99)
-            },
-            new
-            {
-                sId = Match.Equality(2),
-                name = Match.Equality("Test student 2"),
-                GPA = Match.Equality(3.89)
-            },
-            new
-            {
-                sId = Match.Equality(3),
-                name = Match.Equality("Test student 3"),
-                GPA = Match.Equality(3.79)
-            },
-        };
-
-        private static void AssertStudentsResponseIsCorrect(List<StudentDto>? students)
-        {
-            // Client Assertions
-            students.Should().NotBeNull().And.HaveCountGreaterThan(0);
-
-            foreach (var student in students)
-            {
-                student.SId.Should().NotBeNull().And.BeGreaterThan(0);
-                student.Name.Should().NotBeNullOrWhiteSpace();
-                student.GPA.Should().NotBeNull().And.BeGreaterThan(3.7m);
-            }
-        }
-
         private static IEnumerable<TestCaseData> GetInvalidGPAQueryDtoTestCases()
         {
             // testCase string is needed so the test explorer correctly counts these test cases as separate
@@ -107,14 +73,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(ExpectedStudentsJsonBody);
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
                 var students = await client.GetStudents(name, gpaQuery);
-
-                AssertStudentsResponseIsCorrect(students);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
 
@@ -162,14 +127,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(ExpectedStudentsJsonBody);
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
                 var students = await client.GetStudents(name, gpaQuery, sortOrder);
-
-                AssertStudentsResponseIsCorrect(students);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
 
@@ -191,7 +155,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(ExpectedStudentsJsonBody);
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -199,10 +163,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var request = new RestRequest("students/");
                 request.AddQueryParameter(APIConstants.Query.OrderBy, sortOrderString);
 
-                var response = await client.ExecuteGetAsync<List<StudentDto>?>(request);
+                var response = await client.ExecuteGetAsync<PagedList<StudentDto>?>(request);
 
                 response.Data.Should().NotBeNull();
-                AssertStudentsResponseIsCorrect(response.Data);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(response.Data);
             });
         }
 
@@ -268,14 +232,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(ExpectedStudentsJsonBody);
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
                 var students = await client.GetStudents(name, gpaQuery, sortColumn: sortColumn);
-
-                AssertStudentsResponseIsCorrect(students);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
 
@@ -322,14 +285,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(ExpectedStudentsJsonBody);
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
                 var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn);
-
-                AssertStudentsResponseIsCorrect(students);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
     }

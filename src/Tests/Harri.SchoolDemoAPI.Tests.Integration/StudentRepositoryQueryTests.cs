@@ -112,8 +112,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name });
 
-            response.Should().NotBeNullOrEmpty();
-            response.Should().ContainEquivalentOf(expectedStudentToFind);
+            response.Items.Should().NotBeNullOrEmpty();
+            response.Items.Should().ContainEquivalentOf(expectedStudentToFind);
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = searchName });
 
             // Assert
-            response.Should().BeEmpty();
+            response.Items.Should().BeEmpty();
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAOnlyTestCases()
@@ -145,14 +145,15 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Act
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
+            var items = response.Items;
 
             // Assert
-            response.Should().NotBeNullOrEmpty();
-            response.Should().ContainEquivalentOf(expectedStudentToFind);
+            items.Should().NotBeNullOrEmpty();
+            items.Should().ContainEquivalentOf(expectedStudentToFind);
 
-            response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
 
-            AssertInAscendingOrder_BySId(response);
+            AssertInAscendingOrder_BySId(items);
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -169,15 +170,16 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Act
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
+            var items = response.Items;
 
             // Assert
             response.Should().NotBeNull();
 
-            if (response.Count > 0)
+            if (items.Count > 0)
             {
-                response.Should().NotContainEquivalentOf(expectedStudentToFind);
-                response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-                AssertInAscendingOrder_BySId(response);
+                items.Should().NotContainEquivalentOf(expectedStudentToFind);
+                items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+                AssertInAscendingOrder_BySId(items);
             }
         }
 
@@ -200,9 +202,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
 
             // Assert
-            response.Should().NotBeNullOrEmpty();
+            response.Items.Should().NotBeNullOrEmpty();
 
-            response.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
+            response.Items.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAAndNameTestCases()
@@ -225,7 +227,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
 
             // Assert
-            response.Should().BeEmpty();
+            response.Items.Should().BeEmpty();
         }
 
         private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
@@ -242,12 +244,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Act
             var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = expectedStudentToFind.Name, GPAQueryDto = gpaQueryDto});
 
+            var items = response.Items;
             // Assert
-            response.Should().NotBeNullOrEmpty();
-            response.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Should().AllSatisfy(s => s.GPA.Should().BeNull());
+            items.Should().NotBeNullOrEmpty();
+            items.Should().ContainEquivalentOf(expectedStudentToFind);
+            items.Should().AllSatisfy(s => s.GPA.Should().BeNull());
 
-            AssertInAscendingOrder_BySId(response);
+            AssertInAscendingOrder_BySId(items);
         }
 
         [Test]
@@ -263,16 +266,17 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = false } } 
             });
 
+            var items = response.Items;
             // Assert
             response.Should().NotBeNull();
 
-            if (response.Count > 0)
+            if (items.Count > 0)
             {
-                response.Should().NotBeNull().And.HaveCountGreaterThan(0);
-                response.Should().NotContainEquivalentOf(expectedStudentToFind);
-                response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+                items.Should().NotBeNull().And.HaveCountGreaterThan(0);
+                items.Should().NotContainEquivalentOf(expectedStudentToFind);
+                items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
 
-                AssertInAscendingOrder_BySId(response);
+                AssertInAscendingOrder_BySId(items);
             }
         }
 
@@ -290,12 +294,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = isNull } } 
             });
 
+            var items = response.Items;
             // Assert
-            response.Should().NotBeNullOrEmpty();
-            response.Should().ContainEquivalentOf(expectedStudentToFind);
-            response.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
+            items.Should().NotBeNullOrEmpty();
+            items.Should().ContainEquivalentOf(expectedStudentToFind);
+            items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
 
-            AssertInAscendingOrder_BySId(response);
+            AssertInAscendingOrder_BySId(items);
         }
 
         [Test]
@@ -311,7 +316,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             });
 
             // Assert
-            response.Should().BeEmpty();
+            response.Items.Should().BeEmpty();
         }
 
         // Order by and sort column tests
@@ -383,8 +388,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            response.Should().NotBeEmpty();
-            AssertInAscendingOrder(response, expectedColumnSelector);
+            response.Items.Should().NotBeEmpty();
+            AssertInAscendingOrder(response.Items, expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
@@ -403,8 +408,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            response.Should().NotBeEmpty();
-            AssertInDescendingOrder(response, expectedColumnSelector);
+            response.Items.Should().NotBeEmpty();
+            AssertInDescendingOrder(response.Items, expectedColumnSelector);
         }
         
         private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
@@ -425,8 +430,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            response.Should().NotBeEmpty();
-            AssertInAscendingOrder(response, expectedColumnSelector);
+            response.Items.Should().NotBeEmpty();
+            AssertInAscendingOrder(response.Items, expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
@@ -447,8 +452,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            response.Should().NotBeEmpty();
-            AssertInDescendingOrder(response, expectedColumnSelector);
+            response.Items.Should().NotBeEmpty();
+            AssertInDescendingOrder(response.Items, expectedColumnSelector);
         }
     }
 }

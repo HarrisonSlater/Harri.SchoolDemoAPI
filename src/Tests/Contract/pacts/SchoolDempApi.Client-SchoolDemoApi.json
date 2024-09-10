@@ -4,6 +4,126 @@
   },
   "interactions": [
     {
+      "description": "a bad paged request to query students with page -1 and page size -10, Test Case 1",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "-1"
+          ],
+          "pageSize": [
+            "-10"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad paged request to query students with page -1 and page size 10, Test Case 2",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "-1"
+          ],
+          "pageSize": [
+            "10"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad paged request to query students with page 0 and page size 10, Test Case 6",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "0"
+          ],
+          "pageSize": [
+            "10"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad paged request to query students with page 1 and page size -10, Test Case 3",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "1"
+          ],
+          "pageSize": [
+            "-10"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad paged request to query students with page 1 and page size asdf, Test Case 5",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "1"
+          ],
+          "pageSize": [
+            "asdf"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad paged request to query students with page asdf and page size 10, Test Case 4",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "asdf"
+          ],
+          "pageSize": [
+            "10"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a bad request to patch a student with sId",
       "pending": false,
       "providerStates": [
@@ -1503,23 +1623,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -1530,7 +1655,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1538,7 +1663,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1546,7 +1671,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1554,7 +1679,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1562,7 +1687,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1570,7 +1695,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1578,7 +1703,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1586,7 +1711,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -1594,7 +1719,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2500,23 +2625,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -2527,7 +2657,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2535,7 +2665,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2543,7 +2673,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2551,7 +2681,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2559,7 +2689,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2567,7 +2697,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2575,7 +2705,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2583,7 +2713,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2591,7 +2721,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2646,23 +2776,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -2673,7 +2808,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2681,7 +2816,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2689,7 +2824,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2697,7 +2832,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2705,7 +2840,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2713,7 +2848,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2721,7 +2856,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2729,7 +2864,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2737,7 +2872,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2792,23 +2927,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -2819,7 +2959,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2827,7 +2967,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2835,7 +2975,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2843,7 +2983,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2851,7 +2991,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2859,7 +2999,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2867,7 +3007,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2875,7 +3015,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2883,7 +3023,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2935,23 +3075,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -2962,7 +3107,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2970,7 +3115,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2978,7 +3123,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2986,7 +3131,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -2994,7 +3139,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3002,7 +3147,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3010,7 +3155,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3018,7 +3163,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3026,7 +3171,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3078,23 +3223,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3105,7 +3255,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3113,7 +3263,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3121,7 +3271,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3129,7 +3279,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3137,7 +3287,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3145,7 +3295,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3153,7 +3303,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3161,7 +3311,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3169,7 +3319,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3216,23 +3366,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3243,7 +3398,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3251,7 +3406,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3259,7 +3414,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3267,7 +3422,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3275,7 +3430,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3283,7 +3438,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3291,7 +3446,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3299,7 +3454,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3307,7 +3462,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3362,23 +3517,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3389,7 +3549,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3397,7 +3557,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3405,7 +3565,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3413,7 +3573,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3421,7 +3581,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3429,7 +3589,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3437,7 +3597,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3445,7 +3605,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3453,7 +3613,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3511,23 +3671,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3538,7 +3703,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3546,7 +3711,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3554,7 +3719,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3562,7 +3727,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3570,7 +3735,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3578,7 +3743,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3586,7 +3751,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3594,7 +3759,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3602,7 +3767,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3657,23 +3822,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3684,7 +3854,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3692,7 +3862,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3700,7 +3870,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3708,7 +3878,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3716,7 +3886,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3724,7 +3894,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3732,7 +3902,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3740,7 +3910,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3748,7 +3918,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3803,23 +3973,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3830,7 +4005,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3838,7 +4013,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3846,7 +4021,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3854,7 +4029,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3862,7 +4037,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3870,7 +4045,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3878,7 +4053,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3886,7 +4061,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3894,7 +4069,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3955,23 +4130,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -3982,7 +4162,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3990,7 +4170,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -3998,7 +4178,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4006,7 +4186,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4014,7 +4194,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4022,7 +4202,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4030,7 +4210,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4038,7 +4218,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4046,7 +4226,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4093,23 +4273,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4120,7 +4305,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4128,7 +4313,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4136,7 +4321,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4144,7 +4329,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4152,7 +4337,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4160,7 +4345,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4168,7 +4353,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4176,7 +4361,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4184,7 +4369,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4231,23 +4416,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4258,7 +4448,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4266,7 +4456,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4274,7 +4464,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4282,7 +4472,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4290,7 +4480,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4298,7 +4488,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4306,7 +4496,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4314,7 +4504,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4322,7 +4512,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4369,23 +4559,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4396,7 +4591,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4404,7 +4599,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4412,7 +4607,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4420,7 +4615,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4428,7 +4623,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4436,7 +4631,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4444,7 +4639,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4452,7 +4647,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4460,7 +4655,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4507,23 +4702,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4534,7 +4734,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4542,7 +4742,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4550,7 +4750,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4558,7 +4758,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4566,7 +4766,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4574,7 +4774,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4582,7 +4782,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4590,7 +4790,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4598,7 +4798,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4640,23 +4840,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4667,7 +4872,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4675,7 +4880,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4683,7 +4888,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4691,7 +4896,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4699,7 +4904,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4707,7 +4912,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4715,7 +4920,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4723,7 +4928,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4731,7 +4936,150 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students with page  and page size 100, Test Case 3",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": null,
+              "orderBy": null,
+              "page": 1,
+              "pageSize": 100,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "pageSize": [
+            "100"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4781,23 +5129,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4808,7 +5161,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4816,7 +5169,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4824,7 +5177,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4832,7 +5185,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4840,7 +5193,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4848,7 +5201,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4856,7 +5209,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4864,7 +5217,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4872,7 +5225,296 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students with page 2 and page size , Test Case 4",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": null,
+              "orderBy": null,
+              "page": 2,
+              "pageSize": 10,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "2"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students with page 2 and page size 100, Test Case 3",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": null,
+              "orderBy": null,
+              "page": 2,
+              "pageSize": 100,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "page": [
+            "2"
+          ],
+          "pageSize": [
+            "100"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4927,23 +5569,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -4954,7 +5601,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4962,7 +5609,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4970,7 +5617,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4978,7 +5625,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4986,7 +5633,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -4994,7 +5641,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5002,7 +5649,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5010,7 +5657,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5018,7 +5665,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5076,23 +5723,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5103,7 +5755,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5111,7 +5763,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5119,7 +5771,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5127,7 +5779,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5135,7 +5787,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5143,7 +5795,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5151,7 +5803,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5159,7 +5811,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5167,7 +5819,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5225,23 +5877,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5252,7 +5909,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5260,7 +5917,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5268,7 +5925,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5276,7 +5933,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5284,7 +5941,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5292,7 +5949,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5300,7 +5957,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5308,7 +5965,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5316,7 +5973,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5374,23 +6031,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5401,7 +6063,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5409,7 +6071,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5417,7 +6079,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5425,7 +6087,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5433,7 +6095,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5441,7 +6103,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5449,7 +6111,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5457,7 +6119,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5465,7 +6127,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5523,23 +6185,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5550,7 +6217,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5558,7 +6225,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5566,7 +6233,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5574,7 +6241,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5582,7 +6249,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5590,7 +6257,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5598,7 +6265,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5606,7 +6273,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5614,7 +6281,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5672,23 +6339,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5699,7 +6371,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5707,7 +6379,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5715,7 +6387,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5723,7 +6395,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5731,7 +6403,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5739,7 +6411,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5747,7 +6419,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5755,7 +6427,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5763,7 +6435,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5821,23 +6493,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5848,7 +6525,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5856,7 +6533,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5864,7 +6541,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5872,7 +6549,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5880,7 +6557,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5888,7 +6565,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5896,7 +6573,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5904,7 +6581,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5912,7 +6589,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -5970,23 +6647,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -5997,7 +6679,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6005,7 +6687,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6013,7 +6695,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6021,7 +6703,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6029,7 +6711,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6037,7 +6719,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6045,7 +6727,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6053,7 +6735,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6061,7 +6743,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6119,23 +6801,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -6146,7 +6833,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6154,7 +6841,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6162,7 +6849,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6170,7 +6857,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6178,7 +6865,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6186,7 +6873,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6194,7 +6881,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6202,7 +6889,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6210,7 +6897,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6268,23 +6955,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -6295,7 +6987,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6303,7 +6995,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6311,7 +7003,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6319,7 +7011,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6327,7 +7019,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6335,7 +7027,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6343,7 +7035,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6351,7 +7043,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6359,7 +7051,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6414,23 +7106,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -6441,7 +7138,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6449,7 +7146,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6457,7 +7154,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6465,7 +7162,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6473,7 +7170,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6481,7 +7178,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6489,7 +7186,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6497,7 +7194,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6505,7 +7202,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6563,23 +7260,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -6590,7 +7292,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6598,7 +7300,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6606,7 +7308,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6614,7 +7316,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6622,7 +7324,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6630,7 +7332,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6638,7 +7340,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6646,7 +7348,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6654,7 +7356,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6712,23 +7414,28 @@
       },
       "response": {
         "body": {
-          "content": [
-            {
-              "GPA": 3.99,
-              "name": "Test student 1",
-              "sId": 1
-            },
-            {
-              "GPA": 3.89,
-              "name": "Test student 2",
-              "sId": 2
-            },
-            {
-              "GPA": 3.79,
-              "name": "Test student 3",
-              "sId": 3
-            }
-          ],
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -6739,7 +7446,7 @@
         },
         "matchingRules": {
           "body": {
-            "$[0].GPA": {
+            "$.items[0].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6747,7 +7454,7 @@
                 }
               ]
             },
-            "$[0].name": {
+            "$.items[0].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6755,7 +7462,7 @@
                 }
               ]
             },
-            "$[0].sId": {
+            "$.items[0].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6763,7 +7470,7 @@
                 }
               ]
             },
-            "$[1].GPA": {
+            "$.items[1].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6771,7 +7478,7 @@
                 }
               ]
             },
-            "$[1].name": {
+            "$.items[1].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6779,7 +7486,7 @@
                 }
               ]
             },
-            "$[1].sId": {
+            "$.items[1].sId": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6787,7 +7494,7 @@
                 }
               ]
             },
-            "$[2].GPA": {
+            "$.items[2].GPA": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6795,7 +7502,7 @@
                 }
               ]
             },
-            "$[2].name": {
+            "$.items[2].name": {
               "combine": "AND",
               "matchers": [
                 {
@@ -6803,7 +7510,7 @@
                 }
               ]
             },
-            "$[2].sId": {
+            "$.items[2].sId": {
               "combine": "AND",
               "matchers": [
                 {

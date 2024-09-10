@@ -166,7 +166,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [HttpGet]
         [Route("/students")]
         [SwaggerOperation(OperationId = "GetStudents")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<StudentDto>), description: "Successful operation")]
+        [SwaggerResponse(statusCode: 200, type: typeof(PagedList<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
         public async Task<IActionResult> GetStudents(
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
@@ -186,7 +186,7 @@ namespace Harri.SchoolDemoAPI.Controllers
                 PageSize = pageSize
             });
 
-            if (students.IsNullOrEmpty())
+            if (students.Items.IsNullOrEmpty())
             {
                 return NotFound();
             }

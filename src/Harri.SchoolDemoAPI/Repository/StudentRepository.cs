@@ -3,7 +3,6 @@ using System.Linq;
 using System.Data;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using System;
@@ -56,7 +55,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
+        public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
         {
             if (queryDto.OrderBy is null)
             {
@@ -109,7 +108,7 @@ namespace Harri.SchoolDemoAPI.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                return (await connection.QueryAsync<StudentDto>(fullQuery.RawSql, fullQuery.Parameters)).ToList();
+                return new PagedList<StudentDto>() { Items = (await connection.QueryAsync<StudentDto>(fullQuery.RawSql, fullQuery.Parameters)).ToList() };
             }
         }
 

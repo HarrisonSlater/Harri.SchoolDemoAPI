@@ -179,7 +179,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var students = await _studentRepository.GetStudents(new GetStudentsQueryDto());
 
             // Assert
-            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+            students.Should().NotBeNull();
+            students.Items.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
         }
     }
 }
