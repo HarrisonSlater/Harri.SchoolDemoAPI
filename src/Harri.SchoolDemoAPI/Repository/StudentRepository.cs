@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -63,8 +64,6 @@ namespace Harri.SchoolDemoAPI.Repository
             }
             if (queryDto.Page is null || queryDto.PageSize is null) throw new ArgumentException("Page and PageSize must be set");
 
-            //TODO page and pageSize
-
             var builder = new SqlBuilder();
             
             if (queryDto.Name != null)
@@ -103,12 +102,17 @@ namespace Harri.SchoolDemoAPI.Repository
 
             builder.OrderBy($"{sortColumn} {orderBy}");
 
-            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ /**orderby**/";
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ /**orderby**/\n" +
+                $"SELECT COUNT(*) FROM [SchoolDemo].Student /**where**/";
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                return new PagedList<StudentDto>() { Items = (await connection.QueryAsync<StudentDto>(fullQuery.RawSql, fullQuery.Parameters)).ToList() };
+                var gridReader = (await connection.QueryMultipleAsync(fullQuery.RawSql, fullQuery.Parameters));
+                var items = gridReader.Read<StudentDto>();
+                var count = gridReader.ReadSingle<int>();
+
+                return new PagedList<StudentDto>() { Items = items.ToList(), TotalCount = count };
             }
         }
 
