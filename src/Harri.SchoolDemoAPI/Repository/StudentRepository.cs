@@ -102,8 +102,9 @@ namespace Harri.SchoolDemoAPI.Repository
 
             builder.OrderBy($"{sortColumn} {orderBy}");
 
-            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student /**where**/ /**orderby**/\n" +
-                $"SELECT COUNT(*) FROM [SchoolDemo].Student /**where**/";
+            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student (NOLOCK) /**where**/ /**orderby**/;";
+            baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student /**where**/ (NOLOCK)";
+
             var fullQuery = builder.AddTemplate(baseQuery);
 
             using (var connection = _dbConnectionFactory.GetConnection())
