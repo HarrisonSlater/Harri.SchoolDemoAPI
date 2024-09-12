@@ -173,8 +173,8 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery] GPAQueryDto gpaQuery,
             [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
             [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string? sortColumn,
-            [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = 1,
-            [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = 10)
+            [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = APIDefaults.Query.Page,
+            [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = APIDefaults.Query.PageSize)
         {
             var students = await _studentService.GetStudents(new GetStudentsQueryDto() 
             {

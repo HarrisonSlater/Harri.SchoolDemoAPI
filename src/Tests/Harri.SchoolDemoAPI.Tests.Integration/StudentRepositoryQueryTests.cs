@@ -2,12 +2,13 @@
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
-using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
+using NUnit.Framework.Internal;
 using System.Globalization;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
+    //TODO cleanup assertions, refactor tests
     public class StudentRepositoryQueryTests : StudentRepositoryTestBase
     {
         //Test student 1
@@ -40,6 +41,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static StudentDto ExpectedStudentToFindMatchingNameUnicode => GetStudentDtoFor(_studentToMatchNameUnicodeId, _studentToMatchNameUnicode);
 
+        private GetStudentsQueryDto _studentsQueryDto;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _studentsQueryDto = new GetStudentsQueryDto() { Page = 1, PageSize = 10 };
+        }
 
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
@@ -110,9 +118,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         public async Task GetStudents_ShouldMatch(string name, StudentDto expectedStudentToFind)
         {
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name });
+            // Arrange
+            _studentsQueryDto.Name = name;
 
-            response.Items.Should().NotBeNullOrEmpty();
+            // Act
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
+
+            // Assert
+
+            response.Items.Should().NotBeEmpty().And.HaveCountGreaterThanOrEqualTo(1);
+            response.Page.Should().Be(1);
+            response.PageSize.Should().BeGreaterThanOrEqualTo(1);
+            response.TotalCount.Should().BeGreaterThanOrEqualTo(1);
+
             response.Items.Should().ContainEquivalentOf(expectedStudentToFind);
         }
 
@@ -121,12 +139,16 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             var searchName = Guid.NewGuid().ToString();
+            _studentsQueryDto.Name = searchName;
 
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = searchName });
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
             response.Items.Should().BeEmpty();
+            response.Page.Should().Be(0);
+            response.PageSize.Should().Be(0);
+            response.TotalCount.Should().Be(0);
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAOnlyTestCases()
@@ -142,13 +164,18 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
+            _studentsQueryDto.GPAQueryDto = gpaQueryDto;
 
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
             var items = response.Items;
 
             // Assert
-            items.Should().NotBeNullOrEmpty();
+            response.Items.Should().NotBeEmpty().And.HaveCountGreaterThanOrEqualTo(1);
+            response.Page.Should().Be(1);
+            response.PageSize.Should().BeGreaterThanOrEqualTo(1);
+            response.TotalCount.Should().BeGreaterThanOrEqualTo(1);
+
             items.Should().ContainEquivalentOf(expectedStudentToFind);
 
             items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
@@ -159,7 +186,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
         {
             yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Gt = 2.93m, Lt = 2.91m } });
-            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 2.93m } });
+            yield return new TestCaseData(new GPAQueryDto() { GPA = new() { Eq = 999.99m } });
         }
 
         [TestCaseSource(nameof(NotMatchingGPAOnlyTestCases))]
@@ -167,9 +194,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
+            _studentsQueryDto.GPAQueryDto = gpaQueryDto;
 
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { GPAQueryDto = gpaQueryDto});
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
             var items = response.Items;
 
             // Assert
@@ -198,11 +226,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
             var name = expectedStudentToFind.Name;
 
+            _studentsQueryDto.Name = name;
+            _studentsQueryDto.GPAQueryDto = gpaQueryDto;
+
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
             response.Items.Should().NotBeNullOrEmpty();
+            response.Page.Should().Be(1);
+            response.PageSize.Should().Be(1);
+            response.TotalCount.Should().Be(1);
+            response.HasNextPage.Should().BeFalse();
+            response.HasPreviousPage.Should().BeFalse();
 
             response.Items.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
         }
@@ -222,12 +258,17 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
             var name = expectedStudentToFind.Name;
+            _studentsQueryDto.Name = name;
+            _studentsQueryDto.GPAQueryDto = gpaQueryDto;
 
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto});
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
             response.Items.Should().BeEmpty();
+            response.Page.Should().Be(0);
+            response.PageSize.Should().Be(0);
+            response.TotalCount.Should().Be(0);
         }
 
         private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
@@ -241,8 +282,14 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
+            _studentsQueryDto.Name = expectedStudentToFind.Name;
+            _studentsQueryDto.GPAQueryDto = gpaQueryDto;
+
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = expectedStudentToFind.Name, GPAQueryDto = gpaQueryDto});
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
+            response.Page.Should().Be(1);
+            response.PageSize.Should().BeGreaterThan(0);
+            response.TotalCount.Should().BeGreaterThan(0);
 
             var items = response.Items;
             // Assert
@@ -259,12 +306,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingName;
 
+            _studentsQueryDto.Name = expectedStudentToFind.Name;
+            _studentsQueryDto.GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = false } };
+
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
-            {
-                Name = expectedStudentToFind.Name, 
-                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = false } } 
-            });
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             var items = response.Items;
             // Assert
@@ -287,16 +333,22 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingNameAndGpa;
 
+            _studentsQueryDto.Name = expectedStudentToFind.Name;
+            _studentsQueryDto.GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = isNull } };
+
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
-            {
-                Name = expectedStudentToFind.Name, 
-                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = isNull } } 
-            });
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             var items = response.Items;
+
             // Assert
-            items.Should().NotBeNullOrEmpty();
+            response.Items.Should().NotBeNullOrEmpty();
+            response.Page.Should().Be(1);
+            response.PageSize.Should().Be(1);
+            response.TotalCount.Should().Be(1);
+            response.HasNextPage.Should().BeFalse();
+            response.HasPreviousPage.Should().BeFalse();
+
             items.Should().ContainEquivalentOf(expectedStudentToFind);
             items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
 
@@ -307,19 +359,122 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         public async Task GetStudents_ShouldNotMatch_OnGpa_WhenIsNull_True()
         {
             // Arrange
+            _studentsQueryDto.Name = ExpectedStudentToFindMatchingNameAndGpa.Name;
+            _studentsQueryDto.GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = true } };
+
             // Act
 
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
-            {
-                Name = ExpectedStudentToFindMatchingNameAndGpa.Name,
-                GPAQueryDto = new GPAQueryDto() { GPA = new() { IsNull = true } } 
-            });
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
             response.Items.Should().BeEmpty();
+            response.Page.Should().Be(0);
+            response.PageSize.Should().Be(0);
+            response.TotalCount.Should().Be(0);
         }
 
         // Order by and sort column tests
+        private static Func<StudentDto, object?> _sIdSelector = x => x.SId;
+        private static Func<StudentDto, object?> _nameSelector = x => x.Name;
+        private static Func<StudentDto, object?> _gpaSelector = x => x.GPA;
+        private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByAscendingTestCases()
+        {
+
+            yield return new TestCaseData(null, null, _sIdSelector);
+            yield return new TestCaseData(null, APIConstants.Student.SId, _sIdSelector);
+            yield return new TestCaseData(null, APIConstants.Student.Name, _nameSelector);
+            yield return new TestCaseData(null, APIConstants.Student.GPA, _gpaSelector);
+            yield return new TestCaseData(SortOrder.ASC, null, _sIdSelector);
+            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.SId, _sIdSelector);
+            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.Name, _nameSelector);
+            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.GPA, _gpaSelector);
+        }
+
+        [TestCaseSource(nameof(GetStudents_ShouldOrderByAscendingTestCases))]
+        public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy, SortColumn = sortColumn, Page = 1, PageSize = 100});
+
+            // Assert
+
+            AssertDefaultPageResponse(response, expectedPageSize: 100);
+            AssertInAscendingOrder(response.Items, expectedColumnSelector);
+        }
+
+        private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
+        {
+            yield return new TestCaseData(SortOrder.DESC, null, _sIdSelector);
+            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.SId, _sIdSelector);
+            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.Name, _nameSelector);
+            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.GPA, _gpaSelector);
+        }
+
+        [TestCaseSource(nameof(GetStudents_ShouldOrderByDescendingTestCases))]
+        public async Task GetStudents_ShouldOrderByDescending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
+        {
+            // Act
+            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy, SortColumn = sortColumn, Page = 1, PageSize = 100 });
+
+            // Assert
+
+            AssertDefaultPageResponse(response, expectedPageSize: 100);
+            AssertInDescendingOrder(response.Items, expectedColumnSelector);
+        }
+        
+        private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
+        {
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+        }
+
+        [TestCaseSource(nameof(AscendingWhenFilteringTestCases))]
+        public async Task GetStudents_ShouldOrderByAscendingWhenFiltering(GetStudentsQueryDto queryDto, Func<StudentDto, object?> expectedColumnSelector)
+        {
+            // Arrange
+            queryDto.Page = 1;
+            queryDto.PageSize = 10;
+            // Act
+            var response = await _studentRepository.GetStudents(queryDto);
+
+            // Assert
+            AssertDefaultPageResponse(response);
+            AssertInAscendingOrder(response.Items, expectedColumnSelector);
+        }
+
+        private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
+        {
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+        }
+
+        [TestCaseSource(nameof(DescendingWhenFilteringTestCases))]
+        public async Task GetStudents_ShouldOrderByDescending_WhenFiltering(GetStudentsQueryDto queryDto, Func<StudentDto, object?> expectedColumnSelector)
+        {
+            // Arrange
+            queryDto.Page = 1;
+            queryDto.PageSize = 10;
+
+            // Act
+            var response = await _studentRepository.GetStudents(queryDto);
+
+            // Assert
+            AssertDefaultPageResponse(response);
+            AssertInDescendingOrder(response.Items, expectedColumnSelector);
+        }
+
+        // Assertion methods
+
         public void AssertInAscendingOrder_BySId(List<StudentDto> response)
         {
             var ids = response.Select(x => x.SId).ToList();
@@ -364,96 +519,13 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             }
         }
 
-        private static Func<StudentDto, object?> _sIdSelector = x => x.SId;
-        private static Func<StudentDto, object?> _nameSelector = x => x.Name;
-        private static Func<StudentDto, object?> _gpaSelector = x => x.GPA;
-        private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByAscendingTestCases()
-        {
 
-            yield return new TestCaseData(null, null, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.SId, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.Name, _nameSelector);
-            yield return new TestCaseData(null, APIConstants.Student.GPA, _gpaSelector);
-            yield return new TestCaseData(SortOrder.ASC, null, _sIdSelector);
-            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.SId, _sIdSelector);
-            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.Name, _nameSelector);
-            yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.GPA, _gpaSelector);
-        }
-
-        [TestCaseSource(nameof(GetStudents_ShouldOrderByAscendingTestCases))]
-        public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
-        {
-            // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy, SortColumn = sortColumn });
-
-            // Assert
-
-            response.Items.Should().NotBeEmpty();
-            AssertInAscendingOrder(response.Items, expectedColumnSelector);
-        }
-
-        private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
-        {
-            yield return new TestCaseData(SortOrder.DESC, null, _sIdSelector);
-            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.SId, _sIdSelector);
-            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.Name, _nameSelector);
-            yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.GPA, _gpaSelector);
-        }
-
-        [TestCaseSource(nameof(GetStudents_ShouldOrderByDescendingTestCases))]
-        public async Task GetStudents_ShouldOrderByDescending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
-        {
-            // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy, SortColumn = sortColumn });
-
-            // Assert
-
-            response.Items.Should().NotBeEmpty();
-            AssertInDescendingOrder(response.Items, expectedColumnSelector);
-        }
-        
-        private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
-        {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
-        }
-
-        [TestCaseSource(nameof(AscendingWhenFilteringTestCases))]
-        public async Task GetStudents_ShouldOrderByAscendingWhenFiltering(GetStudentsQueryDto queryDto, Func<StudentDto, object?> expectedColumnSelector)
-        {
-            // Act
-            var response = await _studentRepository.GetStudents(queryDto);
-
-            // Assert
-            response.Items.Should().NotBeEmpty();
-            AssertInAscendingOrder(response.Items, expectedColumnSelector);
-        }
-
-        private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
-        {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
-        }
-
-        [TestCaseSource(nameof(DescendingWhenFilteringTestCases))]
-        public async Task GetStudents_ShouldOrderByDescending_WhenFiltering(GetStudentsQueryDto queryDto, Func<StudentDto, object?> expectedColumnSelector)
-        {
-            // Act
-            var response = await _studentRepository.GetStudents(queryDto);
-
-            // Assert
-            response.Items.Should().NotBeEmpty();
-            AssertInDescendingOrder(response.Items, expectedColumnSelector);
+        private static void AssertDefaultPageResponse(PagedList<StudentDto> response, int expectedPage = 1, int expectedPageSize = 10) 
+        { 
+            response.Items.Should().NotBeEmpty().And.HaveCount(expectedPageSize);
+            response.PageSize.Should().Be(expectedPageSize);
+            response.Page.Should().Be(expectedPage);
+            response.TotalCount.Should().BeGreaterThanOrEqualTo(expectedPageSize);
         }
     }
 }

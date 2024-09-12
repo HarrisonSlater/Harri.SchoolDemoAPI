@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
@@ -176,11 +177,12 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             // Act
-            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto());
+            var pageSize = 10;
+            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Page = 1, PageSize = pageSize});
 
             // Assert
             students.Should().NotBeNull();
-            students.Items.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+            students.Items.Should().NotBeNullOrEmpty().And.HaveCount(pageSize);
         }
     }
 }
