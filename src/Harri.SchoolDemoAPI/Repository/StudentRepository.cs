@@ -56,6 +56,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
+        //TODO refactor and cleanup
         public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
         {
             if (queryDto.OrderBy is null)
@@ -102,7 +103,12 @@ namespace Harri.SchoolDemoAPI.Repository
 
             builder.OrderBy($"{sortColumn} {orderBy}");
 
-            var baseQuery = $"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student (NOLOCK) /**where**/ /**orderby**/;";
+            var baseQuery = @$"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student (NOLOCK) /**where**/ /**orderby**/
+                                OFFSET @PageSize * (@Page - 1) ROWS
+                                FETCH NEXT @PageSize ROWS ONLY;";
+
+            builder.AddParameters(new { Page = queryDto.Page, PageSize = queryDto.PageSize });
+
             baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student /**where**/ (NOLOCK)";
 
             var fullQuery = builder.AddTemplate(baseQuery);
@@ -110,10 +116,10 @@ namespace Harri.SchoolDemoAPI.Repository
             using (var connection = _dbConnectionFactory.GetConnection())
             {
                 var gridReader = (await connection.QueryMultipleAsync(fullQuery.RawSql, fullQuery.Parameters));
-                var items = gridReader.Read<StudentDto>();
+                var items = gridReader.Read<StudentDto>().ToList();
                 var count = gridReader.ReadSingle<int>();
 
-                return new PagedList<StudentDto>() { Items = items.ToList(), TotalCount = count };
+                return new PagedList<StudentDto>() { Items = items, Page = queryDto.Page.Value, PageSize = queryDto.PageSize.Value, TotalCount = count };
             }
         }
 

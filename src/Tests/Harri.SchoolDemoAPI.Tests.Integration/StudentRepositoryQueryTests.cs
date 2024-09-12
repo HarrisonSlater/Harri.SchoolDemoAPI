@@ -398,8 +398,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            AssertDefaultPageResponse(response, expectedPageSize: 100);
-            AssertInAscendingOrder(response.Items, expectedColumnSelector);
+            Assertions.AssertPageResponse(response, expectedPageSize: 100);
+            Assertions.AssertInAscendingOrder(response.Items, expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
@@ -418,8 +418,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            AssertDefaultPageResponse(response, expectedPageSize: 100);
-            AssertInDescendingOrder(response.Items, expectedColumnSelector);
+            Assertions.AssertPageResponse(response, expectedPageSize: 100);
+            Assertions.AssertInDescendingOrder(response.Items, expectedColumnSelector);
         }
         
         private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
@@ -443,8 +443,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            AssertDefaultPageResponse(response);
-            AssertInAscendingOrder(response.Items, expectedColumnSelector);
+            Assertions.AssertPageResponse(response);
+            Assertions.AssertInAscendingOrder(response.Items, expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
@@ -469,63 +469,16 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            AssertDefaultPageResponse(response);
-            AssertInDescendingOrder(response.Items, expectedColumnSelector);
+            Assertions.AssertPageResponse(response);
+            Assertions.AssertInDescendingOrder(response.Items, expectedColumnSelector);
         }
 
         // Assertion methods
-
-        public void AssertInAscendingOrder_BySId(List<StudentDto> response)
+        public static void AssertInAscendingOrder_BySId(List<StudentDto> response)
         {
             var ids = response.Select(x => x.SId).ToList();
             ids.Count.Should().BeGreaterThan(0);
             ids.Should().BeInAscendingOrder();
-        }
-
-        public void AssertInAscendingOrder(List<StudentDto> response, Func<StudentDto, object?> expectedColumnSelector) => AssertInOrder(response, expectedColumnSelector, ascending: true);
-
-        public void AssertInDescendingOrder(List<StudentDto> response, Func<StudentDto, object?> expectedColumnSelector) => AssertInOrder(response, expectedColumnSelector, ascending: false);
-
-        public void AssertInOrder(List<StudentDto> response, Func<StudentDto, object?> expectedColumnSelector, bool ascending)
-        {
-            response.Should().NotBeEmpty();
-
-            var values = response.Select(expectedColumnSelector).ToList();
-            values.Count.Should().BeGreaterThan(1);
-
-            if (values.First() is string) //Case insensitive string compare
-            {
-                var comparer = CultureInfo.InvariantCulture.CompareInfo.GetStringComparer(CompareOptions.IgnoreCase);
-
-                if (ascending)
-                {
-                    values.Should().BeInAscendingOrder(x => (string?)x, comparer);
-                }
-                else
-                {
-                    values.Should().BeInDescendingOrder(x => (string?)x, comparer);
-                }
-            }
-            else
-            {
-                if (ascending)
-                {
-                    values.Should().BeInAscendingOrder();
-                }
-                else
-                {
-                    values.Should().BeInDescendingOrder();
-                }
-            }
-        }
-
-
-        private static void AssertDefaultPageResponse(PagedList<StudentDto> response, int expectedPage = 1, int expectedPageSize = 10) 
-        { 
-            response.Items.Should().NotBeEmpty().And.HaveCount(expectedPageSize);
-            response.PageSize.Should().Be(expectedPageSize);
-            response.Page.Should().Be(expectedPage);
-            response.TotalCount.Should().BeGreaterThanOrEqualTo(expectedPageSize);
         }
     }
 }
