@@ -120,6 +120,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             _studentsQueryDto.Name = name;
+            _studentsQueryDto.PageSize = 100;
 
             // Act
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
@@ -128,7 +129,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             response.Items.Should().NotBeEmpty().And.HaveCountGreaterThanOrEqualTo(1);
             response.Page.Should().Be(1);
-            response.PageSize.Should().BeGreaterThanOrEqualTo(1);
+            response.PageSize.Should().Be(100);
             response.TotalCount.Should().BeGreaterThanOrEqualTo(1);
 
             response.Items.Should().ContainEquivalentOf(expectedStudentToFind);
@@ -145,10 +146,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            response.Items.Should().BeEmpty();
-            response.Page.Should().Be(0);
-            response.PageSize.Should().Be(0);
-            response.TotalCount.Should().Be(0);
+            Assertions.AssertEmptyPageResponse(response);
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAOnlyTestCases()
@@ -165,6 +163,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var expectedStudentToFind = ExpectedStudentToFindMatchingGpa;
             _studentsQueryDto.GPAQueryDto = gpaQueryDto;
+            _studentsQueryDto.PageSize = 1000; 
 
             // Act
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
@@ -235,7 +234,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Assert
             response.Items.Should().NotBeNullOrEmpty();
             response.Page.Should().Be(1);
-            response.PageSize.Should().Be(1);
+            response.PageSize.Should().Be(10);
             response.TotalCount.Should().Be(1);
             response.HasNextPage.Should().BeFalse();
             response.HasPreviousPage.Should().BeFalse();
@@ -265,10 +264,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            response.Items.Should().BeEmpty();
-            response.Page.Should().Be(0);
-            response.PageSize.Should().Be(0);
-            response.TotalCount.Should().Be(0);
+            Assertions.AssertEmptyPageResponse(response);
         }
 
         private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
@@ -344,7 +340,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Assert
             response.Items.Should().NotBeNullOrEmpty();
             response.Page.Should().Be(1);
-            response.PageSize.Should().Be(1);
+            response.PageSize.Should().Be(10);
             response.TotalCount.Should().Be(1);
             response.HasNextPage.Should().BeFalse();
             response.HasPreviousPage.Should().BeFalse();
@@ -367,10 +363,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            response.Items.Should().BeEmpty();
-            response.Page.Should().Be(0);
-            response.PageSize.Should().Be(0);
-            response.TotalCount.Should().Be(0);
+            Assertions.AssertEmptyPageResponse(response);
         }
 
         // Order by and sort column tests

@@ -103,13 +103,13 @@ namespace Harri.SchoolDemoAPI.Repository
 
             builder.OrderBy($"{sortColumn} {orderBy}");
 
-            var baseQuery = @$"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student (NOLOCK) /**where**/ /**orderby**/
+            var baseQuery = @$"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/ /**orderby**/
                                 OFFSET @PageSize * (@Page - 1) ROWS
                                 FETCH NEXT @PageSize ROWS ONLY;";
 
             builder.AddParameters(new { Page = queryDto.Page, PageSize = queryDto.PageSize });
 
-            baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student /**where**/ (NOLOCK)";
+            baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/";
 
             var fullQuery = builder.AddTemplate(baseQuery);
 
