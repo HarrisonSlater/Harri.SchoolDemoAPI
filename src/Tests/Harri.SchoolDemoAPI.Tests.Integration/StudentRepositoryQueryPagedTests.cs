@@ -1,11 +1,8 @@
-﻿using Azure;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
-using NUnit.Framework.Internal;
-using System.Globalization;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
@@ -84,7 +81,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static Func<StudentDto, object?> _gpaSelector = x => x.GPA;
         private static IEnumerable<TestCaseData> GetStudents_AllPagesShouldOrderByAscendingTestCases()
         {
-
             yield return new TestCaseData(null, null, _sIdSelector);
             yield return new TestCaseData(null, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(null, APIConstants.Student.Name, _nameSelector);
@@ -97,11 +93,19 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         [TestCaseSource(nameof(GetStudents_AllPagesShouldOrderByAscendingTestCases))]
         [NonParallelizable] 
-        // These tests that make multiple page requests and combine together to assert the results of all pages are non parellelizable as
-        // changes made by other tests while running will cause flakiness in the results. These tests should not be run against a shared database for the same reason
         public async Task GetStudents_ShouldOrderByAscending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
         {
             // Act
+            List<StudentDto> allPageItems = await GetAllPages(orderBy, sortColumn);
+
+            // Assert
+            Assertions.AssertInAscendingOrder(allPageItems, expectedColumnSelector);
+        }
+
+        // These tests that make multiple page requests and combine together to assert the results of all pages. They are non parellelizable as
+        // changes made by other tests while running will cause flakiness in the results. Tests like this should not be run against a shared database for the same reason
+        private static async Task<List<StudentDto>> GetAllPages(SortOrder? orderBy, string? sortColumn)
+        {
             var allPageItems = new List<StudentDto>();
             var page = 1;
             var pageSize = 100;
@@ -118,38 +122,34 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
                 if (response.HasNextPage)
                 {
-                    response.Items.Count().Should().Be(pageSize);
-                    response.Page.Should().Be(page);
-                    response.PageSize.Should().Be(pageSize);
+                    Assertions.AssertPageResponse(response, expectedPage: page, expectedPageSize: pageSize);
                 }
                 allPageItems.AddRange(response.Items);
 
                 page++;
             } while (response.HasNextPage); // Get all pages
 
-            // Assert
-            Assertions.AssertInAscendingOrder(response.Items, expectedColumnSelector);
+            allPageItems.Count().Should().Be(totalCount);
+            return allPageItems;
         }
 
-        private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
+        private static IEnumerable<TestCaseData> GetStudents_AllPagesShouldOrderByDescendingTestCases()
         {
-            //TODO
             yield return new TestCaseData(SortOrder.DESC, null, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.Name, _nameSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.GPA, _gpaSelector);
         }
 
-        [TestCaseSource(nameof(GetStudents_ShouldOrderByDescendingTestCases))]
+        [TestCaseSource(nameof(GetStudents_AllPagesShouldOrderByDescendingTestCases))]
         [NonParallelizable]
         public async Task GetStudents_ShouldOrderByDescending(SortOrder? orderBy, string? sortColumn, Func<StudentDto, object?> expectedColumnSelector)
         {
             // Act
-            var response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { OrderBy = orderBy, SortColumn = sortColumn, Page = 1, PageSize = 100 });
+            List<StudentDto> allPageItems = await GetAllPages(orderBy, sortColumn);
 
             // Assert
-            Assertions.AssertPageResponse(response, expectedPageSize: 100);
-            Assertions.AssertInDescendingOrder(response.Items, expectedColumnSelector);
+            Assertions.AssertInDescendingOrder(allPageItems, expectedColumnSelector);
         }
         
         //Filtering paged tests
