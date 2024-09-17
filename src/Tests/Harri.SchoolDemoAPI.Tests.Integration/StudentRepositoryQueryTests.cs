@@ -4,7 +4,6 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 using NUnit.Framework.Internal;
-using System.Globalization;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
@@ -232,12 +231,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            response.Items.Should().NotBeNullOrEmpty();
-            response.Page.Should().Be(1);
-            response.PageSize.Should().Be(10);
-            response.TotalCount.Should().Be(1);
-            response.HasNextPage.Should().BeFalse();
-            response.HasPreviousPage.Should().BeFalse();
+            Assertions.AssertSingleItemPageResponse(response);
 
             response.Items.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
         }
@@ -338,12 +332,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var items = response.Items;
 
             // Assert
-            response.Items.Should().NotBeNullOrEmpty();
-            response.Page.Should().Be(1);
-            response.PageSize.Should().Be(10);
-            response.TotalCount.Should().Be(1);
-            response.HasNextPage.Should().BeFalse();
-            response.HasPreviousPage.Should().BeFalse();
+            Assertions.AssertSingleItemPageResponse(response);
 
             items.Should().ContainEquivalentOf(expectedStudentToFind);
             items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());

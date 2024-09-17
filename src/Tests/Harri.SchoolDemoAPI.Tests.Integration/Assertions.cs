@@ -67,5 +67,15 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             response.PageSize.Should().Be(expectedPageSize);
             response.TotalCount.Should().Be(0);
         }
+
+        public static void AssertSingleItemPageResponse(PagedList<StudentDto> response, int expectedPage = 1, int expectedPageSize = 10)
+        {
+            response.Items.Should().NotBeEmpty().And.ContainSingle();
+            response.Page.Should().Be(1);
+            response.PageSize.Should().Be(10);
+            response.TotalCount.Should().Be(1);
+            response.HasNextPage.Should().BeFalse();
+            response.HasPreviousPage.Should().BeFalse();
+        }
     }
 }
