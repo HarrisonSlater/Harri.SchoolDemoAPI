@@ -159,11 +159,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             }
         }
 
-        //TODO strict test with strict assertions
 
         // These tests that make multiple page requests and combine together to assert the results of all pages. They are non parellelizable as
         // changes made by other tests while running will cause flakiness in the results. Tests like this should not be run against a shared database for the same reason
-        private static async Task<List<StudentDto>> GetAllPages(SortOrder? orderBy, string? sortColumn, string? name = null, GPAQueryDto? gpaQueryDto = null)
+        public static async Task<List<StudentDto>> GetAllPages(SortOrder? orderBy, string? sortColumn, string? name = null, GPAQueryDto? gpaQueryDto = null)
         {
             var allPageItems = new List<StudentDto>();
             var page = 1;
