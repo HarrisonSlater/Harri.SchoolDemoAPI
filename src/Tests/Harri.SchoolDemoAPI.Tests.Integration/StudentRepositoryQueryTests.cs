@@ -45,7 +45,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [SetUp]
         public void SetUp()
         {
-            _studentsQueryDto = new GetStudentsQueryDto() { Page = 1, PageSize = 10 };
+            _studentsQueryDto = new GetStudentsQueryDto() { Page = 1, PageSize = 10, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId };
         }
 
         [OneTimeSetUp]
@@ -362,11 +362,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByAscendingTestCases()
         {
 
-            yield return new TestCaseData(null, null, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.SId, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.Name, _nameSelector);
-            yield return new TestCaseData(null, APIConstants.Student.GPA, _gpaSelector);
-            yield return new TestCaseData(SortOrder.ASC, null, _sIdSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.Name, _nameSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.GPA, _gpaSelector);
@@ -386,7 +381,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
         {
-            yield return new TestCaseData(SortOrder.DESC, null, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.Name, _nameSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.GPA, _gpaSelector);
@@ -406,10 +400,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         
         private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
         {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
@@ -431,10 +425,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
         {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);

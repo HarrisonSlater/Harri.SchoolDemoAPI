@@ -178,7 +178,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             // Act
             var pageSize = 10;
-            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Page = 1, PageSize = pageSize});
+            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Page = 1, PageSize = pageSize, OrderBy = Models.Enums.SortOrder.ASC, SortColumn = APIConstants.Student.SId });
 
             // Assert
             students.Should().NotBeNull();

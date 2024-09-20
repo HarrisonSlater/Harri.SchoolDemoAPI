@@ -79,11 +79,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         private static Func<StudentDto, object?> _gpaSelector = x => x.GPA;
         private static IEnumerable<TestCaseData> GetStudents_AllPagesAscendingTestCases()
         {
-            yield return new TestCaseData(null, null, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.SId, _sIdSelector);
-            yield return new TestCaseData(null, APIConstants.Student.Name, _nameSelector);
-            yield return new TestCaseData(null, APIConstants.Student.GPA, _gpaSelector);
-            yield return new TestCaseData(SortOrder.ASC, null, _sIdSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.Name, _nameSelector);
             yield return new TestCaseData(SortOrder.ASC, APIConstants.Student.GPA, _gpaSelector);
@@ -91,7 +86,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> GetStudents_AllPagesDescendingTestCases()
         {
-            yield return new TestCaseData(SortOrder.DESC, null, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.SId, _sIdSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.Name, _nameSelector);
             yield return new TestCaseData(SortOrder.DESC, APIConstants.Student.GPA, _gpaSelector);
@@ -119,10 +113,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         // Filtering paged tests
         private static IEnumerable<TestCaseData> GetStudents_AllPagesAscendingWhenFilteringTestCases()
         {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC , SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
@@ -130,10 +124,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> GetStudents_AllPagesDescendingWhenFilteringTestCases()
         {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC }, _sIdSelector);
-            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
@@ -190,6 +183,5 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             allPageItems.Count().Should().Be(totalCount);
             return allPageItems;
         }
-
     }
 }

@@ -39,7 +39,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents();
+            var response = await _client.GetStudents();
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
@@ -54,7 +55,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents(orderBy: SortOrder.DESC);
+            var response = await _client.GetStudents(orderBy: SortOrder.DESC);
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
@@ -90,7 +92,9 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Data.Should().BeNull();
+            response.Data.Should().NotBeNull();
+            response.Data.Items.Should().BeEmpty();
+            response.Data.TotalCount.Should().Be(0);
         }
 
         private static IEnumerable<TestCaseData> MatchingTestCases()
@@ -110,18 +114,19 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            response.Data.Should().NotBeNull().And.ContainSingle();
-            response.Data!.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
+            response.Data.Items.Should().NotBeNull().And.ContainSingle();
+            response.Data.Items.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
         }
 
         // Ordering tests
-
         [Test]
         public async Task GetStudents_ShouldGetAllStudentsAscending_ByName()
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var students = response.Items;
+
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
@@ -135,7 +140,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
