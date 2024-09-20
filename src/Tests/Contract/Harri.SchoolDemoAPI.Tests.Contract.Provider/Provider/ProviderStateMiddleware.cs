@@ -1,9 +1,11 @@
 using System.Text;
 using System.Text.Json;
 using FluentAssertions;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using PactNet.Exceptions;
 
@@ -202,9 +204,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 {
                     queryDto.Name.Should().Be(studentQueryDto.Name);
                     queryDto.GPAQueryDto.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
-                    queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy);
-                    queryDto.Page.Should().Be(studentQueryDto.Page ?? 1);
-                    queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? 10);
+                    queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);
+                    queryDto.SortColumn.Should().Be(studentQueryDto.SortColumn.IsNullOrEmpty() ? APIDefaults.Query.SortColumn : studentQueryDto.SortColumn);
+                    queryDto.Page.Should().Be(studentQueryDto.Page ?? APIDefaults.Query.Page);
+                    queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? APIDefaults.Query.PageSize);
                 });
 
             return Task.CompletedTask;

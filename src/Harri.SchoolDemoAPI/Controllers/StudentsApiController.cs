@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -160,6 +159,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// See <see cref="ComparativeQueryDto{T}"></see></param>
         /// <param name="orderBy">ASC or DESC. Default sort order is ASC</param>
         /// <param name="sortColumn">String name of column to sort on</param>
+        /// <param name="page">Which page you are requesting. Indexed from 1</param>
+        /// <param name="pageSize">How many students per page. Default is <see cref="APIDefaults.Query.PageSize"/></param>
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid query supplied</response>
         /// <response code="404">No students found</response>
@@ -171,8 +172,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         public async Task<IActionResult> GetStudents(
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
             [FromQuery] GPAQueryDto gpaQuery,
-            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder? orderBy,
-            [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string? sortColumn,
+            [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder orderBy = APIDefaults.Query.OrderBy,
+            [FromQuery(Name = APIConstants.Query.SortColumn)][ValidStudentSortColumn] string sortColumn = APIDefaults.Query.SortColumn,
             [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = APIDefaults.Query.Page,
             [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = APIDefaults.Query.PageSize)
         {

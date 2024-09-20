@@ -22,7 +22,7 @@ namespace Harri.SchoolDemoAPI.Models.Attributes.SortColumn
         {
             var sortColumn = (string?)value;
 
-            if (sortColumn is null) return true;
+            if (string.IsNullOrWhiteSpace(sortColumn)) return false;
 
             return ValidStrings.Contains(sortColumn, StringComparer.InvariantCultureIgnoreCase);
         }
