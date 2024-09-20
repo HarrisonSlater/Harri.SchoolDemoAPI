@@ -147,5 +147,37 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var names = students!.Select(x => x.Name).ToList();
             names.Should().BeInDescendingOrder();
         }
+
+        [Test]
+        [NonParallelizable]
+        public async Task GetStudents_ShouldGetMultiplePages()
+        {
+            // Arrange
+            var page = 1;
+            var allStudents = new List<StudentDto>();
+            int? totalCount = null;
+            PagedList<StudentDto>? response;
+
+            // Act
+            do
+            {
+                response = await _client.GetStudents("Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+
+                if (totalCount is null)
+                {
+                    totalCount = response.TotalCount;
+                }
+
+                allStudents.AddRange(response.Items);
+
+                page++;
+            } while (response.HasNextPage); // Get all pages
+
+            // Assert
+            allStudents.Should().NotBeNullOrEmpty().And.HaveCount(totalCount.Value);
+
+            var names = allStudents!.Select(x => x.Name).ToList();
+            names.Should().BeInDescendingOrder();
+        }
     }
 }
