@@ -39,7 +39,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents();
+            var response = await _client.GetStudents(pageSize: 1000);
             var students = response.Items;
 
             // Assert
@@ -55,7 +55,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents(orderBy: SortOrder.DESC);
+            var response = await _client.GetStudents(pageSize: 1000, orderBy: SortOrder.DESC);
             var students = response.Items;
 
             // Assert
@@ -92,9 +92,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Data.Should().NotBeNull();
-            response.Data.Items.Should().BeEmpty();
-            response.Data.TotalCount.Should().Be(0);
+            response.Data.Should().BeNull();
         }
 
         private static IEnumerable<TestCaseData> MatchingTestCases()
