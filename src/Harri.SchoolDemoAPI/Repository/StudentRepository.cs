@@ -59,9 +59,9 @@ namespace Harri.SchoolDemoAPI.Repository
         //TODO refactor and cleanup
         public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
         {
-            if (queryDto.OrderBy is null) throw new ArgumentException("OrderBy must be set");
-            if (queryDto.SortColumn is null) throw new ArgumentException("SortColumn must be set");
-            if (queryDto.Page is null || queryDto.PageSize is null) throw new ArgumentException("Page and PageSize must be set");
+            if (queryDto.OrderBy is null) throw new ArgumentNullException("OrderBy must be set");
+            if (queryDto.SortColumn is null) throw new ArgumentNullException("SortColumn must be set");
+            if (queryDto.Page is null || queryDto.PageSize is null) throw new ArgumentNullException("Page and PageSize must be set");
 
             var builder = new SqlBuilder();
             
