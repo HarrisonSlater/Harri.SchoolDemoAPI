@@ -59,7 +59,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var studentToMock = GetStateObject<StudentDto>(parameters);
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult(studentToMock));
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
             return Task.CompletedTask;
         }
 
@@ -253,7 +253,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         /// <returns></returns>
         /// <exception cref="ProviderStateMiddlewareArgumentException"></exception>
         /// <exception cref="PactFailureException"></exception>
-        private static T? GetStateObject<T>(IDictionary<string, object> parameters)
+        private static T GetStateObject<T>(IDictionary<string, object> parameters)
         {
             if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
             if (!parameters.ContainsKey("stateObjectType")) throw new ProviderStateMiddlewareArgumentException("'stateObjectType' key not set. Something went wrong.");
@@ -267,6 +267,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             }
 
             var stateObject = JsonSerializer.Deserialize<T>(((JsonElement?)parameters["stateObject"]).ToString()!);
+            if (stateObject is null) throw new ArgumentException("Deserialised stateObject cannot be null");
 
             return stateObject;
         }
