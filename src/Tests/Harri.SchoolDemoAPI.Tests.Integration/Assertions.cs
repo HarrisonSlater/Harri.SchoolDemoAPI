@@ -6,7 +6,6 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 {
     internal static class Assertions
     {
-
         public static void AssertInAscendingOrder(List<StudentDto> response, Func<StudentDto, object?> expectedColumnSelector) => AssertInOrder(response, expectedColumnSelector, ascending: true);
 
         // Assertion methods
@@ -26,8 +25,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var values = response.Select(expectedColumnSelector).ToList();
             values.Count.Should().BeGreaterThan(1);
 
-            if (values.First() is string) //Case insensitive string compare
+            if (values.First() is string) 
             {
+                //Case insensitive string compare, by default FluentAssertions BeInAscendingOrder/BeInDescendingOrder is not case insensitive
                 var comparer = CultureInfo.InvariantCulture.CompareInfo.GetStringComparer(CompareOptions.IgnoreCase);
 
                 if (ascending)
