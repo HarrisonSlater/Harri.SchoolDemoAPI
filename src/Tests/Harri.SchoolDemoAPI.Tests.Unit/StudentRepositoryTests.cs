@@ -28,7 +28,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         [TestCase("gpa", APIConstants.Student.GPA)]
         [TestCase("Gpa", APIConstants.Student.GPA)]
         [TestCase("GPA", APIConstants.Student.GPA)]
-        public void GetCleanSortColumn_ShouldWorkForValidColumns(string? sortColumnToClean, string expectedString)
+        public void GetCleanSortColumn_ShouldWorkForValidColumns(string sortColumnToClean, string expectedString)
         {
             StudentRepository.GetCleanSortColumn(sortColumnToClean).Should().Be(expectedString);
         }
@@ -37,7 +37,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         [TestCase("names")]
         [TestCase("gp")]
         [TestCase("asdf")]
-        public void GetCleanSortColumn_ShouldThrowForInvalidColumns(string? sortColumnToClean)
+        public void GetCleanSortColumn_ShouldThrowForInvalidColumns(string sortColumnToClean)
         {
             Action action = () => StudentRepository.GetCleanSortColumn(sortColumnToClean);
             action.Should().Throw<ArgumentException>();
