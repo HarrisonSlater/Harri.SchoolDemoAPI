@@ -50,7 +50,6 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         [TestCase(null, null, SortOrder.ASC, APIConstants.Student.SId)]
         public async Task GetStudents_ShouldGuardAgainstNullPaginationArguments(int? page, int? pageSize, SortOrder? orderBy, string? sortColumn)
         {
-
             // Arrange
             var queryDto = new GetStudentsQueryDto()
             {
