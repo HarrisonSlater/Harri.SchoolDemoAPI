@@ -16,9 +16,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var student = await _studentRepository.GetStudent(1);
             student.Should().NotBeNull();
 
-            student.Name.Should().NotBeEmpty();
-            student.GPA.Should().BeGreaterThan(0).And.BeLessThanOrEqualTo(4);
-            student.SId.Should().Be(1);
+            student!.Name.Should().NotBeEmpty();
+            student!.GPA.Should().BeGreaterThan(0).And.BeLessThanOrEqualTo(4);
+            student!.SId.Should().Be(1);
         }
 
         [Test]

@@ -31,9 +31,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [OneTimeTearDown]
         public async Task TearDown()
         {
-            for (int i = 0; i < TotalTestStudents; i++)
+            foreach(var student in CreatedStudents)
             {
-                await CleanUpTestStudent(CreatedStudents[i].SId!.Value);
+                await CleanUpTestStudent(student.SId!.Value);
             }
         }
 

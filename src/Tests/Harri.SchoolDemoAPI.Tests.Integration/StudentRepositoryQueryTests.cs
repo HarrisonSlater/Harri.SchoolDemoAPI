@@ -7,7 +7,6 @@ using NUnit.Framework.Internal;
 
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
-    //TODO cleanup assertions, refactor tests
     public class StudentRepositoryQueryTests : StudentRepositoryTestBase
     {
         //Test student 1
@@ -145,7 +144,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            Assertions.AssertEmptyPageResponse(response);
+            response.ShouldHaveEmptyPaginationData();
         }
 
         private static IEnumerable<TestCaseData> MatchingGPAOnlyTestCases()
@@ -177,8 +176,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             items.Should().ContainEquivalentOf(expectedStudentToFind);
 
             items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-
-            AssertInAscendingOrder_BySId(items);
+            items.ShouldBeAscendingOrderedBySId();
         }
 
         private static IEnumerable<TestCaseData> NotMatchingGPAOnlyTestCases()
@@ -205,7 +203,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             {
                 items.Should().NotContainEquivalentOf(expectedStudentToFind);
                 items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-                AssertInAscendingOrder_BySId(items);
+                items.ShouldBeAscendingOrderedBySId();
             }
         }
 
@@ -231,7 +229,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            Assertions.AssertSingleItemPageResponse(response);
+            response.ShouldHaveSingleItemPaginationData();
 
             response.Items.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
         }
@@ -258,7 +256,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            Assertions.AssertEmptyPageResponse(response);
+            response.ShouldHaveEmptyPaginationData();
         }
 
         private static IEnumerable<TestCaseData> MatchingNullGPATestCases()
@@ -286,8 +284,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             items.Should().NotBeNullOrEmpty();
             items.Should().ContainEquivalentOf(expectedStudentToFind);
             items.Should().AllSatisfy(s => s.GPA.Should().BeNull());
-
-            AssertInAscendingOrder_BySId(items);
+            items.ShouldBeAscendingOrderedBySId();
         }
 
         [Test]
@@ -311,8 +308,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
                 items.Should().NotBeNull().And.HaveCountGreaterThan(0);
                 items.Should().NotContainEquivalentOf(expectedStudentToFind);
                 items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-
-                AssertInAscendingOrder_BySId(items);
+                items.ShouldBeAscendingOrderedBySId();
             }
         }
 
@@ -332,12 +328,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var items = response.Items;
 
             // Assert
-            Assertions.AssertSingleItemPageResponse(response);
+            response.ShouldHaveSingleItemPaginationData();
 
             items.Should().ContainEquivalentOf(expectedStudentToFind);
             items.Should().AllSatisfy(s => s.GPA.Should().NotBeNull());
-
-            AssertInAscendingOrder_BySId(items);
+            items.ShouldBeAscendingOrderedBySId();
         }
 
         [Test]
@@ -352,7 +347,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
 
             // Assert
-            Assertions.AssertEmptyPageResponse(response);
+            response.ShouldHaveEmptyPaginationData();
         }
 
         // Order by and sort column tests
@@ -375,8 +370,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            Assertions.AssertPageResponse(response, expectedPageSize: 100);
-            Assertions.AssertInAscendingOrder(response.Items, expectedColumnSelector);
+            response.ShouldHavePaginationData(expectedPageSize: 100);
+            response.Items.ShouldBeInAscendingOrder(expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> GetStudents_ShouldOrderByDescendingTestCases()
@@ -394,8 +389,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
 
-            Assertions.AssertPageResponse(response, expectedPageSize: 100);
-            Assertions.AssertInDescendingOrder(response.Items, expectedColumnSelector);
+            response.ShouldHavePaginationData(expectedPageSize: 100);
+            response.Items.ShouldBeInDescendingOrder(expectedColumnSelector);
         }
         
         private static IEnumerable<TestCaseData> AscendingWhenFilteringTestCases()
@@ -419,8 +414,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            Assertions.AssertPageResponse(response);
-            Assertions.AssertInAscendingOrder(response.Items, expectedColumnSelector);
+            response.ShouldHavePaginationData();
+            response.Items.ShouldBeInAscendingOrder(expectedColumnSelector);
         }
 
         private static IEnumerable<TestCaseData> DescendingWhenFilteringTestCases()
@@ -445,16 +440,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var response = await _studentRepository.GetStudents(queryDto);
 
             // Assert
-            Assertions.AssertPageResponse(response);
-            Assertions.AssertInDescendingOrder(response.Items, expectedColumnSelector);
-        }
-
-        // Assertion methods
-        public static void AssertInAscendingOrder_BySId(List<StudentDto> response)
-        {
-            var ids = response.Select(x => x.SId).ToList();
-            ids.Count.Should().BeGreaterThan(0);
-            ids.Should().BeInAscendingOrder();
+            response.ShouldHavePaginationData();
+            response.Items.ShouldBeInDescendingOrder(expectedColumnSelector);
         }
     }
 }
