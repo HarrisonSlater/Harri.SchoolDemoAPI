@@ -2,10 +2,12 @@
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
 using PactNet.Matchers;
 using RestSharp;
 using System.Net;
+using System.Text.Json;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -71,7 +73,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 request.AddQueryParameter(APIConstants.Query.Page, page);
                 request.AddQueryParameter(APIConstants.Query.PageSize, pageSize);
 
-                var response = await client.ExecuteGetAsync<List<StudentDto>?>(request);
+                var response = await client.ExecuteGetAsync<PagedList<StudentDto>?>(request);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -79,31 +81,31 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        //All params test
-        //[Test]
-        //public async Task QueryStudents_WhenCalled_WithAllParametersReturnsMatchingStudents()
-        //{
-        //    var name = "Test Student";
-        //    var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
-        //    var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
-        //    var orderBy = SortOrder.ASC;
-        //    var sortColumn = "GPA";
-        //    var pactBuilder = _pact.UponReceiving($"a valid request to query students with all parameters set")
-        //            .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn })
-        //            .WithRequest(HttpMethod.Get, $"/students/")
-        //            .SetQueryStringParameters(name, gpaQuery, orderBy.ToString(), sortColumn: sortColumn)
-        //         .WillRespond()
-        //         .WithStatus(HttpStatusCode.OK)
-        //         .WithHeader("Content-Type", "application/json; charset=utf-8")
-        //         .WithJsonBody(ExpectedStudentsJsonBody);
+        [Test]
+        public async Task QueryStudents_WhenCalled_WithAllParametersReturnsMatchingStudents()
+        {
+            var name = "Test Student";
+            var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var orderBy = SortOrder.ASC;
+            var sortColumn = "GPA";
+            var page = 1;
+            var pageSize = 3;
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students with all parameters set")
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn, Page = page, PageSize = pageSize })
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(name, gpaQuery, orderBy.ToString(), sortColumn, page, pageSize)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
 
-        //    await _pact.VerifyAsync(async ctx =>
-        //    {
-        //        var client = new StudentApiClient(ctx.MockServerUri.ToString());
-        //        var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn);
-
-        //        AssertStudentsResponseIsCorrect(students);
-        //    });
-        //}
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn, page, pageSize);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
+            });
+        }
     }
 }
