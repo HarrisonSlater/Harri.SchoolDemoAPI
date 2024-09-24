@@ -56,15 +56,45 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        //TODO refactor and cleanup
         public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto queryDto)
+        {
+            GetStudentsQueryDtoGuard(queryDto);
+
+            var builder = new SqlBuilder();
+
+            SetWhereFilters(queryDto, builder);
+
+            builder.OrderBy($"{GetCleanSortColumn(queryDto.SortColumn)} {queryDto.OrderBy}");
+
+            var baseQuery = @$"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/ /**orderby**/
+                                OFFSET @PageSize * (@Page - 1) ROWS
+                                FETCH NEXT @PageSize ROWS ONLY;";
+
+            builder.AddParameters(new { Page = queryDto.Page, PageSize = queryDto.PageSize });
+
+            baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/";
+
+            var fullQuery = builder.AddTemplate(baseQuery);
+
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var gridReader = (await connection.QueryMultipleAsync(fullQuery.RawSql, fullQuery.Parameters));
+                var items = gridReader.Read<StudentDto>().ToList();
+                var count = gridReader.ReadSingle<int>();
+
+                return new PagedList<StudentDto>() { Items = items, Page = queryDto.Page.Value, PageSize = queryDto.PageSize.Value, TotalCount = count };
+            }
+        }
+
+        private void GetStudentsQueryDtoGuard(GetStudentsQueryDto queryDto)
         {
             if (queryDto.OrderBy is null) throw new ArgumentNullException("OrderBy must be set");
             if (queryDto.SortColumn is null) throw new ArgumentNullException("SortColumn must be set");
             if (queryDto.Page is null || queryDto.PageSize is null) throw new ArgumentNullException("Page and PageSize must be set");
+        }
 
-            var builder = new SqlBuilder();
-            
+        private static void SetWhereFilters(GetStudentsQueryDto queryDto, SqlBuilder builder)
+        {
             if (queryDto.Name != null)
             {
                 builder.Where("sName LIKE @searchString", new { searchString = $"%{queryDto.Name}%" });
@@ -94,30 +124,6 @@ namespace Harri.SchoolDemoAPI.Repository
                 {
                     builder.Where("GPA < @lt", new { lt = gpa.Lt });
                 }
-            }
-
-            var sortColumn = GetCleanSortColumn(queryDto.SortColumn);
-            var orderBy = queryDto.OrderBy;
-
-            builder.OrderBy($"{sortColumn} {orderBy}");
-
-            var baseQuery = @$"SELECT sID as sId, sName as Name, GPA FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/ /**orderby**/
-                                OFFSET @PageSize * (@Page - 1) ROWS
-                                FETCH NEXT @PageSize ROWS ONLY;";
-
-            builder.AddParameters(new { Page = queryDto.Page, PageSize = queryDto.PageSize });
-
-            baseQuery += $"SELECT COUNT(*) FROM [SchoolDemo].Student WITH (NOLOCK) /**where**/";
-
-            var fullQuery = builder.AddTemplate(baseQuery);
-
-            using (var connection = _dbConnectionFactory.GetConnection())
-            {
-                var gridReader = (await connection.QueryMultipleAsync(fullQuery.RawSql, fullQuery.Parameters));
-                var items = gridReader.Read<StudentDto>().ToList();
-                var count = gridReader.ReadSingle<int>();
-
-                return new PagedList<StudentDto>() { Items = items, Page = queryDto.Page.Value, PageSize = queryDto.PageSize.Value, TotalCount = count };
             }
         }
 
