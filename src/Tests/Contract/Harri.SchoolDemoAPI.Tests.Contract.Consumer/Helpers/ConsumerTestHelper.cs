@@ -3,9 +3,10 @@ using System.Text.Json;
 using RestSharp;
 using System.Text.Json.Nodes;
 
-namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
+namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers
 {
-    public static class ConsumerTestHelper {
+    public static class ConsumerTestHelper
+    {
 
         public static void ShouldContainErrorMessageForProperty<T>(this RestResponse<T> response, string propertyName)
         {

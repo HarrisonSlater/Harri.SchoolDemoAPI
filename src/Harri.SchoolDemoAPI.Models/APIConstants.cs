@@ -31,6 +31,9 @@
             public const string IsNull = "isNull";
             public const string OrderBy = "orderBy";
             public const string SortColumn = "sortColumn";
+
+            public const string Page = "page";
+            public const string PageSize = "pageSize";
         }
     }
 }

@@ -115,13 +115,15 @@ namespace Harri.SchoolDemoAPI.Client
 
         // Get Students
         //TODO add method using the DTO query type 
-        public async Task<List<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null, string? sortColumn = null)
+        public async Task<PagedList<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null,
+            SortOrder? orderBy = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
-            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy, sortColumn);
+            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy, sortColumn, page, pageSize);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<List<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null, string? sortColumn = null)
+        public async Task<RestResponse<PagedList<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null,
+            SortOrder? orderBy = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
             var request = new RestRequest(BaseRoute);
             if (name is not null)
@@ -155,8 +157,16 @@ namespace Harri.SchoolDemoAPI.Client
             {
                 request.AddQueryParameter($"{APIConstants.Query.SortColumn}", sortColumn.ToString());
             }
+            if(page is not null)
+            {
+                request.AddQueryParameter($"{APIConstants.Query.Page}", page.ToString());
+            }
+            if(pageSize is not null)
+            {
+                request.AddQueryParameter($"{APIConstants.Query.PageSize}", pageSize.ToString());
+            }
 
-            var restResponse = await _restClient.ExecuteGetAsync<List<StudentDto>>(request);
+            var restResponse = await _restClient.ExecuteGetAsync<PagedList<StudentDto>>(request);
             if (!restResponse.IsSuccessStatusCode)
             {
                 restResponse.Data = null;

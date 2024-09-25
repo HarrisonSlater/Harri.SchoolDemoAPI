@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
@@ -15,9 +16,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var student = await _studentRepository.GetStudent(1);
             student.Should().NotBeNull();
 
-            student.Name.Should().NotBeEmpty();
-            student.GPA.Should().BeGreaterThan(0).And.BeLessThanOrEqualTo(4);
-            student.SId.Should().Be(1);
+            student!.Name.Should().NotBeEmpty();
+            student!.GPA.Should().BeGreaterThan(0).And.BeLessThanOrEqualTo(4);
+            student!.SId.Should().Be(1);
         }
 
         [Test]
@@ -176,10 +177,12 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             // Act
-            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto());
+            var pageSize = 10;
+            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Page = 1, PageSize = pageSize, OrderBy = Models.Enums.SortOrder.ASC, SortColumn = APIConstants.Student.SId });
 
             // Assert
-            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
+            students.Should().NotBeNull();
+            students.Items.Should().NotBeNullOrEmpty().And.HaveCount(pageSize);
         }
     }
 }

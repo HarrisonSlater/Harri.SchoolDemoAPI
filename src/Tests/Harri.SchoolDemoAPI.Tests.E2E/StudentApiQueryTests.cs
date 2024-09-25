@@ -39,7 +39,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents();
+            var response = await _client.GetStudents(pageSize: 1000);
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
@@ -54,7 +55,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents(orderBy: SortOrder.DESC);
+            var response = await _client.GetStudents(pageSize: 1000, orderBy: SortOrder.DESC);
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(900);
@@ -110,18 +112,19 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            response.Data.Should().NotBeNull().And.ContainSingle();
-            response.Data!.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
+            response.Data.Items.Should().NotBeNull().And.ContainSingle();
+            response.Data.Items.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
         }
 
         // Ordering tests
-
         [Test]
         public async Task GetStudents_ShouldGetAllStudentsAscending_ByName()
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var students = response.Items;
+
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
@@ -135,12 +138,45 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var students = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var students = response.Items;
 
             // Assert
             students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
 
             var names = students!.Select(x => x.Name).ToList();
+            names.Should().BeInDescendingOrder();
+        }
+
+        [Test]
+        [NonParallelizable]
+        public async Task GetStudents_ShouldGetMultiplePages()
+        {
+            // Arrange
+            var page = 1;
+            var allStudents = new List<StudentDto>();
+            int? totalCount = null;
+            PagedList<StudentDto>? response;
+
+            // Act
+            do
+            {
+                response = await _client.GetStudents("Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+
+                if (totalCount is null)
+                {
+                    totalCount = response.TotalCount;
+                }
+
+                allStudents.AddRange(response.Items);
+
+                page++;
+            } while (response.HasNextPage); // Get all pages
+
+            // Assert
+            allStudents.Should().NotBeNullOrEmpty().And.HaveCount(totalCount.Value);
+
+            var names = allStudents!.Select(x => x.Name).ToList();
             names.Should().BeInDescendingOrder();
         }
     }

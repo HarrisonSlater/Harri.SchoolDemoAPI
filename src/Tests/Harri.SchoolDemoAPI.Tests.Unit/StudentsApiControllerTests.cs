@@ -27,10 +27,10 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .ReturnsAsync(new List<StudentDto>() { new StudentDto() });
+                .ReturnsAsync(new PagedList<StudentDto>() { Items = [new StudentDto()] });
 
             // Act
-            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null }, null, null);
+            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(OkObjectResult));
@@ -41,10 +41,10 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .ReturnsAsync([]);
+                .ReturnsAsync(new PagedList<StudentDto>() { Items = [] });
 
             // Act
-            var result = await _controller.GetStudents("Test Student", new() { GPA = null }, null, null);
+            var result = await _controller.GetStudents("Test Student", new() { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(NotFoundResult));

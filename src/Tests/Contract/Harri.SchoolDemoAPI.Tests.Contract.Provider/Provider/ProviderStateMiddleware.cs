@@ -1,9 +1,11 @@
 using System.Text;
 using System.Text.Json;
 using FluentAssertions;
+using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using PactNet.Exceptions;
 
@@ -31,7 +33,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public ProviderStateMiddleware(RequestDelegate next)
         {
             _next = next;
-            //TODO remove {sId} in states it doesn't do anything
             this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
                 ["a student with sId exists"] = this.EnsureStudentExists,
@@ -58,7 +59,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var studentToMock = GetStateObject<StudentDto>(parameters);
 
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult(studentToMock));
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
             return Task.CompletedTask;
         }
 
@@ -138,7 +139,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         }
 
-        private List<StudentDto> _mockStudentsToReturn =
+        private static List<StudentDto> MockStudentsToReturn =
         [
             new StudentDto()
             {
@@ -160,10 +161,19 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             }
         ];
 
+        private static PagedList<StudentDto> MockPagedList = new()
+        {
+            Items = MockStudentsToReturn.ToList(),
+            Page = 1,
+            PageSize = 3,
+            TotalCount = 3
+        };
+
+
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(_mockStudentsToReturn));
+                .Returns(Task.FromResult(MockPagedList));
 
             return Task.CompletedTask;
         }
@@ -171,7 +181,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureNoStudentsExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(new List<StudentDto>()));
+                .Returns(Task.FromResult(new PagedList<StudentDto>()));
 
             return Task.CompletedTask;
         }
@@ -179,7 +189,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureNoStudentsExistForQuerying(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(new List<StudentDto>()));
+                .Returns(Task.FromResult(new PagedList<StudentDto>()));
 
             return Task.CompletedTask;
         }
@@ -189,12 +199,15 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var studentQueryDto = GetStateObject<GetStudentsQueryDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(_mockStudentsToReturn))
+                .Returns(Task.FromResult(MockPagedList))
                 .Callback<GetStudentsQueryDto>((queryDto) =>
                 {
                     queryDto.Name.Should().Be(studentQueryDto.Name);
                     queryDto.GPAQueryDto.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
-                    queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy);
+                    queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);
+                    queryDto.SortColumn.Should().Be(studentQueryDto.SortColumn.IsNullOrEmpty() ? APIDefaults.Query.SortColumn : studentQueryDto.SortColumn);
+                    queryDto.Page.Should().Be(studentQueryDto.Page ?? APIDefaults.Query.Page);
+                    queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? APIDefaults.Query.PageSize);
                 });
 
             return Task.CompletedTask;
@@ -240,7 +253,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         /// <returns></returns>
         /// <exception cref="ProviderStateMiddlewareArgumentException"></exception>
         /// <exception cref="PactFailureException"></exception>
-        private static T? GetStateObject<T>(IDictionary<string, object> parameters)
+        private static T GetStateObject<T>(IDictionary<string, object> parameters)
         {
             if (!parameters.ContainsKey("stateObject")) throw new ProviderStateMiddlewareArgumentException("ProviderStateMiddleware cannot find 'stateObject' key for provider state setup, please configure the contract test");
             if (!parameters.ContainsKey("stateObjectType")) throw new ProviderStateMiddlewareArgumentException("'stateObjectType' key not set. Something went wrong.");
@@ -254,6 +267,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             }
 
             var stateObject = JsonSerializer.Deserialize<T>(((JsonElement?)parameters["stateObject"]).ToString()!);
+            if (stateObject is null) throw new ArgumentException("Deserialised stateObject cannot be null");
 
             return stateObject;
         }

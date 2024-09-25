@@ -51,7 +51,7 @@ namespace Harri.SchoolDemoAPI.Services
             }
         }
 
-        public async Task<List<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto)
+        public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto)
         {
             return await _studentRepository.GetStudents(getStudentsQueryDto);
         }
