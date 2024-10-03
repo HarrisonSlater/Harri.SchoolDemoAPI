@@ -5,7 +5,6 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
 using PactNet;
-using PactNet.Matchers;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -27,7 +26,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         [TestCaseSource(nameof(GetInvalidGPAQueryDtoTestCases))]
-        public async Task QueryStudents_WhenCalledWithoutInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery, string testCase)
+        public async Task QueryStudents_WhenCalledWithInvalidGPAQuery_Returns400(GPAQueryDto gpaQuery, string testCase)
         {
             var name = "Test Student";
             var gpaString = JsonSerializer.Serialize(gpaQuery);
@@ -41,6 +40,33 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
                 var response = await client.GetStudentsRestResponse(null, name, gpaQuery);
+
+                // Client Assertions
+                response.Data.Should().BeNull();
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            });
+        }
+
+        private static IEnumerable<TestCaseData> GetInvalidSIdTestCases()
+        {
+            yield return new TestCaseData(-1, "Test Case 1");
+            yield return new TestCaseData(0, "Test Case 2");
+            yield return new TestCaseData(-1000, "Test Case 3");
+        }
+
+        [TestCaseSource(nameof(GetInvalidSIdTestCases))]
+        public async Task QueryStudents_WhenCalledWithInvalidSId_Returns400(int sId, string testCase)
+        {
+            _pact.UponReceiving($"a bad request to query students by sId: {sId}, {testCase}")
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(sId)
+                    .WillRespond()
+                    .WithStatus(HttpStatusCode.BadRequest);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.GetStudentsRestResponse(sId);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
