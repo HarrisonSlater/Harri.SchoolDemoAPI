@@ -33,14 +33,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var gpaString = JsonSerializer.Serialize(gpaQuery);
             _pact.UponReceiving($"a bad request to query students: {name}, {gpaString} {testCase}")
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters("Test Student", gpaQuery)
+                    .SetQueryStringParameters(null, "Test Student", gpaQuery)
                     .WillRespond()
                     .WithStatus(HttpStatusCode.BadRequest);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.GetStudentsRestResponse(name, gpaQuery);
+                var response = await client.GetStudentsRestResponse(null, name, gpaQuery);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -69,7 +69,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactBuilder = _pact.UponReceiving($"a valid request to query students by name and GPA: {name}, {gpaQuerySerialized} {testCase}")
                     .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery)
+                    .SetQueryStringParameters(null, name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -78,7 +78,29 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.GetStudents(name, gpaQuery);
+                var students = await client.GetStudents(null, name, gpaQuery);
+                StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
+            });
+        }
+
+        [TestCaseSource(nameof(GetValidQueryTestCases))]
+        public async Task QueryStudents_WhenCalled_WithSId_ReturnsMatchingStudents(string? name, GPAQueryDto? gpaQuery, string testCase)
+        {
+            var sId = 1234;
+            var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
+            var pactBuilder = _pact.UponReceiving($"a valid request to query students by sId, name and GPA: {sId}, {name}, {gpaQuerySerialized} {testCase}")
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { SId = sId, Name = name,  GPAQueryDto = gpaQuery })
+                    .WithRequest(HttpMethod.Get, $"/students/")
+                    .SetQueryStringParameters(sId, name, gpaQuery)
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.OK)
+                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var students = await client.GetStudents(sId, name, gpaQuery);
                 StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
@@ -91,14 +113,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactBuilder = _pact.UponReceiving($"a request to query students by name and GPA")
                     .Given("no students exist for querying")
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery)
+                    .SetQueryStringParameters(null, name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.NotFound);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.GetStudentsRestResponse(name, gpaQuery);
+                var response = await client.GetStudentsRestResponse(null, name, gpaQuery);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -123,7 +145,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort order {sortOrder}, {testCase}")
                     .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name,  GPAQueryDto = gpaQuery, OrderBy = sortOrder })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery, sortOrderString)
+                    .SetQueryStringParameters(null, name, gpaQuery, sortOrderString)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -132,7 +154,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.GetStudents(name, gpaQuery, sortOrder);
+                var students = await client.GetStudents(null, name, gpaQuery, sortOrder);
                 StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
@@ -228,7 +250,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with sort column {sortColumn}, {testCase}")
                     .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, SortColumn = sortColumn })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery, sortColumn: sortColumn)
+                    .SetQueryStringParameters(null, name, gpaQuery, sortColumn: sortColumn)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -237,7 +259,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.GetStudents(name, gpaQuery, sortColumn: sortColumn);
+                var students = await client.GetStudents(null, name, gpaQuery, sortColumn: sortColumn);
                 StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
@@ -273,15 +295,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [Test]
         public async Task QueryStudents_WhenCalled_WithAllParametersReturnsMatchingStudents()
         {
+            var sId = 1023;
             var name = "Test Student";
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
             var orderBy = SortOrder.ASC;
             var sortColumn = "GPA";
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with all parameters set")
-                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { SId = sId, Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery, orderBy.ToString(), sortColumn: sortColumn)
+                    .SetQueryStringParameters(sId, name, gpaQuery, orderBy.ToString(), sortColumn: sortColumn)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -290,7 +313,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn);
+                var students = await client.GetStudents(sId, name, gpaQuery, orderBy, sortColumn);
                 StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }
@@ -298,12 +321,16 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
     public static class PactTestExtension
     {
-        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, string? name = null, GPAQueryDto? gpaQuery = null,
+        public static IRequestBuilderV4 SetQueryStringParameters(this IRequestBuilderV4 pactBuilder, int? sId = null, string? name = null, GPAQueryDto? gpaQuery = null,
             string? sortOrder = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
             if (name is not null)
             {
                 pactBuilder.WithQuery("name", name);
+            }
+            if (sId is not null)
+            {
+                pactBuilder.WithQuery("sId", sId.Value.ToString());
             }
 
             if (gpaQuery?.GPA is not null)

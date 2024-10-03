@@ -202,6 +202,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 .Returns(Task.FromResult(MockPagedList))
                 .Callback<GetStudentsQueryDto>((queryDto) =>
                 {
+                    //TODO simplify
+                    queryDto.SId.Should().Be(studentQueryDto.SId);
                     queryDto.Name.Should().Be(studentQueryDto.Name);
                     queryDto.GPAQueryDto.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
                     queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);

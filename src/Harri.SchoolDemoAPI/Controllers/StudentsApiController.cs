@@ -154,7 +154,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// Get students
         /// </summary>
         /// <remarks>Get all  students by optional query</remarks>
-        /// <param name="sid">Student ID partial to search on</param>
+        /// <param name="sId">Student ID partial to search on</param>
         /// <param name="name">Name partial of students to search on. Case insensitive</param>
         /// <param name="gpaQuery">Query object to search by GPA (lt, gt, eq). See <see cref="ComparativeQueryDto{T}"></see></param>
         /// <param name="orderBy">ASC or DESC. Default sort order is ASC</param>
@@ -170,7 +170,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(PagedList<StudentDto>), description: "Successful operation")]
         [Tags("Students")]
         public async Task<IActionResult> GetStudents(
-            [FromQuery(Name = APIConstants.Student.SId)] int? sid,
+            [FromQuery(Name = APIConstants.Student.SId)][PositiveInt] int? sId,
             [FromQuery(Name = APIConstants.Student.Name)] string? name,
             [FromQuery] GPAQueryDto gpaQuery,
             [FromQuery(Name = APIConstants.Query.OrderBy)] SortOrder orderBy = APIDefaults.Query.OrderBy,
@@ -180,6 +180,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         {
             var students = await _studentService.GetStudents(new GetStudentsQueryDto() 
             {
+                SId = sId,
                 Name = name,
                 GPAQueryDto = gpaQuery,
                 OrderBy = orderBy,

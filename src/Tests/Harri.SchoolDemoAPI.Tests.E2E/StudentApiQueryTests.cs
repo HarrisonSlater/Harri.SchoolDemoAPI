@@ -8,6 +8,7 @@ using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E
 {
+    //TODO Sid tests
     public class StudentApiQueryTests : StudentApiTestBase
     {
         private static NewStudentDto _studentToMatch;
@@ -68,7 +69,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         [Test]
         public async Task GetStudents_ShouldReturnBadRequest()
         {
-            var response = await _client.GetStudentsRestResponse(_studentToMatchName, new GPAQueryDto { GPA = new() { Eq = 2, Gt = 2 } });
+            var response = await _client.GetStudentsRestResponse(null, _studentToMatchName, new GPAQueryDto { GPA = new() { Eq = 2, Gt = 2 } });
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -88,7 +89,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudentsRestResponse(name, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -107,7 +108,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudentsRestResponse(_studentToMatchName, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, _studentToMatchName, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -122,7 +123,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents(null, "Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
             var students = response.Items;
 
 
@@ -138,7 +139,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents(null, "Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
             var students = response.Items;
 
             // Assert
@@ -161,7 +162,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             // Act
             do
             {
-                response = await _client.GetStudents("Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+                response = await _client.GetStudents(null, "Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
 
                 if (totalCount is null)
                 {
