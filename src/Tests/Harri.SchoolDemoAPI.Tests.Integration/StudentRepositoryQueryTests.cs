@@ -47,27 +47,26 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             _studentsQueryDto = new GetStudentsQueryDto() { Page = 1, PageSize = 10, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId };
         }
 
-        [OneTimeSetUp]
-        public async Task OneTimeSetUp()
+        static StudentRepositoryQueryTests()// TODO figure out cleanup
         {
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
-            _studentToMatchNameId = await _studentRepository.AddStudent(_studentToMatchName);
+            _studentToMatchNameId = _studentRepository.AddStudent(_studentToMatchName).Result;
 
             _studentToMatchGpa = new NewStudentDto() { Name = "Garry Patrick Anderson", GPA = 2.92m };
-            _studentToMatchGpaId = await _studentRepository.AddStudent(_studentToMatchGpa);
+            _studentToMatchGpaId = _studentRepository.AddStudent(_studentToMatchGpa).Result;
 
             _studentToMatchNameAndGpa = new NewStudentDto() { Name = Guid.NewGuid().ToString(), GPA = 3.01m };
-            _studentToMatchNameAndGpaId = await _studentRepository.AddStudent(_studentToMatchNameAndGpa);
+            _studentToMatchNameAndGpaId = _studentRepository.AddStudent(_studentToMatchNameAndGpa).Result;
 
             _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
-            _studentToMatchNameSpecialId = await _studentRepository.AddStudent(_studentToMatchNameSpecial);
+            _studentToMatchNameSpecialId = _studentRepository.AddStudent(_studentToMatchNameSpecial).Result;
 
             _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
-            _studentToMatchNameUnicodeId = await _studentRepository.AddStudent(_studentToMatchNameUnicode);
+            _studentToMatchNameUnicodeId = _studentRepository.AddStudent(_studentToMatchNameUnicode).Result;
         }
 
         [OneTimeTearDown]
-        public async Task TearDown()
+        public static async Task TearDown()
         {
             await CleanUpTestStudent(_studentToMatchNameId);
             await CleanUpTestStudent(_studentToMatchGpaId);
@@ -139,6 +138,111 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange
             var searchName = Guid.NewGuid().ToString();
             _studentsQueryDto.Name = searchName;
+
+            // Act
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
+
+            // Assert
+            response.ShouldHaveEmptyPaginationData();
+        }
+
+        private static IEnumerable<TestCaseData> ShouldMatch_OnSId_TestCases()
+        {
+            yield return new TestCaseData(ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(ExpectedStudentToFindMatchingNameUnicode);
+        }
+
+        [TestCaseSource(nameof(ShouldMatch_OnSId_TestCases))]
+        public async Task GetStudents_ShouldMatch_OnSId(StudentDto expectedStudentToFind)
+        {
+            // Arrange
+            _studentsQueryDto.SId = expectedStudentToFind.SId;
+
+            // Act
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
+            var items = response.Items;
+
+            // Assert
+            items.Should().NotBeEmpty().And.HaveCount(1);
+            response.Page.Should().Be(1);
+            response.TotalCount.Should().Be(1);
+
+            items.Should().AllSatisfy(s => s.SId.ToString().Should().Contain(expectedStudentToFind.SId.ToString()));
+            items.Should().ContainSingle().And.ContainEquivalentOf(expectedStudentToFind);
+            items.ShouldBeAscendingOrderedBySId();
+        }
+
+        private static int GetIntPartial(int i, int take) => 
+            int.Parse(new string(i.ToString().ToArray().Take(take).ToArray()));
+
+        private static int GetIntPartialFromEnd(int i, int takeLast) => 
+            int.Parse(new string(i.ToString().ToArray().TakeLast(takeLast).ToArray()));
+
+        private static IEnumerable<TestCaseData> ShouldMatch_OnSIdPartial_TestCases()
+        {
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 1), ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 1), ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 1), ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 1), ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 1), ExpectedStudentToFindMatchingNameUnicode);
+
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode);
+
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode);
+
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode);
+
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode);
+        }
+
+        [TestCaseSource(nameof(ShouldMatch_OnSIdPartial_TestCases))]
+        public async Task GetStudents_ShouldMatch_OnSId(int sIdPartial, StudentDto expectedStudentToFind)
+        {
+            // Arrange
+            _studentsQueryDto.SId = sIdPartial;
+            _studentsQueryDto.PageSize = 1000;
+
+            // Act
+            var response = await _studentRepository.GetStudents(_studentsQueryDto);
+            var items = response.Items;
+
+            // Assert
+            items.Should().NotBeEmpty().And.HaveCountGreaterThanOrEqualTo(1);
+            response.Page.Should().Be(1);
+            response.PageSize.Should().Be(1000);
+            response.TotalCount.Should().BeGreaterThanOrEqualTo(1);
+
+            items.Should().AllSatisfy(s => s.SId.ToString().Should().Contain(sIdPartial.ToString()));
+            items.Should().ContainEquivalentOf(expectedStudentToFind);
+            items.ShouldBeAscendingOrderedBySId();
+        }
+
+        [TestCase(-1)]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+        public async Task GetStudents_ShouldNotMatch_OnSId(int sId)
+        {
+            // Arrange
+            _studentsQueryDto.SId = sId;
 
             // Act
             var response = await _studentRepository.GetStudents(_studentsQueryDto);
@@ -402,6 +506,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
         }
 
         [TestCaseSource(nameof(AscendingWhenFilteringTestCases))]
@@ -427,6 +533,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
         }
 
         [TestCaseSource(nameof(DescendingWhenFilteringTestCases))]

@@ -8,8 +8,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
     {
         public static string? SqlConnectionStringToTest { get; set; }
 
-        [OneTimeSetUp]
-        public void OneTimeSetUpBase()
+        static IntegrationTestBase()
         {
             var config = new ConfigurationBuilder().AddJsonFile("testappsettings.json").Build();
             SqlConnectionStringToTest = config["SqlConnectionStringToTest"];

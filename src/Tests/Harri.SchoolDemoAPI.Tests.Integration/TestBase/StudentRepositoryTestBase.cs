@@ -8,9 +8,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
     {
         protected static IStudentRepository _studentRepository;
 
-        [OneTimeSetUp]
-        public static void OneTimeSetUpRepositoryBase()
+        static StudentRepositoryTestBase()
         {
+
             if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from testappsettings.json cannot be null");
 
             _studentRepository = new StudentRepository(new DbConnectionFactory(SqlConnectionStringToTest));
@@ -26,7 +26,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
             };
         }
 
-        public async Task CleanUpTestStudent(int sId)
+        public static async Task CleanUpTestStudent(int sId)
         {
             await _studentRepository.DeleteStudent(sId);
         }
