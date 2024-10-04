@@ -117,6 +117,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             await action.Should().ThrowAsync<SqlException>();
+
+            await CleanUpTestStudent(sId);
         }
 
         [Test]
