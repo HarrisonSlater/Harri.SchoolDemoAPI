@@ -47,22 +47,23 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             _studentsQueryDto = new GetStudentsQueryDto() { Page = 1, PageSize = 10, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId };
         }
 
-        static StudentRepositoryQueryTests()// TODO figure out cleanup
+        [OneTimeSetUp]
+        public async Task OneTimeSetUp()
         {
             _studentToMatchName = new NewStudentDto() { Name = "Johnnny 'The Integrator' TestShoes" };
-            _studentToMatchNameId = _studentRepository.AddStudent(_studentToMatchName).Result;
+            _studentToMatchNameId = await _studentRepository.AddStudent(_studentToMatchName);
 
             _studentToMatchGpa = new NewStudentDto() { Name = "Garry Patrick Anderson", GPA = 2.92m };
-            _studentToMatchGpaId = _studentRepository.AddStudent(_studentToMatchGpa).Result;
+            _studentToMatchGpaId = await _studentRepository.AddStudent(_studentToMatchGpa);
 
             _studentToMatchNameAndGpa = new NewStudentDto() { Name = Guid.NewGuid().ToString(), GPA = 3.01m };
-            _studentToMatchNameAndGpaId = _studentRepository.AddStudent(_studentToMatchNameAndGpa).Result;
+            _studentToMatchNameAndGpaId = await _studentRepository.AddStudent(_studentToMatchNameAndGpa);
 
             _studentToMatchNameSpecial = new NewStudentDto() { Name = "Johnnny I. Test-Shoes (123456789)" };
-            _studentToMatchNameSpecialId = _studentRepository.AddStudent(_studentToMatchNameSpecial).Result;
+            _studentToMatchNameSpecialId = await _studentRepository.AddStudent(_studentToMatchNameSpecial);
 
             _studentToMatchNameUnicode = new NewStudentDto() { Name = "Jöhnnny Äpfelbücher" };
-            _studentToMatchNameUnicodeId = _studentRepository.AddStudent(_studentToMatchNameUnicode).Result;
+            _studentToMatchNameUnicodeId = await _studentRepository.AddStudent(_studentToMatchNameUnicode);
         }
 
         [OneTimeTearDown]

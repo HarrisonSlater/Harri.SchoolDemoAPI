@@ -8,7 +8,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
     {
         protected static IStudentRepository _studentRepository;
 
-        static StudentRepositoryTestBase()
+        [OneTimeSetUp]
+        public static void OneTimeSetUpRepositoryBase()
         {
             if (SqlConnectionStringToTest is null) throw new ArgumentException("SqlConnectionStringToTest from testappsettings.json cannot be null");
 
