@@ -149,17 +149,18 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> ShouldMatch_OnSId_TestCases()
         {
-            yield return new TestCaseData(ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => ExpectedStudentToFindMatchingName);
+            yield return new TestCaseData(() => ExpectedStudentToFindMatchingGpa);
+            yield return new TestCaseData(() => ExpectedStudentToFindMatchingNameAndGpa);
+            yield return new TestCaseData(() => ExpectedStudentToFindMatchingNameSpecial);
+            yield return new TestCaseData(() => ExpectedStudentToFindMatchingNameUnicode);
         }
 
         [TestCaseSource(nameof(ShouldMatch_OnSId_TestCases))]
-        public async Task GetStudents_ShouldMatch_OnSId(StudentDto expectedStudentToFind)
+        public async Task GetStudents_ShouldMatch_OnSId(Func<StudentDto> expectedStudentToFindDelegate)
         {
             // Arrange
+            var expectedStudentToFind = expectedStudentToFindDelegate.Invoke();
             _studentsQueryDto.SId = expectedStudentToFind.SId;
 
             // Act
@@ -184,40 +185,41 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> ShouldMatch_OnSIdPartial_TestCases()
         {
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 1), ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 1), ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 1), ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 1), ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 1), ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameId, 1), ExpectedStudentToFindMatchingName));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchGpaId, 1), ExpectedStudentToFindMatchingGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameAndGpaId, 1), ExpectedStudentToFindMatchingNameAndGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameSpecialId, 1), ExpectedStudentToFindMatchingNameSpecial));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameUnicodeId, 1), ExpectedStudentToFindMatchingNameUnicode));
 
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode));
 
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(GetIntPartial(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial));
+            yield return new TestCaseData(() => (GetIntPartial(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode));
 
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameId, 2), ExpectedStudentToFindMatchingName));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchGpaId, 2), ExpectedStudentToFindMatchingGpa));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 2), ExpectedStudentToFindMatchingNameAndGpa));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameSpecialId, 2), ExpectedStudentToFindMatchingNameSpecial));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 2), ExpectedStudentToFindMatchingNameUnicode));
 
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial);
-            yield return new TestCaseData(GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode);
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameId, 3), ExpectedStudentToFindMatchingName));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchGpaId, 3), ExpectedStudentToFindMatchingGpa));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameAndGpaId, 3), ExpectedStudentToFindMatchingNameAndGpa));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameSpecialId, 3), ExpectedStudentToFindMatchingNameSpecial));
+            yield return new TestCaseData(() => (GetIntPartialFromEnd(_studentToMatchNameUnicodeId, 3), ExpectedStudentToFindMatchingNameUnicode));
         }
 
         [TestCaseSource(nameof(ShouldMatch_OnSIdPartial_TestCases))]
-        public async Task GetStudents_ShouldMatch_OnSId(int sIdPartial, StudentDto expectedStudentToFind)
+        public async Task GetStudents_ShouldMatch_OnSIdPartial(Func<(int, StudentDto)> parameterDelegate)
         {
+            (int sIdPartial, StudentDto expectedStudentToFind) = parameterDelegate.Invoke();
             // Arrange
             _studentsQueryDto.SId = sIdPartial;
             _studentsQueryDto.PageSize = 1000;
