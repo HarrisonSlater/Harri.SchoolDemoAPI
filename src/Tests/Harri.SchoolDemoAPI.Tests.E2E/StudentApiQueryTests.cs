@@ -8,7 +8,6 @@ using System.Net;
 
 namespace Harri.SchoolDemoAPI.Tests.E2E
 {
-    //TODO Sid tests
     public class StudentApiQueryTests : StudentApiTestBase
     {
         private static NewStudentDto _studentToMatch;
@@ -117,6 +116,20 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             response.Data.Items.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
         }
 
+        [Test]
+        public async Task GetStudents_ShouldMatch_OnSId()
+        {
+            // Arrange
+            // Act
+            var response = await _client.GetStudentsRestResponse(_studentToMatchId);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Items.Should().NotBeNull().And.ContainSingle();
+            response.Data.Items.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
+        }
+
         // Ordering tests
         [Test]
         public async Task GetStudents_ShouldGetAllStudentsAscending_ByName()
@@ -150,6 +163,23 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         }
 
         [Test]
+        public async Task GetStudents_ShouldGetAllStudents_BySId()
+        {
+            // Arrange
+            var idToSearch = 1;
+            // Act
+            var response = await _client.GetStudents(idToSearch);
+            var students = response.Items;
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInAscendingOrder();
+            ids.Should().AllSatisfy(id => id.ToString().Should().Contain(idToSearch.ToString()));
+        }
+
+        [Test]
         [NonParallelizable]
         public async Task GetStudents_ShouldGetMultiplePages()
         {
@@ -162,7 +192,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             // Act
             do
             {
-                response = await _client.GetStudents(null, "Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+                response = await _client.GetStudents(name: "Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
 
                 if (totalCount is null)
                 {
