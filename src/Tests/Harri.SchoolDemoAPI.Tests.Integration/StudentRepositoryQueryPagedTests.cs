@@ -7,7 +7,6 @@ using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 namespace Harri.SchoolDemoAPI.Tests.Integration
 {
     public class StudentRepositoryQueryPagedTests : StudentRepositoryTestBase
-        //TODO SID TESTS
     {
         // Order by and sort column paged tests
         private static Func<StudentDto, object?> _sIdSelector = x => x.SId;
