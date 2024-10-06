@@ -214,6 +214,57 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a bad request to query students by sId: -1, Test Case 1",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "-1"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students by sId: -1000, Test Case 3",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "-1000"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students by sId: 0, Test Case 2",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "0"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a bad request to query students with sort column 2, Test Case 3",
       "pending": false,
       "request": {
