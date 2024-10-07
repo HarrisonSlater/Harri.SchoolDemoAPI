@@ -214,6 +214,57 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a bad request to query students by sId: -1, Test Case 1",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "-1"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students by sId: -1000, Test Case 3",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "-1000"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a bad request to query students by sId: 0, Test Case 2",
+      "pending": false,
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "sId": [
+            "0"
+          ]
+        }
+      },
+      "response": {
+        "status": 400
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a bad request to query students with sort column 2, Test Case 3",
       "pending": false,
       "request": {
@@ -2608,6 +2659,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -2756,6 +2808,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -2907,6 +2960,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3058,6 +3112,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3206,6 +3261,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3349,6 +3405,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3497,6 +3554,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3648,6 +3706,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3802,6 +3861,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3953,6 +4013,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -3968,6 +4029,1542 @@
           ],
           "name": [
             "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, , {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 9",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": null,
+                  "isNull": false,
+                  "lt": null
+                }
+              },
+              "name": null,
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.isNull": [
+            "False"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, , {\"GPA\":{\"isNull\":null,\"lt\":0.99,\"gt\":0,\"eq\":null}} Test Case 6",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": 0,
+                  "isNull": null,
+                  "lt": 0.99
+                }
+              },
+              "name": null,
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.gt": [
+            "0"
+          ],
+          "GPA.lt": [
+            "0.99"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, , {\"GPA\":{\"isNull\":null,\"lt\":2,\"gt\":4,\"eq\":null}} Test Case 5",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": 4,
+                  "isNull": null,
+                  "lt": 2
+                }
+              },
+              "name": null,
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.gt": [
+            "4"
+          ],
+          "GPA.lt": [
+            "2"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, , {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}} Test Case 3",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": 4,
+                  "gt": null,
+                  "isNull": null,
+                  "lt": null
+                }
+              },
+              "name": null,
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, , {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 7",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": null,
+                  "isNull": true,
+                  "lt": null
+                }
+              },
+              "name": null,
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.isNull": [
+            "True"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, Test Student, {\"GPA\":null} Test Case 2",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": null
+              },
+              "name": "Test Student",
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "name": [
+            "Test Student"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, Test Student, {\"GPA\":{\"isNull\":false,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 10",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": null,
+                  "isNull": false,
+                  "lt": null
+                }
+              },
+              "name": "Test Student",
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.isNull": [
+            "False"
+          ],
+          "name": [
+            "Test Student"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, Test Student, {\"GPA\":{\"isNull\":null,\"lt\":4,\"gt\":2,\"eq\":null}} Test Case 4",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": 2,
+                  "isNull": null,
+                  "lt": 4
+                }
+              },
+              "name": "Test Student",
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.gt": [
+            "2"
+          ],
+          "GPA.lt": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, Test Student, {\"GPA\":{\"isNull\":null,\"lt\":null,\"gt\":null,\"eq\":4}} Test Case 1",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": 4,
+                  "gt": null,
+                  "isNull": null,
+                  "lt": null
+                }
+              },
+              "name": "Test Student",
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ],
+          "sId": [
+            "1234"
+          ]
+        }
+      },
+      "response": {
+        "body": {
+          "content": {
+            "items": [
+              {
+                "GPA": 3.99,
+                "name": "Test student 1",
+                "sId": 1
+              },
+              {
+                "GPA": 3.89,
+                "name": "Test student 2",
+                "sId": 2
+              },
+              {
+                "GPA": 3.79,
+                "name": "Test student 3",
+                "sId": 3
+              }
+            ],
+            "page": 1,
+            "pageSize": 3,
+            "totalCount": 3
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.items[0].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[0].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[1].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].GPA": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            },
+            "$.items[2].sId": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a valid request to query students by sId, name and GPA: 1234, Test Student, {\"GPA\":{\"isNull\":true,\"lt\":null,\"gt\":null,\"eq\":null}} Test Case 8",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "some students exist for querying",
+          "params": {
+            "stateObject": {
+              "gpaQuery": {
+                "GPA": {
+                  "eq": null,
+                  "gt": null,
+                  "isNull": true,
+                  "lt": null
+                }
+              },
+              "name": "Test Student",
+              "orderBy": null,
+              "page": null,
+              "pageSize": null,
+              "sId": 1234,
+              "sortColumn": null
+            },
+            "stateObjectType": "GetStudentsQueryDto"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.isNull": [
+            "True"
+          ],
+          "name": [
+            "Test Student"
+          ],
+          "sId": [
+            "1234"
           ]
         }
       },
@@ -4104,6 +5701,7 @@
               "orderBy": 0,
               "page": 1,
               "pageSize": 3,
+              "sId": 1023,
               "sortColumn": "GPA"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4128,6 +5726,9 @@
           ],
           "pageSize": [
             "3"
+          ],
+          "sId": [
+            "1023"
           ],
           "sortColumn": [
             "GPA"
@@ -4267,6 +5868,7 @@
               "orderBy": 0,
               "page": null,
               "pageSize": null,
+              "sId": 1023,
               "sortColumn": "GPA"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4285,6 +5887,9 @@
           ],
           "orderBy": [
             "ASC"
+          ],
+          "sId": [
+            "1023"
           ],
           "sortColumn": [
             "GPA"
@@ -4419,6 +6024,7 @@
               "orderBy": 0,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4562,6 +6168,7 @@
               "orderBy": 1,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4705,6 +6312,7 @@
               "orderBy": 0,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4848,6 +6456,7 @@
               "orderBy": 1,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -4991,6 +6600,7 @@
               "orderBy": null,
               "page": 1,
               "pageSize": 10,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5129,6 +6739,7 @@
               "orderBy": null,
               "page": 1,
               "pageSize": 100,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5272,6 +6883,7 @@
               "orderBy": null,
               "page": 1,
               "pageSize": 10,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5418,6 +7030,7 @@
               "orderBy": null,
               "page": 2,
               "pageSize": 10,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5561,6 +7174,7 @@
               "orderBy": null,
               "page": 2,
               "pageSize": 100,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5712,6 +7326,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -5863,6 +7478,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": ""
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6017,6 +7633,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "GPA"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6171,6 +7788,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "Gpa"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6325,6 +7943,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "NAME"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6479,6 +8098,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "Name"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6633,6 +8253,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "gpa"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6787,6 +8408,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "name"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -6941,6 +8563,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "sId"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -7095,6 +8718,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": "sid"
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -7249,6 +8873,7 @@
               "orderBy": null,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -7400,6 +9025,7 @@
               "orderBy": 0,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"
@@ -7554,6 +9180,7 @@
               "orderBy": 1,
               "page": null,
               "pageSize": null,
+              "sId": null,
               "sortColumn": null
             },
             "stateObjectType": "GetStudentsQueryDto"

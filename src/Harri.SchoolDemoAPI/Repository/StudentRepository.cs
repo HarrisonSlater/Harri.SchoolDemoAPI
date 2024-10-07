@@ -99,6 +99,10 @@ namespace Harri.SchoolDemoAPI.Repository
             {
                 builder.Where("sName LIKE @searchString", new { searchString = $"%{queryDto.Name}%" });
             }
+            if (queryDto.SId != null)
+            {
+                builder.Where("sID LIKE @searchSId", new { searchSId = $"%{queryDto.SId}%" });
+            }
             if (queryDto.GPAQueryDto?.GPA != null)
             {
                 var gpa = queryDto.GPAQueryDto.GPA;

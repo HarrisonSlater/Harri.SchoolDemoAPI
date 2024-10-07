@@ -84,6 +84,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [Test]
         public async Task QueryStudents_WhenCalled_WithAllParametersReturnsMatchingStudents()
         {
+            var sId = 1023;
             var name = "Test Student";
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
             var gpaQuerySerialized = JsonSerializer.Serialize(gpaQuery);
@@ -92,9 +93,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var page = 1;
             var pageSize = 3;
             var pactBuilder = _pact.UponReceiving($"a valid request to query students with all parameters set")
-                    .Given("some students exist for querying", new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn, Page = page, PageSize = pageSize })
+                    .Given("some students exist for querying", new GetStudentsQueryDto() { SId = sId, Name = name, GPAQueryDto = gpaQuery, OrderBy = orderBy, SortColumn = sortColumn, Page = page, PageSize = pageSize })
                     .WithRequest(HttpMethod.Get, $"/students/")
-                    .SetQueryStringParameters(name, gpaQuery, orderBy.ToString(), sortColumn, page, pageSize)
+                    .SetQueryStringParameters(sId, name, gpaQuery, orderBy.ToString(), sortColumn, page, pageSize)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -103,7 +104,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var students = await client.GetStudents(name, gpaQuery, orderBy, sortColumn, page, pageSize);
+                var students = await client.GetStudents(sId, name, gpaQuery, orderBy, sortColumn, page, pageSize);
                 StudentsQueryApiTestHelper.AssertStudentsResponseIsCorrect(students);
             });
         }

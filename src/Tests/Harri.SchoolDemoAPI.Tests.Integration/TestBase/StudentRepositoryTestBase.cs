@@ -26,7 +26,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration.TestBase
             };
         }
 
-        public async Task CleanUpTestStudent(int sId)
+        public static async Task CleanUpTestStudent(int sId)
         {
             await _studentRepository.DeleteStudent(sId);
         }

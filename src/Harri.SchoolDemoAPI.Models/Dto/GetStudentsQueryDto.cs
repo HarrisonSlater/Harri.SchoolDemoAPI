@@ -10,6 +10,10 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     /// </summary>
     public class GetStudentsQueryDto
     {
+        public int? SID;
+
+        [JsonPropertyName(APIConstants.Student.SId)]
+        public int? SId { get; set; }
 
         [JsonPropertyName(APIConstants.Student.Name)]
         public string? Name { get; set; }

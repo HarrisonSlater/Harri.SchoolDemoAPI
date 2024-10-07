@@ -30,7 +30,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
                 .ReturnsAsync(new PagedList<StudentDto>() { Items = [new StudentDto()] });
 
             // Act
-            var result = await _controller.GetStudents(name, new GPAQueryDto { GPA = null });
+            var result = await _controller.GetStudents(null, name, new GPAQueryDto { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(OkObjectResult));
@@ -44,7 +44,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
                 .ReturnsAsync(new PagedList<StudentDto>() { Items = [] });
 
             // Act
-            var result = await _controller.GetStudents("Test Student", new() { GPA = null });
+            var result = await _controller.GetStudents(null, "Test Student", new() { GPA = null });
 
             // Assert
             result.Should().BeOfType(typeof(NotFoundResult));

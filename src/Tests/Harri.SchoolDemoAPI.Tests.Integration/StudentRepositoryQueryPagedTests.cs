@@ -49,13 +49,15 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         // Filtering paged tests
         private static IEnumerable<TestCaseData> GetStudents_AllPagesAscendingWhenFilteringTestCases()
         {
-            yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC , SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { IsNull = false } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { GPAQueryDto = new GPAQueryDto { GPA = new() { Gt = 1 } }, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.Name }, _nameSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.ASC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
         }
 
         private static IEnumerable<TestCaseData> GetStudents_AllPagesDescendingWhenFilteringTestCases()
@@ -66,6 +68,9 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
             yield return new TestCaseData(new GetStudentsQueryDto() { Name = "Smith", OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.SId }, _sIdSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.Name }, _nameSelector);
+            yield return new TestCaseData(new GetStudentsQueryDto() { SId = 1, OrderBy = SortOrder.DESC, SortColumn = APIConstants.Student.GPA }, _gpaSelector);
         }
 
         [TestCaseSource(nameof(GetStudents_AllPagesAscendingWhenFilteringTestCases))]
@@ -75,7 +80,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         {
             // Arrange
             // Act
-            List<StudentDto> allPageItems = await GetAllPages(queryDto.OrderBy, queryDto.SortColumn, queryDto.Name, queryDto.GPAQueryDto);
+            List<StudentDto> allPageItems = await GetAllPages(queryDto.OrderBy, queryDto.SortColumn, queryDto.SId, queryDto.Name, queryDto.GPAQueryDto);
 
             // Assert
             if (queryDto.OrderBy is SortOrder.ASC)
@@ -91,7 +96,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         // These tests that make multiple page requests and combine together to assert the results of all pages. They are non parellelizable as
         // changes made by other tests while running will cause flakiness in the results. Tests like this should not be run against a shared database for the same reason
-        public static async Task<List<StudentDto>> GetAllPages(SortOrder? orderBy, string? sortColumn, string? name = null, GPAQueryDto? gpaQueryDto = null)
+        public static async Task<List<StudentDto>> GetAllPages(SortOrder? orderBy, string? sortColumn, int? sId = null, string? name = null, GPAQueryDto? gpaQueryDto = null)
         {
             var allPageItems = new List<StudentDto>();
             var page = 1;
@@ -100,7 +105,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             PagedList<StudentDto> response;
             do
             {
-                response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { Name = name, GPAQueryDto = gpaQueryDto, OrderBy = orderBy, SortColumn = sortColumn, Page = page, PageSize = pageSize });
+                response = await _studentRepository.GetStudents(new GetStudentsQueryDto() { SId = sId, Name = name, GPAQueryDto = gpaQueryDto, OrderBy = orderBy, SortColumn = sortColumn, Page = page, PageSize = pageSize });
 
                 if (totalCount is null)
                 {

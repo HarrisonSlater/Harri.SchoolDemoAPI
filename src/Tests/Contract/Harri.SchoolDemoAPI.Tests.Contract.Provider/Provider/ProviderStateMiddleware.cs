@@ -202,8 +202,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 .Returns(Task.FromResult(MockPagedList))
                 .Callback<GetStudentsQueryDto>((queryDto) =>
                 {
-                    queryDto.Name.Should().Be(studentQueryDto.Name);
-                    queryDto.GPAQueryDto.Should().BeEquivalentTo(studentQueryDto.GPAQueryDto);
+                    queryDto.Should().BeEquivalentTo(studentQueryDto, (options) =>
+                    {
+                        return options.Excluding(dto => dto.OrderBy)
+                        .Excluding(dto => dto.SortColumn)
+                        .Excluding(dto => dto.Page)
+                        .Excluding(dto => dto.PageSize);
+                    });
+
                     queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);
                     queryDto.SortColumn.Should().Be(studentQueryDto.SortColumn.IsNullOrEmpty() ? APIDefaults.Query.SortColumn : studentQueryDto.SortColumn);
                     queryDto.Page.Should().Be(studentQueryDto.Page ?? APIDefaults.Query.Page);

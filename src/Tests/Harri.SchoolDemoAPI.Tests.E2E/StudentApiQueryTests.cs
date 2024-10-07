@@ -68,7 +68,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         [Test]
         public async Task GetStudents_ShouldReturnBadRequest()
         {
-            var response = await _client.GetStudentsRestResponse(_studentToMatchName, new GPAQueryDto { GPA = new() { Eq = 2, Gt = 2 } });
+            var response = await _client.GetStudentsRestResponse(null, _studentToMatchName, new GPAQueryDto { GPA = new() { Eq = 2, Gt = 2 } });
             response.Data.Should().BeNull();
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -88,7 +88,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudentsRestResponse(name, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, name, gpaQueryDto);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -107,7 +107,21 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudentsRestResponse(_studentToMatchName, gpaQueryDto);
+            var response = await _client.GetStudentsRestResponse(null, _studentToMatchName, gpaQueryDto);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.Data.Items.Should().NotBeNull().And.ContainSingle();
+            response.Data.Items.Single().Should().BeEquivalentTo(ExpectedStudentToFind);
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldMatch_OnSId()
+        {
+            // Arrange
+            // Act
+            var response = await _client.GetStudentsRestResponse(_studentToMatchId);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -122,7 +136,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents("Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents(null, "Smith", orderBy: SortOrder.ASC, sortColumn: APIConstants.Student.Name);
             var students = response.Items;
 
 
@@ -138,7 +152,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         {
             // Arrange
             // Act
-            var response = await _client.GetStudents("Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+            var response = await _client.GetStudents(null, "Anderson", orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
             var students = response.Items;
 
             // Assert
@@ -146,6 +160,23 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             var names = students!.Select(x => x.Name).ToList();
             names.Should().BeInDescendingOrder();
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldGetAllStudents_BySId()
+        {
+            // Arrange
+            var idToSearch = 1;
+            // Act
+            var response = await _client.GetStudents(idToSearch);
+            var students = response.Items;
+
+            // Assert
+            students.Should().NotBeNullOrEmpty().And.HaveCountGreaterThan(1);
+
+            var ids = students!.Select(x => x.SId).ToList();
+            ids.Should().BeInAscendingOrder();
+            ids.Should().AllSatisfy(id => id.ToString().Should().Contain(idToSearch.ToString()));
         }
 
         [Test]
@@ -161,7 +192,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             // Act
             do
             {
-                response = await _client.GetStudents("Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
+                response = await _client.GetStudents(name: "Anderson", page: page, orderBy: SortOrder.DESC, sortColumn: APIConstants.Student.Name);
 
                 if (totalCount is null)
                 {

@@ -115,20 +115,24 @@ namespace Harri.SchoolDemoAPI.Client
 
         // Get Students
         //TODO add method using the DTO query type 
-        public async Task<PagedList<StudentDto>?> GetStudents(string? name = null, GPAQueryDto? gpaQuery = null,
+        public async Task<PagedList<StudentDto>?> GetStudents(int? sId = null, string? name = null, GPAQueryDto? gpaQuery = null,
             SortOrder? orderBy = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
-            var restResponse = await GetStudentsRestResponse(name, gpaQuery, orderBy, sortColumn, page, pageSize);
+            var restResponse = await GetStudentsRestResponse(sId, name, gpaQuery, orderBy, sortColumn, page, pageSize);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<PagedList<StudentDto>>> GetStudentsRestResponse(string? name = null, GPAQueryDto? gpaQuery = null,
+        public async Task<RestResponse<PagedList<StudentDto>>> GetStudentsRestResponse(int? sId = null, string? name = null, GPAQueryDto? gpaQuery = null,
             SortOrder? orderBy = null, string? sortColumn = null, int? page = null, int? pageSize = null)
         {
             var request = new RestRequest(BaseRoute);
             if (name is not null)
             {
-                request.AddQueryParameter("name", name);
+                request.AddQueryParameter(APIConstants.Student.Name, name);
+            }
+            if (sId is not null)
+            {
+                request.AddQueryParameter(APIConstants.Student.SId, sId.Value);
             }
             if (gpaQuery?.GPA is not null)
             {
