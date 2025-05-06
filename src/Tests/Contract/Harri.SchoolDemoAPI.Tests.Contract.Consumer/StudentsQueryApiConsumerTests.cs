@@ -132,7 +132,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         [Test]
-        public async Task QueryStudents_WhenCalledAndNoStudentsAreFound_ReturnsNotFound()
+        public async Task QueryStudents_WhenCalledAndNoStudentsAreFound_ReturnsNoContent()
         {
             var name = "Test Student";
             var gpaQuery = new GPAQueryDto() { GPA = new() { Eq = 4 } };
@@ -141,7 +141,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .SetQueryStringParameters(null, name, gpaQuery)
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound);
+                 .WithStatus(HttpStatusCode.NoContent);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -150,7 +150,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
                 // Client Assertions
                 response.Data.Should().BeNull();
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound); 
+                response.StatusCode.Should().Be(HttpStatusCode.NoContent); 
             });
         }
 

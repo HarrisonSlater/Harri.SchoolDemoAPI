@@ -191,7 +191,7 @@ namespace Harri.SchoolDemoAPI.Controllers
 
             if (students.Items.IsNullOrEmpty())
             {
-                return NotFound();
+                return NoContent();
             }
             else
             {

@@ -37,7 +37,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [Test]
-        public async Task GetStudents_ShouldReturnNotFound_WhenNoStudentsReturned()
+        public async Task GetStudents_ShouldReturnNoContent_WhenNoStudentsReturned()
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
@@ -47,7 +47,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
             var result = await _controller.GetStudents(null, "Test Student", new() { GPA = null });
 
             // Assert
-            result.Should().BeOfType(typeof(NotFoundResult));
+            result.Should().BeOfType(typeof(NoContentResult));
         }
     }
 }

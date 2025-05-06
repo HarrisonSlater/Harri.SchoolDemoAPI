@@ -1656,7 +1656,7 @@
         "path": "/students/"
       },
       "response": {
-        "status": 404
+        "status": 204
       },
       "type": "Synchronous/HTTP"
     },
@@ -2361,7 +2361,7 @@
         }
       },
       "response": {
-        "status": 404
+        "status": 204
       },
       "type": "Synchronous/HTTP"
     },

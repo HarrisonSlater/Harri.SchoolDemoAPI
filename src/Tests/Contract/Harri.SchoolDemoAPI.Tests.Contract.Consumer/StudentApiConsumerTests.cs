@@ -523,13 +523,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         [Test]
-        public async Task GetStudents_WhenNoStudentsExist_Returns404()
+        public async Task GetStudents_WhenNoStudentsExist_Returns204()
         {
             _pact.UponReceiving($"a request to get all students")
                     .Given("no students exist")
                     .WithRequest(HttpMethod.Get, $"/students/")
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound);
+                 .WithStatus(HttpStatusCode.NoContent);
 
             await _pact.VerifyAsync(async ctx =>
             {
