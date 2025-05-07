@@ -4,6 +4,7 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Tests.Common;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
@@ -48,6 +49,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["some students exist"] = this.EnsureSomeStudentsExist,
                 ["no students exist"] = this.EnsureNoStudentsExist,
                 ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
+                ["some students exist for querying across multiple pages"] = this.EnsureStudentsExistForQueryingAcrossMultiplePages,
                 ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
                 ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,
                 ["the api is healthy"] = this.TheApiIsHealthy,
@@ -139,41 +141,10 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         }
 
-        private static List<StudentDto> MockStudentsToReturn =
-        [
-            new StudentDto()
-            {
-                SId = 1,
-                Name = "Test student 1",
-                GPA = 3.99m
-            },
-            new StudentDto()
-            {
-                SId = 2,
-                Name = "Test student 2",
-                GPA = 3.89m
-            },
-            new StudentDto()
-            {
-                SId = 3,
-                Name = "Test student 3",
-                GPA = 3.79m
-            }
-        ];
-
-        private static PagedList<StudentDto> MockPagedList = new()
-        {
-            Items = MockStudentsToReturn.ToList(),
-            Page = 1,
-            PageSize = 3,
-            TotalCount = 3
-        };
-
-
         private Task EnsureSomeStudentsExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(MockPagedList));
+                .Returns(Task.FromResult(MockStudentTestFixture.MockPagedList));
 
             return Task.CompletedTask;
         }
@@ -199,24 +170,41 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var studentQueryDto = GetStateObject<GetStudentsQueryDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .Returns(Task.FromResult(MockPagedList))
-                .Callback<GetStudentsQueryDto>((queryDto) =>
-                {
-                    queryDto.Should().BeEquivalentTo(studentQueryDto, (options) =>
-                    {
-                        return options.Excluding(dto => dto.OrderBy)
-                        .Excluding(dto => dto.SortColumn)
-                        .Excluding(dto => dto.Page)
-                        .Excluding(dto => dto.PageSize);
-                    });
-
-                    queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);
-                    queryDto.SortColumn.Should().Be(studentQueryDto.SortColumn.IsNullOrEmpty() ? APIDefaults.Query.SortColumn : studentQueryDto.SortColumn);
-                    queryDto.Page.Should().Be(studentQueryDto.Page ?? APIDefaults.Query.Page);
-                    queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? APIDefaults.Query.PageSize);
-                });
+                .Returns(Task.FromResult(MockStudentTestFixture.MockPagedList))
+                .Callback(GetAssertionCallback(studentQueryDto));
 
             return Task.CompletedTask;
+        }
+
+        private Task EnsureStudentsExistForQueryingAcrossMultiplePages(IDictionary<string, object> parameters)
+        {
+            var studentQueryDto = GetStateObject<GetStudentsQueryDto>(parameters);
+
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>()))
+                .Returns(Task.FromResult(MockStudentTestFixture.MockPagedListAcrossMultiplePages))
+                .Callback(GetAssertionCallback(studentQueryDto));
+
+            return Task.CompletedTask;
+        }
+
+        // Asserts that the mock is called with expected arguments (that they are parsed correctly by the provider)
+        private static Action<GetStudentsQueryDto> GetAssertionCallback(GetStudentsQueryDto studentQueryDto) 
+        {
+            return (queryDto) =>
+            {
+                queryDto.Should().BeEquivalentTo(studentQueryDto, (options) =>
+                {
+                    return options.Excluding(dto => dto.OrderBy)
+                    .Excluding(dto => dto.SortColumn)
+                    .Excluding(dto => dto.Page)
+                    .Excluding(dto => dto.PageSize);
+                });
+
+                queryDto.OrderBy.Should().Be(studentQueryDto.OrderBy ?? APIDefaults.Query.OrderBy);
+                queryDto.SortColumn.Should().Be(studentQueryDto.SortColumn.IsNullOrEmpty() ? APIDefaults.Query.SortColumn : studentQueryDto.SortColumn);
+                queryDto.Page.Should().Be(studentQueryDto.Page ?? APIDefaults.Query.Page);
+                queryDto.PageSize.Should().Be(studentQueryDto.PageSize ?? APIDefaults.Query.PageSize);
+            };
         }
 
         private Task TheApiReturnsA500InternalServerError(IDictionary<string, object> parameters)
