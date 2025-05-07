@@ -162,8 +162,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <param name="page">Which page you are requesting. Indexed from 1</param>
         /// <param name="pageSize">How many students per page. Default is <see cref="APIDefaults.Query.PageSize"/></param>
         /// <response code="200">Successful operation</response>
+        /// <response code="204">No students found</response>
         /// <response code="400">Invalid query supplied</response>
-        /// <response code="404">No students found</response>
         [HttpGet]
         [Route("/students")]
         [SwaggerOperation(OperationId = "GetStudents")]
@@ -188,6 +188,12 @@ namespace Harri.SchoolDemoAPI.Controllers
                 Page = page,
                 PageSize = pageSize
             });
+
+            // If there are students found but the requested page is out of bounds
+            if (students.TotalCount > 0 && page > students.TotalPageCount)
+            {
+                return BadRequest();
+            }
 
             if (students.Items.IsNullOrEmpty())
             {
