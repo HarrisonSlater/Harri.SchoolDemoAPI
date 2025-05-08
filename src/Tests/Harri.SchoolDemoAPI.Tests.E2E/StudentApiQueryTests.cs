@@ -91,7 +91,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var response = await _client.GetStudentsRestResponse(null, name, gpaQueryDto);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
             response.Data.Should().BeNull();
         }
 
