@@ -59,7 +59,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task QueryStudents_WhenCalled_WithBadPagedQuery_ReturnsBadRequest(string? page, string? pageSize, string testCase)
         {
             var pactBuilder = _pact.UponReceiving($"a bad paged request to query students with page {page} and page size {pageSize}, {testCase}")
-                    //.Given("some students exist for querying", new GetStudentsQueryDto() { GPAQueryDto = new(), Page = 2, PageSize = 10 })
                     .WithRequest(HttpMethod.Get, $"/students/")
                     .WithQuery(APIConstants.Query.Page, page)
                     .WithQuery(APIConstants.Query.PageSize, pageSize)
@@ -81,13 +80,9 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        //TODO clean this up
-        [Test]
-        public async Task QueryStudents_WhenCalled_WithBadPagedQuery2_ReturnsBadRequest()
+        [TestCase("2", "3")]
+        public async Task QueryStudents_WhenCalled_WithBadPagedQuery2_ReturnsBadRequest(string? page, string? pageSize)
         {
-            string? page = "2";
-            string? pageSize = "3";
-
             var pactBuilder = _pact.UponReceiving($"a paged request to query students with out of bounds page {page} and page size {pageSize}")
                     .Given("some students exist for querying", new GetStudentsQueryDto() { GPAQueryDto = new(), Page = 2, PageSize = 3 })
                     .WithRequest(HttpMethod.Get, $"/students/")
