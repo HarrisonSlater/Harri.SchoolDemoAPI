@@ -27,7 +27,7 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .ReturnsAsync(new PagedList<StudentDto>() { Items = [new StudentDto()] });
+                .ReturnsAsync(new PagedList<StudentDto>() { Items = [new StudentDto()], Page = 1, PageSize = 10, TotalCount = 1000 });
 
             // Act
             var result = await _controller.GetStudents(null, name, new GPAQueryDto { GPA = null });
@@ -37,17 +37,31 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         }
 
         [Test]
-        public async Task GetStudents_ShouldReturnNotFound_WhenNoStudentsReturned()
+        public async Task GetStudents_ShouldReturnNoContent_WhenNoStudentsReturned()
         {
             // Arrange
             _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
-                .ReturnsAsync(new PagedList<StudentDto>() { Items = [] });
+                .ReturnsAsync(new PagedList<StudentDto>() { Items = [] , Page = 1, PageSize = 10, TotalCount = 1000 });
 
             // Act
             var result = await _controller.GetStudents(null, "Test Student", new() { GPA = null });
 
             // Assert
-            result.Should().BeOfType(typeof(NotFoundResult));
+            result.Should().BeOfType(typeof(NoContentResult));
+        }
+
+        [Test]
+        public async Task GetStudents_ShouldReturnBadRequest_WhenPageIsOutOfBounds()
+        {
+            // Arrange
+            _mockStudentService.Setup(x => x.GetStudents(It.IsAny<GetStudentsQueryDto>()))
+                .ReturnsAsync(new PagedList<StudentDto>() { Items = [], PageSize = 10, TotalCount = 1000 });
+
+            // Act
+            var result = await _controller.GetStudents(null, "Test Student", new() { GPA = null }, page: 101);
+
+            // Assert
+            result.Should().BeOfType(typeof(BadRequestResult));
         }
     }
 }

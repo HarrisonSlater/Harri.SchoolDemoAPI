@@ -5,6 +5,7 @@ using PactNet.Matchers;
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
+using Harri.SchoolDemoAPI.Tests.Common;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -510,7 +511,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
                  .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(StudentsQueryApiTestHelper.ExpectedPagedStudentsJsonBody);
+                 .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -523,13 +524,13 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         }
 
         [Test]
-        public async Task GetStudents_WhenNoStudentsExist_Returns404()
+        public async Task GetStudents_WhenNoStudentsExist_Returns204()
         {
             _pact.UponReceiving($"a request to get all students")
                     .Given("no students exist")
                     .WithRequest(HttpMethod.Get, $"/students/")
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound);
+                 .WithStatus(HttpStatusCode.NoContent);
 
             await _pact.VerifyAsync(async ctx =>
             {
