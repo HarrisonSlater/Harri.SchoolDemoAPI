@@ -70,14 +70,14 @@ This project covers testing:
  - Scenarios for each route/feature in the API
  - Sanity checks/ Smoke checks to be performed after deployment
 
-# Integration & E2E notes:
+## Integration & E2E notes:
 Both these projects create new students in a real database and clean up after each test.
 This allows for multiple test runs at the same time against a single database as you might have in a shared CI environment, PreProd environment, or even Production environment.
 
 This is an especially useful property for E2E tests as part of a deployment pipeline to enable Continuous deployment.
 
 # Contract Tests 
-Consumer driven contract tests using pact net: https://github.com/pact-foundation/pact-net.
+Consumer driven contract tests using [Pact Net](https://github.com/pact-foundation/pact-net).
 
 Tests for StudentApiClient and StudentApiController have been completed so far.
 
@@ -99,17 +99,13 @@ ProviderStateMiddleware.cs base file implementation from: [pact-net ProviderStat
 Provider tests assert that a specific json request, given a state of the provider, returns a specific json response.
 These tests go one step further to assert the object is deserialised correctly within the provider.
 
-Assertions are made on the repository interface mock in [ProviderStateMiddleware.cs](Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs).
+Assertions are made on the repository interface mock in [ProviderStateMiddleware.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs).
 
-The expected values to assert are passed along with the provider state in the contract test definition in the consumer project [Example: StudentApiConsumerTests.cs](Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs). This is so the request json, expected response json, and expected deserialised json all live in the test definition.
+The expected values to assert are passed along with the provider state in the contract test definition in the consumer project [Example: StudentApiConsumerTests.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs#L20). 
+This is so the request json, expected response json, and expected deserialised json all live in the test definition and not hidden and hardcoded in ProviderStateMiddleware.cs.
 
 ``` C#
-            .Given("a student with sId {sId} exists", new Dictionary<string, string>() {
-                // Expected deserialised values inside the provider
-                { "sId", sId.ToString() }, 
-                { "name", name },
-                { "GPA", GPA?.ToString() ?? "null" },
-            })
+    .Given("a student with sId exists", new StudentDto() { SId = sId, Name = name, GPA = GPA })
 ```
 
 
