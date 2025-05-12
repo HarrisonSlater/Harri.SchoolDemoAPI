@@ -89,15 +89,21 @@ Benefits of using Contract tests over Integration or E2E tests to validate contr
 - Test execution time (fast)
 
 ## Consumer Tests [Harri.SchoolDemoAPI.Tests.Contract.Consumer](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer)
-See [StudentApiConsumerTests.cs](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/src/Tests/Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs)
+Consumer tests validate the API behaviour from the perspective of its consumers. 
+The [Harri.SchoolDemoAPI.Client](../Harri.SchoolDemoAPI.Client/StudentApiClient.cs) package is used as the consumer in these tests but you could also write these tests by making direct network requests to the REST API.
+
+The consumer tests also serve as documentation clarifying how different endpoints are intended to be used.
+
+See [StudentApiConsumerTests.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs)
 
 ## Provider Tests [Harri.SchoolDemoAPI.Tests.Contract.Provider](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider)
-The Provider tests have a mocked data layer, In the case of the Students API IStudentRepository is mocked using Moq.
 
-ProviderStateMiddleware.cs base file implementation from: [pact-net ProviderStateMiddleware.cs](https://github.com/pact-foundation/pact-net/blob/master/samples/OrdersApi/Provider.Tests/ProviderStateMiddleware.cs)
+Provider tests assert that a specific json request returns a specific json response, given a state of the provider.
+The tests in this project go one step further to assert the object is deserialised correctly within the provider.
 
-Provider tests assert that a specific json request, given a state of the provider, returns a specific json response.
-These tests go one step further to assert the object is deserialised correctly within the provider.
+The Provider tests have a mocked data layer. This makes the contracts test equivalent to unit tests and can be run in the build step of a CI pipeline for fast feedback.
+
+ProviderStateMiddleware.cs base file implementation from: [Pact Net ProviderStateMiddleware.cs](https://github.com/pact-foundation/pact-net/blob/master/samples/OrdersApi/Provider.Tests/ProviderStateMiddleware.cs)
 
 Assertions are made on the repository interface mock in [ProviderStateMiddleware.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs).
 
@@ -107,8 +113,7 @@ This is so the request json, expected response json, and expected deserialised j
 ``` C#
     .Given("a student with sId exists", new StudentDto() { SId = sId, Name = name, GPA = GPA })
 ```
-
-
+Deserialising of this object implemented in [GetStateObject<T>](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs#:~:text=T%20GetStateObject%3CT%3E)
 # [Harri.SchoolDempAPI.Tests.Common](Harri.SchoolDempAPI.Tests.Common)
 Common code and helpers used across some or all test projects can live here as well as test data fixtures.
 
