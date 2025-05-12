@@ -1,4 +1,14 @@
+# Automated Tests
+This project emphasizes comprehensive automated testing to ensure the reliability and correctness of the Harri.SchoolDemoAPI.
+
+It encompasses Unit, Contract, Integration, and End-to-End (E2E) tests, each targeting specific aspects of the application. 
+
+These tests are integrated into the Azure DevOps pipeline:
+- with Unit and Contract tests executed during the Build stage
+- and Integration and E2E tests running in the 'Deploy & Test' stage.
+
 # Test Coverage Diagram
+This diagram shows what parts of this REST API are covered by each type of test below.
 ```mermaid
 block-beta
 columns 8
@@ -37,7 +47,6 @@ style UT3 stroke:green,stroke-width:4px,fill:lightgreen
 style API stroke:black,stroke-width:4px,fill:lightyellow
 
 ```
-This diagram shows what parts of this REST API are covered by each type of test below.
 
 # [Harri.SchoolDemoAPI.Tests.Unit](Harri.SchoolDemoAPI.Tests.Unit)
 Standard Unit test project with mocked dependencies
