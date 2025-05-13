@@ -4,17 +4,16 @@
 
 Also see a front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
 
-## WIP - API
-So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
-
 # Automated Testing
 An emphasis on comprehensive automated testing has been used when developing this demo API. 
 
 Included are Unit, Contract, Integration, and E2E test projects.
-See the full [Test README here](src/Tests/README.md) or 
-[Contract Test README.md](src/Tests/Contract/README.md)
+See the full [Test README here](src/Tests/README.md)
 
 All test projects are run as part of the Azure DevOps pipeline as part of the Build stage (for Unit and Contract) or the 'Deploy & Test' stage (For Integration and E2E), and are run in-agent.
+
+## 🚧 Work In Progress - API
+So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
 
 ## Project Diagram
 ```mermaid
