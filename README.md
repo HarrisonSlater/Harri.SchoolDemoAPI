@@ -29,7 +29,90 @@ Client-- Network ---Controller
 Repository-- Network ---SQL
 
 ```
-  
+
+# API Request/Response examples
+## POST /students
+#### Request Body:
+```json
+{
+  "name": "Student Name"
+}
+```
+or with optional GPA:
+```json
+{
+  "name": "Student Name",
+  "GPA": 3.52
+}
+```
+#### Response Body
+containing created student ID:
+```json
+1348
+```
+## GET /students/{sId}
+#### Request:
+```
+GET /students/1348
+```
+
+#### Response Body:
+```json
+{
+  "sId": 1348,
+  "name": "Student Name",
+  "GPA": 3.52
+}
+```
+## PUT /students/{sId}
+*(Update entire student record)*
+#### Request:
+```
+PUT /students/1348
+```
+#### Request Body:
+```json
+{
+  "name": "Student Name Updated",
+  "GPA": 3.65
+}
+```
+
+#### Response:
+200 OK
+
+## PATCH /students/{sId}
+*(Update partial student record)*
+
+#### Request:
+```
+PATCH /students/1348
+```
+#### Request Body:
+```json
+{
+  "name": "Student Name Patched"
+}
+```
+
+#### Response Body:
+containing modified student record
+```json
+{
+  "sId": 1348,
+  "name": "Student Name Patched",
+  "GPA": 3.65
+}
+```
+
+## DELETE /students/{sId}
+#### Request:
+```
+DELETE /students/1348
+```
+#### Response:
+200 OK
+
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
 
