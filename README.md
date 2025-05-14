@@ -113,6 +113,156 @@ DELETE /students/1348
 #### Response:
 200 OK
 
+## GET /students (Paginated, Sortable, Query API)
+#### Request:
+```
+GET /students?sId=1
+```
+#### Response:
+```json
+{
+  "items": [
+    {
+      "sId": 1,
+      "name": "Olivia Jackson",
+      "GPA": 1.43
+    },
+    {
+      "sId": 10,
+      "name": "Harper Jones",
+      "GPA": 3.94
+    },
+    {
+      "sId": 11,
+      "name": "Noah Lopez",
+      "GPA": 1.78
+    },
+    {
+      "sId": 12,
+      "name": "Liam Taylor",
+      "GPA": 3.65
+    },
+    {
+      "sId": 13,
+      "name": "Emma Davis",
+      "GPA": 1.72
+    },
+    {
+      "sId": 14,
+      "name": "Amelia Johnson",
+      "GPA": 3.62
+    },
+    {
+      "sId": 15,
+      "name": "Harper Taylor",
+      "GPA": 1.24
+    },
+    {
+      "sId": 16,
+      "name": "Lucas Thomas",
+      "GPA": 3.42
+    },
+    {
+      "sId": 17,
+      "name": "Ava Rodriguez",
+      "GPA": 3.15
+    },
+    {
+      "sId": 18,
+      "name": "Benjamin Lopez",
+      "GPA": 3.69
+    }
+  ],
+  "page": 1,
+  "pageSize": 10,
+  "totalCount": 328,
+  "totalPageCount": 33,
+  "hasNextPage": true,
+  "hasPreviousPage": false
+}
+```
+---
+#### Request:
+```
+GET /students?name=Ethan%20S&page=1&pageSize=3
+```
+#### Response:
+```json
+{
+  "items": [
+    {
+      "sId": 124,
+      "name": "Ethan Smith",
+      "GPA": 2.84
+    },
+    {
+      "sId": 137,
+      "name": "Ethan Smith",
+      "GPA": 3.12
+    },
+    {
+      "sId": 956,
+      "name": "Ethan Smith",
+      "GPA": 1.35
+    }
+  ],
+  "page": 1,
+  "pageSize": 3,
+  "totalCount": 3,
+  "totalPageCount": 1,
+  "hasNextPage": false,
+  "hasPreviousPage": false
+}
+```
+---
+#### Request:
+```
+GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
+```
+#### Response:
+```json
+{
+  "items": [
+    {
+      "sId": 324,
+      "name": "Harper Johnson",
+      "GPA": 2.01
+    },
+    {
+      "sId": 874,
+      "name": "Aria Jackson",
+      "GPA": 2.03
+    },
+    {
+      "sId": 975,
+      "name": "Charlotte Jackson",
+      "GPA": 2.03
+    },
+    {
+      "sId": 853,
+      "name": "Charlotte Thomas",
+      "GPA": 2.04
+    }
+  ],
+  "page": 1,
+  "pageSize": 4,
+  "totalCount": 694,
+  "totalPageCount": 174,
+  "hasNextPage": true,
+  "hasPreviousPage": false
+}
+```
+
+<!-- query api template
+#### Request:
+```
+GET /students?sId=1
+```
+#### Response:
+```json
+```
+-->
+
 # Running the SchoolDemo REST Web API
 You have three options for running this web API,
 
