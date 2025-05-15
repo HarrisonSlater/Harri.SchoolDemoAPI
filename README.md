@@ -17,7 +17,7 @@ So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.Scho
 
 
 ## Table of Contents
-- [API Request/Response examples](#api-requestresponse-examples)
+- [API Request/Response examples](#json-api-requestresponse-examples)
 - [Running the SchoolDemo REST Web API](#running-the-schooldemo-rest-web-api)
 - [Build pipeline](#build-pipeline)
 - [Logging using Application Insights & Serilog](#logging-using-application-insights--serilog)
@@ -38,8 +38,13 @@ Repository-- Network ---SQL
 
 ```
 
-# API Request/Response examples
+# JSON API Request/Response examples
 ## POST /students
+**Request:**
+```http
+POST /students
+```
+
 **Request Body:**
 ```json
 {
@@ -53,19 +58,25 @@ or with optional GPA:
   "GPA": 3.52
 }
 ```
-**Response Body:**  
+**Response**  
 containing created student ID:
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 1348
 ```
 ## GET /students/{sId}
 **Request:**
-```
+```http
 GET /students/1348
 ```
 
-**Response Body:**
-```json
+**Response**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "sId": 1348,
   "name": "Student Name",
@@ -76,7 +87,7 @@ GET /students/1348
 *(Update entire student record)*  
 
 **Request:**
-```
+```http
 PUT /students/1348
 ```
 **Request Body:**
@@ -88,13 +99,15 @@ PUT /students/1348
 ```
 
 **Response**  
-200 OK
+```http
+HTTP/1.1 200 OK
+```
 
 ## PATCH /students/{sId}
 *(Update partial student record)*
 
 **Request:**
-```
+```http
 PATCH /students/1348
 ```
 **Request Body:**
@@ -104,9 +117,12 @@ PATCH /students/1348
 }
 ```
 
-**Response Body:**  
+**Response**  
 containing modified student record
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "sId": 1348,
   "name": "Student Name Patched",
@@ -116,19 +132,25 @@ containing modified student record
 
 ## DELETE /students/{sId}
 **Request:**
-```
+```http
 DELETE /students/1348
 ```
 **Response**
-200 OK
+```http
+HTTP/1.1 200 OK
+```
 
 ## GET /students (Paginated, Sortable, Query API)
+### By Id
 **Request:**
-```
+```http
 GET /students?sId=1
 ```
 **Response**
-```json
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "items": [
     {
@@ -191,12 +213,16 @@ GET /students?sId=1
 }
 ```
 ---
+### By Name
 **Request:**
-```
+```http
 GET /students?name=Ethan%20S&page=1&pageSize=3
 ```
-**Response**
-```json
+**Response:**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "items": [
     {
@@ -224,12 +250,16 @@ GET /students?name=Ethan%20S&page=1&pageSize=3
 }
 ```
 ---
+### By GPA Greater Than, sorted
 **Request:**
-```
+```http
 GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
 ```
-**Response**
-```json
+**Response:**
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "items": [
     {
