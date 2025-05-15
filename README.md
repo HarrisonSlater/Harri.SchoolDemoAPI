@@ -42,11 +42,11 @@ Repository-- Network ---SQL
 | Operation | Resource        |
 |-----------|-----------------|
 | POST      | [/students](#post-students) |
-| GET       | /students/{sId} |
-| PUT       | /students/{sId} |
-| PATCH     | /students/{sId} |
-| DELETE    | /students/{sId} |
-| GET       | /students       |
+| GET       | [/students/{sId}](#get-studentssid) |
+| PUT       | [/students/{sId}](#put-studentssid) |
+| PATCH     | [/students/{sId}](#patch-studentssid) |
+| DELETE    | [/students/{sId}](#delete-studentssid) |
+| GET       | [/students](#get-students-paginated-sortable-query-api) |
 ## POST /students
 **Request:**
 ```http
