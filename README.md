@@ -371,10 +371,10 @@ to return a result like:
 
 Also included is a RestSharp client in a separate project [Harri.SchoolDemoAPI.HealthCheckClient](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI/tree/HealthChecks/src/Harri.SchoolDemoAPI.HealthCheckClient) along with consumer driven contract tests
 
-## Nuget packages used
+# Nuget packages used
   - [Dapper](https://github.com/DapperLib/Dapper)
   - [RestSharp](https://github.com/restsharp/RestSharp) for the client
   - [AspNetCore.Diagnostics.HealthChecks](https://github.com/Xabaril/AspNetCore.Diagnostics.HealthChecks)
-- #### Logging
+- ## Logging
   - [Serilog](https://github.com/serilog/serilog)
   - [SEQ](https://datalust.co/seq)
