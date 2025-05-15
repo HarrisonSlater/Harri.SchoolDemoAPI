@@ -32,7 +32,7 @@ Repository-- Network ---SQL
 
 # API Request/Response examples
 ## POST /students
-#### Request Body:
+**Request Body:**
 ```json
 {
   "name": "Student Name"
@@ -45,18 +45,18 @@ or with optional GPA:
   "GPA": 3.52
 }
 ```
-#### Response Body
+**Response Body:**  
 containing created student ID:
 ```json
 1348
 ```
 ## GET /students/{sId}
-#### Request:
+**Request:**
 ```
 GET /students/1348
 ```
 
-#### Response Body:
+**Response Body:**
 ```json
 {
   "sId": 1348,
@@ -65,12 +65,13 @@ GET /students/1348
 }
 ```
 ## PUT /students/{sId}
-*(Update entire student record)*
-#### Request:
+*(Update entire student record)*  
+
+**Request:**
 ```
 PUT /students/1348
 ```
-#### Request Body:
+**Request Body:**
 ```json
 {
   "name": "Student Name Updated",
@@ -78,24 +79,24 @@ PUT /students/1348
 }
 ```
 
-#### Response:
+**Response**  
 200 OK
 
 ## PATCH /students/{sId}
 *(Update partial student record)*
 
-#### Request:
+**Request:**
 ```
 PATCH /students/1348
 ```
-#### Request Body:
+**Request Body:**
 ```json
 {
   "name": "Student Name Patched"
 }
 ```
 
-#### Response Body:
+**Response Body:**  
 containing modified student record
 ```json
 {
@@ -106,19 +107,19 @@ containing modified student record
 ```
 
 ## DELETE /students/{sId}
-#### Request:
+**Request:**
 ```
 DELETE /students/1348
 ```
-#### Response:
+**Response**
 200 OK
 
 ## GET /students (Paginated, Sortable, Query API)
-#### Request:
+**Request:**
 ```
 GET /students?sId=1
 ```
-#### Response:
+**Response**
 ```json
 {
   "items": [
@@ -182,11 +183,11 @@ GET /students?sId=1
 }
 ```
 ---
-#### Request:
+**Request:**
 ```
 GET /students?name=Ethan%20S&page=1&pageSize=3
 ```
-#### Response:
+**Response**
 ```json
 {
   "items": [
@@ -215,11 +216,11 @@ GET /students?name=Ethan%20S&page=1&pageSize=3
 }
 ```
 ---
-#### Request:
+**Request:**
 ```
 GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
 ```
-#### Response:
+**Response**
 ```json
 {
   "items": [
@@ -254,11 +255,11 @@ GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
 ```
 
 <!-- query api template
-#### Request:
+**Request:**
 ```
 GET /students?sId=1
 ```
-#### Response:
+**Response:**
 ```json
 ```
 -->
