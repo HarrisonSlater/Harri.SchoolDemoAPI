@@ -15,6 +15,14 @@ All test projects are run as part of the Azure DevOps pipeline as part of the Bu
 ## 🚧 Work In Progress - API
 So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
 
+
+## Table of Contents
+- [API Request/Response examples](#api-requestresponse-examples)
+- [Running the SchoolDemo REST Web API](#running-the-schooldemo-rest-web-api)
+- [Build pipeline](#build-pipeline)
+- [Logging using Application Insights & Serilog](#logging-using-application-insights--serilog)
+- [Nuget packages used](#nuget-packages-used)
+
 ## Project Diagram
 ```mermaid
 flowchart LR
