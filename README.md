@@ -39,6 +39,14 @@ Repository-- Network ---SQL
 ```
 
 # JSON API Request/Response examples
+| Operation | Resource        |
+|-----------|-----------------|
+| POST      | [/students](#post-students) |
+| GET       | /students/{sId} |
+| PUT       | /students/{sId} |
+| PATCH     | /students/{sId} |
+| DELETE    | /students/{sId} |
+| GET       | /students       |
 ## POST /students
 **Request:**
 ```http
