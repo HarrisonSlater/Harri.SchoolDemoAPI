@@ -17,7 +17,7 @@ So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.Scho
 
 
 ## Table of Contents
-- [API Request/Response examples](#json-api-requestresponse-examples)
+- [JSON API Request/Response examples](#json-api-requestresponse-examples)
 - [Running the SchoolDemo REST Web API](#running-the-schooldemo-rest-web-api)
 - [Build pipeline](#build-pipeline)
 - [Logging using Application Insights & Serilog](#logging-using-application-insights--serilog)
