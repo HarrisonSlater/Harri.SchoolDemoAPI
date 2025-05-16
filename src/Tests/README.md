@@ -1,4 +1,14 @@
+# Automated Tests
+This project emphasizes comprehensive automated testing to ensure the reliability and correctness of the Harri.SchoolDemoAPI.
+
+It encompasses Unit, Contract, Integration, and End-to-End (E2E) tests, each targeting specific aspects of the application. 
+
+These tests are integrated into the Azure DevOps pipeline:
+- with Unit and Contract tests executed during the Build stage
+- and Integration and E2E tests running in the 'Deploy & Test' stage.
+
 # Test Coverage Diagram
+This diagram shows what parts of this REST API are covered by each type of test below.
 ```mermaid
 block-beta
 columns 8
@@ -37,7 +47,6 @@ style UT3 stroke:green,stroke-width:4px,fill:lightgreen
 style API stroke:black,stroke-width:4px,fill:lightyellow
 
 ```
-This diagram shows what parts of this REST API are covered by each type of test below.
 
 # [Harri.SchoolDemoAPI.Tests.Unit](Harri.SchoolDemoAPI.Tests.Unit)
 Standard Unit test project with mocked dependencies
@@ -70,18 +79,52 @@ This project covers testing:
  - Scenarios for each route/feature in the API
  - Sanity checks/ Smoke checks to be performed after deployment
 
-# Integration & E2E notes:
+## Integration & E2E notes:
 Both these projects create new students in a real database and clean up after each test.
 This allows for multiple test runs at the same time against a single database as you might have in a shared CI environment, PreProd environment, or even Production environment.
 
 This is an especially useful property for E2E tests as part of a deployment pipeline to enable Continuous deployment.
 
 # Contract Tests 
-## ([Harri.SchoolDemoAPI.Tests.Contract.Consumer](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer) & [Harri.SchoolDemoAPI.Tests.Contract.Provider](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider))
-See the contract test [README.md](Contract/README.md)
+Consumer driven contract tests using [Pact Net](https://github.com/pact-foundation/pact-net).
 
+Tests for StudentApiClient and StudentApiController have been completed so far.
+
+Contract tests are used in this project to reduce the required number of Integration tests and E2E tests needed to achieve full test coverage of the API.
+
+Benefits of using Contract tests over Integration or E2E tests to validate contracts:
+- Contract tests are unit tests
+- They run in the build step and fail fast (before deploy step)
+- Test execution time (fast)
+
+## Consumer Tests [Harri.SchoolDemoAPI.Tests.Contract.Consumer](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer)
+Consumer tests validate the API behaviour from the perspective of its consumers. 
+The [Harri.SchoolDemoAPI.Client](../Harri.SchoolDemoAPI.Client/StudentApiClient.cs) package is used as the consumer in these tests but you could also write these tests by making direct network requests to the REST API.
+
+The consumer tests also serve as documentation clarifying how different endpoints are intended to be used.
+
+See [StudentApiConsumerTests.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs)
+
+## Provider Tests [Harri.SchoolDemoAPI.Tests.Contract.Provider](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider)
+
+Provider tests assert that a specific json request returns a specific json response, given a state of the provider.
+The tests in this project go one step further to assert the object is deserialised correctly within the provider.
+
+The Provider tests have a mocked data layer. This makes the contracts test equivalent to unit tests and can be run in the build step of a CI pipeline for fast feedback.
+
+ProviderStateMiddleware.cs base file implementation from: [Pact Net ProviderStateMiddleware.cs](https://github.com/pact-foundation/pact-net/blob/master/samples/OrdersApi/Provider.Tests/ProviderStateMiddleware.cs)
+
+Assertions are made on the repository interface mock in [ProviderStateMiddleware.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs).
+
+The expected values to assert are passed along with the provider state in the contract test definition in the consumer project [Example: StudentApiConsumerTests.cs](Contract/Harri.SchoolDemoAPI.Tests.Contract.Consumer/StudentApiConsumerTests.cs#L20). 
+This is so the request json, expected response json, and expected deserialised json all live in the test definition and not hidden and hardcoded in ProviderStateMiddleware.cs.
+
+``` C#
+    .Given("a student with sId exists", new StudentDto() { SId = sId, Name = name, GPA = GPA })
+```
+Deserialising of this object implemented in [GetStateObject<T>](Contract/Harri.SchoolDemoAPI.Tests.Contract.Provider/Provider/ProviderStateMiddleware.cs#:~:text=T%20GetStateObject%3CT%3E)
 # [Harri.SchoolDempAPI.Tests.Common](Harri.SchoolDempAPI.Tests.Common)
-Currently unused. Common code and helpers used across some or all test projects can live here.
+Common code and helpers used across some or all test projects can live here as well as test data fixtures.
 
 # Nuget packages used
 - NUnit
