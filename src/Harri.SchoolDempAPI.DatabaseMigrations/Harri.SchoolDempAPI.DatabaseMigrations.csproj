@@ -9,19 +9,22 @@
 
   <ItemGroup>
     <PackageReference Include="DbUp" Version="5.0.41" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="scripts/**/*.sql" />
+    <EmbeddedResource Include="Scripts/**/*.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Scripts\Script0001 - Create tables.sql" />
+    <EmbeddedResource Include="TestScripts/**/*.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="TestScripts\TestScript0001 - Create schools.sql" />
-    <EmbeddedResource Include="TestScripts\TestScript0002 - Create students.sql" />
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
 </Project>
