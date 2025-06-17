@@ -89,6 +89,7 @@ stages:
         displayName: 'dotnet publish - Database Migrations - $(BuildConfiguration)'
         inputs:
           command: 'publish'
+          publishWebProjects: false
           projects: '**/Harri.SchoolDempAPI.DatabaseMigrations.csproj'
           arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/DatabaseMigrations/$(BuildConfiguration)'
 
