@@ -85,8 +85,19 @@ stages:
           publishWebProjects: true
           arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Build/$(BuildConfiguration)'
           
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet publish - Database Migrations - $(BuildConfiguration)'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/Harri.SchoolDempAPI.DatabaseMigrations.csproj'
+          arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/DatabaseMigrations/$(BuildConfiguration)'
+
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
+
+      - publish: '$(Build.ArtifactStagingDirectory)/DatabaseMigrations'
+        artifact: databaseMigrations
 
       - task: DotNetCoreCLI@2
         inputs:
