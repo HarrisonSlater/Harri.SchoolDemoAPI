@@ -215,15 +215,19 @@ stages:
           
       - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          ls .
+
+      - script: 'ls .'
+      
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
           ls .
           dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
         displayName: Run DatabaseMigrations
-
-      - script: 'dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll'
-        displayName: Run DatabaseMigrations TEST 2
 
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
