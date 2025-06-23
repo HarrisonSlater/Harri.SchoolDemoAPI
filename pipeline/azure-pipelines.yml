@@ -171,6 +171,14 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
 
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
 #      - script: 'ls $(System.DefaultWorkingDirectory)'
 #      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
 
@@ -213,6 +221,9 @@ stages:
           ls .
           dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
         displayName: Run DatabaseMigrations
+
+      - script: 'dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll'
+        displayName: Run DatabaseMigrations TEST 2
 
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
