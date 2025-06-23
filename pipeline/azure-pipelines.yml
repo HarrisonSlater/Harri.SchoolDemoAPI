@@ -210,6 +210,7 @@ stages:
 
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          ls .
           dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
         displayName: Run DatabaseMigrations
 
