@@ -21,7 +21,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 }
             };
 
-            IPactV4 pact = Pact.V4("SchoolDempApi.Client", "SchoolDemoApi", config);
+            IPactV4 pact = Pact.V4("SchoolDemoApi.Client", "SchoolDemoApi", config);
 
             _pact = pact.WithHttpInteractions();
         }

@@ -49,7 +49,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                                        "..",
                                        "..",
                                        "pacts",
-                                       "SchoolDempApi.Client-SchoolDemoApi.json");
+                                       "SchoolDemoApi.Client-SchoolDemoApi.json");
 
             using var pactVerifier = new PactVerifier("SchoolDemoApi");
 

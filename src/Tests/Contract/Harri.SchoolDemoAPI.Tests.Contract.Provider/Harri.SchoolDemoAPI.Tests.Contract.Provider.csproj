@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Harri.SchoolDemoAPI.Client\Harri.SchoolDemoAPI.Client.csproj" />
     <ProjectReference Include="..\..\..\Harri.SchoolDemoAPI\Harri.SchoolDemoAPI.csproj" />
-    <ProjectReference Include="..\..\Harri.SchoolDempAPI.Tests.Common\Harri.SchoolDempAPI.Tests.Common.csproj" />
+    <ProjectReference Include="..\..\Harri.SchoolDemoAPI.Tests.Common\Harri.SchoolDemoAPI.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
