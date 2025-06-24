@@ -4,13 +4,13 @@ using DbUp.Support;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 
-namespace Harri.SchoolDempAPI.DatabaseMigrations
+namespace Harri.SchoolDemoAPI.DatabaseMigrations
 {
     public class Program
     {
         static int Main(string[] args)
         {
-            var projectName = "Harri.SchoolDempAPI.DatabaseMigrations";
+            var projectName = "Harri.SchoolDemoAPI.DatabaseMigrations";
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var sqlConnectionString = config["SQLConnectionString"];
             // Use appsettings.json for default connection string
@@ -24,7 +24,7 @@ namespace Harri.SchoolDempAPI.DatabaseMigrations
 
             var upgradeEngineBuilder = DeployChanges.To
                 .SqlDatabase(connectionString, null) //null or "" for default schema for user
-                // Script name for filtering looks like: "Harri.SchoolDempAPI.DatabaseMigrations.TestScripts.TestScript0001 - Create schools.sql"
+                // Script name for filtering looks like: "Harri.SchoolDemoAPI.DatabaseMigrations.TestScripts.TestScript0001 - Create schools.sql"
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), script => script.StartsWith($"{projectName}.Scripts."), new SqlScriptOptions { ScriptType = ScriptType.RunOnce })
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), script => script.StartsWith($"{projectName}.TestScripts."), new SqlScriptOptions { ScriptType = ScriptType.RunOnce })
                 .LogToConsole(); //TODO integrate with API logging services

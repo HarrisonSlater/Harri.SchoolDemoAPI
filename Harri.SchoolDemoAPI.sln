@@ -22,12 +22,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pacts", "pacts", "{CE982582-20D5-4C27-BFEA-5351F221C5B7}"
 	ProjectSection(SolutionItems) = preProject
-		src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json = src\Tests\Contract\pacts\SchoolDempApi.Client-SchoolDemoApi.json
+		src\Tests\Contract\pacts\SchoolDemoApi.Client-SchoolDemoApi.json = src\Tests\Contract\pacts\SchoolDemoApi.Client-SchoolDemoApi.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A6A9243C-8FA3-4D27-9BDB-723520C62049}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDempAPI.Tests.Common", "src\Tests\Harri.SchoolDempAPI.Tests.Common\Harri.SchoolDempAPI.Tests.Common.csproj", "{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.Common", "src\Tests\Harri.SchoolDemoAPI.Tests.Common\Harri.SchoolDemoAPI.Tests.Common.csproj", "{6B5FBBC8-6D34-45CF-888C-6C864DEB7477}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.E2E", "src\Tests\Harri.SchoolDemoAPI.Tests.E2E\Harri.SchoolDemoAPI.Tests.E2E.csproj", "{70242C75-2155-4D5B-B832-ED5BECDD091A}"
 EndProject
@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.Tests.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.HealthCheckClient", "src\Harri.SchoolDemoAPI.HealthCheckClient\Harri.SchoolDemoAPI.HealthCheckClient.csproj", "{8B8E00DD-773B-45A9-A878-B3601371B412}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDempAPI.DatabaseMigrations", "src\Harri.SchoolDempAPI.DatabaseMigrations\Harri.SchoolDempAPI.DatabaseMigrations.csproj", "{10E9A6B7-9FC9-46BD-87C4-836C6AA33ADB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harri.SchoolDemoAPI.DatabaseMigrations", "src\Harri.SchoolDemoAPI.DatabaseMigrations\Harri.SchoolDemoAPI.DatabaseMigrations.csproj", "{10E9A6B7-9FC9-46BD-87C4-836C6AA33ADB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
