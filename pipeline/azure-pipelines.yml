@@ -176,7 +176,7 @@ stages:
           buildType: 'current'
           downloadType: 'single'
           artifactName: 'databaseMigrations'
-          downloadPath: '$(System.DefaultWorkingDirectory)'
+          downloadPath: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsRelease'
           cleanDestinationFolder: false
 
 #      - script: 'ls $(System.DefaultWorkingDirectory)'
@@ -220,9 +220,13 @@ stages:
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
           ls .
+          
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsRelease/
+          ls .
 
       - script: 'ls .'
-      
+
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
           ls .
