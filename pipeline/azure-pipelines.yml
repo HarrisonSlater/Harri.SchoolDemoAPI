@@ -374,7 +374,7 @@ stages:
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
-          arguments: 'schooldemorestapi 15'
+          arguments: 'schooldemorestapi 45'
         displayName: bash - Wait for healthy REST API container
 
 #      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
