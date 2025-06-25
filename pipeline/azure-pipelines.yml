@@ -174,9 +174,12 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
 
-      - script: 'ls'
-      - script: 'ls $(System.DefaultWorkingDirectory)'
-      - script: 'ls pipeline'
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/Harri.SchoolDemoAPI.DatabaseMigrations.zip'
+          destinationFolder: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract'
+          cleanDestinationFolder: false
+          overwriteExistingFiles: false
 
  #     - script: 'docker build -t schooldemosql-database -f .\docker\SQL-Database-Dockerfile .\docker\build'
       - task: Docker@2
@@ -187,28 +190,24 @@ stages:
           buildContext: '$(System.DefaultWorkingDirectory)'
           tags: latest
 
-      - script: 'ls $(System.DefaultWorkingDirectory)'
-
-      - script: 'docker image ls'
+#      - script: 'docker image ls'
       
       - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 --name schooldemosql -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
-
-      - script: 'docker container ls'
-
-#      - script: './pipeline/scripts/wait-for-healthy-container.sh schooldemosql 30'
-
-      - script: 'docker container inspect schooldemosql'
 
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
           arguments: 'schooldemosql 30'
       
-      - script: 'docker container inspect schooldemosql'
-
-
-
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          ls .
+          dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
+        displayName: Run DatabaseMigrations
+        
+        #todo push updated docker image to dockerhub
+#      - script: 'docker container inspect schooldemosql'
 
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
@@ -274,17 +273,17 @@ stages:
           
       - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
-      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
+#      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 
-      - script: | 
-          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
-          ls .
+#      - script: | 
+#          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+#          ls .
 
-      - script: | 
-          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsRelease/
-          ls .
-          cat 'ls ./Release'
-          ls ./Release
+#      - script: | 
+#          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsRelease/
+#          ls .
+#          cat 'ls ./Release'
+#          ls ./Release
 
 #      - script: 'ls .'
 
