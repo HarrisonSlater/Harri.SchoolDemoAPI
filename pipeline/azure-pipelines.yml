@@ -155,6 +155,30 @@ stages:
       - publish: '$(Build.ArtifactStagingDirectory)/Docker'
         artifact: dockerBuild
 
+- stage: 'BuildSQLDatabase'
+  displayName: 'Build SQL Database'
+  dependsOn: Build
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs: 
+    - job: 'BuildSQLDatabaseJob'
+      displayName: 'Deploy (in-agent) and run E2E tests'
+      steps:
+      - checkout: self
+        sparseCheckoutDirectories: pipeline
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
+      - script: 'ls'
+      - script: 'ls $(System.DefaultWorkingDirectory)'
+      - script: 'ls pipeline'
+
+
+
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
   dependsOn: Build
