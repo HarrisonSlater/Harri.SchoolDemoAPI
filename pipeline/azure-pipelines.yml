@@ -197,7 +197,7 @@ stages:
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
-          arguments: 'schooldemosql-base 30'
+          arguments: 'schooldemosql-base 45'
       
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
