@@ -191,7 +191,7 @@ stages:
 
       - script: 'docker image ls'
       
-      - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageRepository)'
+      - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName)'
       
       - script: './pipeline/scripts/wait-for-healthy-container.sh schooldemosql 30'
       
