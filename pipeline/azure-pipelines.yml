@@ -181,7 +181,6 @@ stages:
           cleanDestinationFolder: false
           overwriteExistingFiles: false
 
- #     - script: 'docker build -t schooldemosql-database -f .\docker\SQL-Database-Dockerfile .\docker\build'
       - task: Docker@2
         inputs:
           command: 'build'
@@ -192,13 +191,13 @@ stages:
 
 #      - script: 'docker image ls'
       
-      - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 --name schooldemosql -d $(DockerNamespace)/$(DockerSQLImageName)'
+      - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 --name schooldemosql-base -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
 
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
-          arguments: 'schooldemosql 30'
+          arguments: 'schooldemosql-base 30'
       
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
@@ -206,8 +205,17 @@ stages:
           dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
         displayName: Run DatabaseMigrations
         
-        #todo push updated docker image to dockerhub
-#      - script: 'docker container inspect schooldemosql'
+      # this commit saves the above database migration changes into a new image
+      - script: 'docker commit schooldemosql $(DockerNamespace)/$(DockerSQLImageName)'
+      
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Docker Hub'
+          repository: '$(DockerNamespace)/$(DockerSQLImageName)'
+          command: 'push'
+          tags: latest
+
+#      - script: 'docker container inspect schooldemosql-base'
 
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
