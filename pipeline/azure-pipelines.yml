@@ -162,7 +162,7 @@ stages:
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   jobs: 
     - job: 'BuildSQLDatabaseJob'
-      displayName: 'Build SQL Database from main'
+      displayName: 'Build and push SQL database from main'
       steps:
       - checkout: self
         sparseCheckoutDirectories: pipeline
@@ -369,6 +369,22 @@ stages:
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S $(APIUrlToTest)students/123'
 
+      - task: Bash@3
+        inputs:
+          filePath: './pipeline/scripts/wait-for-healthy-container.sh'
+          arguments: 'harrisonslater/$(DockerImageName) 15'
+        displayName: bash - Wait for healthy REST API container
+
+#      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
+
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - Integration
+        inputs:
+          command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+          testRunTitle: 'Integration Tests'
+
       - task: FileTransform@1
         displayName: testappsettings.json transform
         inputs:
@@ -376,8 +392,7 @@ stages:
           fileType: 'json'
           targetFiles: 'testappsettings.json'
 
-      - script: sleep 10 #ensure School Demo API container is running
-      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
+#      - script: sleep 10 #ensure School Demo API container is running
       
       - task: DotNetCoreCLI@2
         displayName: dotnet test - E2E
