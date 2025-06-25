@@ -159,13 +159,14 @@ stages:
 - stage: 'BuildSQLDatabase'
   displayName: 'Build SQL Database'
   dependsOn: Build
-#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   jobs: 
     - job: 'BuildSQLDatabaseJob'
-      displayName: 'Deploy (in-agent) and run E2E tests'
+      displayName: 'Build SQL Database from main'
       steps:
       - checkout: self
         sparseCheckoutDirectories: pipeline
+
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
@@ -198,14 +199,15 @@ stages:
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
           arguments: 'schooldemosql-base 45'
-      
+        displayName: bash - Wait for healthy database
+
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
           ls .
           dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
         displayName: Run DatabaseMigrations
         
-      # this commit saves the above database migration changes into a new image
+      # this docker commit saves the above database migration changes into a new image
       - script: 'docker commit schooldemosql-base $(DockerNamespace)/$(DockerSQLImageName)'
       
       - task: Docker@2
