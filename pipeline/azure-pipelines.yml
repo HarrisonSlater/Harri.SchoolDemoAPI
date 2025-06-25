@@ -16,7 +16,8 @@ variables:
   APIPortToTest: 5001
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides testappsettings.json in E2E tests
   DockerNamespace: harrisonslater
-  DockerSQLImageName: harri-schooldemosql-database:latest
+  DockerSQLImageRepository: harri-schooldemosql-database
+  DockerSQLImageName: $(DockerSQLImageRepository):latest
   DockerImageRepository: harri-schooldemoapi
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerImageArtifactName: $(DockerImageRepository):$(DockerImageTag).tar.gz
@@ -176,6 +177,22 @@ stages:
       - script: 'ls'
       - script: 'ls $(System.DefaultWorkingDirectory)'
       - script: 'ls pipeline'
+
+ #     - script: 'docker build -t schooldemosql-database -f .\docker\SQL-Database-Dockerfile .\docker\build'
+      - task: Docker@2
+        inputs:
+          command: 'build'
+          repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
+          Dockerfile: 'docker/SQL-Database-Dockerfile'
+          buildContext: '$(System.DefaultWorkingDirectory)/docker/build'
+          tags: latest
+      
+      - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d schooldemosql-database:latest'
+      
+      - script: './pipeline/scripts/wait-for-healthy-container.sh schooldemosql 30'
+      
+      - script: 'docker container inspect schooldemosql'
+
 
 
 
