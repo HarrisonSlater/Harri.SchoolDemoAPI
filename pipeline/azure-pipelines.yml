@@ -191,7 +191,7 @@ stages:
 
       - script: 'docker image ls'
       
-      - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName) --name schooldemosql'
+      - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 --name schooldemosql -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
 
       - script: 'docker container ls'
