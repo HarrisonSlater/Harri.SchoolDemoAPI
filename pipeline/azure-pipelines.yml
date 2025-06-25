@@ -16,7 +16,8 @@ variables:
   APIPortToTest: 5001
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides testappsettings.json in E2E tests
   DockerNamespace: harrisonslater
-  DockerSQLImageName: harri-schooldemosql-database:latest
+  DockerSQLImageRepository: harri-schooldemosql-database
+  DockerSQLImageName: $(DockerSQLImageRepository):latest
   DockerImageRepository: harri-schooldemoapi
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerImageArtifactName: $(DockerImageRepository):$(DockerImageTag).tar.gz
@@ -155,9 +156,52 @@ stages:
       - publish: '$(Build.ArtifactStagingDirectory)/Docker'
         artifact: dockerBuild
 
+- stage: 'BuildSQLDatabase'
+  displayName: 'Build SQL Database'
+  dependsOn: Build
+#  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs: 
+    - job: 'BuildSQLDatabaseJob'
+      displayName: 'Deploy (in-agent) and run E2E tests'
+      steps:
+      - checkout: self
+        sparseCheckoutDirectories: pipeline
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
+      - script: 'ls'
+      - script: 'ls $(System.DefaultWorkingDirectory)'
+      - script: 'ls pipeline'
+
+ #     - script: 'docker build -t schooldemosql-database -f .\docker\SQL-Database-Dockerfile .\docker\build'
+      - task: Docker@2
+        inputs:
+          command: 'build'
+          repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
+          Dockerfile: './pipeline/docker/SQL-Database-Dockerfile'
+          buildContext: './pipeline/docker/build'
+          tags: latest
+
+      - script: 'ls ./pipeline/docker/build'
+
+      
+      - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d schooldemosql-database:latest'
+      
+      - script: './pipeline/scripts/wait-for-healthy-container.sh schooldemosql 30'
+      
+      - script: 'docker container inspect schooldemosql'
+
+
+
+
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
-  dependsOn: Build
+  dependsOn: BuildSQLDatabase
   jobs: 
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run E2E tests'
@@ -265,7 +309,7 @@ stages:
 
 - stage: 'DeployAndTestDocker'
   displayName: 'Deploy and Test Docker'
-  dependsOn: Build
+  dependsOn: BuildSQLDatabase
   jobs: 
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run E2E tests'
