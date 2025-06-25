@@ -361,7 +361,7 @@ stages:
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
       
-      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway harrisonslater/$(DockerImageName)'
+      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway --name schooldemorestapi harrisonslater/$(DockerImageName)'
         displayName: docker run - School Demo API Container
 
 #      - script: 'docker stats --no-stream'
@@ -374,7 +374,7 @@ stages:
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
-          arguments: 'harrisonslater/$(DockerImageName) 15'
+          arguments: 'schooldemorestapi 15'
         displayName: bash - Wait for healthy REST API container
 
 #      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
