@@ -206,7 +206,7 @@ stages:
         displayName: Run DatabaseMigrations
         
       # this commit saves the above database migration changes into a new image
-      - script: 'docker commit schooldemosql $(DockerNamespace)/$(DockerSQLImageName)'
+      - script: 'docker commit schooldemosql-base $(DockerNamespace)/$(DockerSQLImageName)'
       
       - task: Docker@2
         inputs:
