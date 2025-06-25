@@ -186,7 +186,6 @@ stages:
           Dockerfile: './pipeline/docker/SQL-Database-Dockerfile'
           buildContext: '$(System.DefaultWorkingDirectory)'
           tags: latest
-          container: 
 
       - script: 'ls $(System.DefaultWorkingDirectory)'
 
@@ -195,8 +194,12 @@ stages:
       - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName) --name schooldemosql'
         displayName: docker run - School Demo SQL DB Container
 
-      
+      - script: 'docker container ls'
+
 #      - script: './pipeline/scripts/wait-for-healthy-container.sh schooldemosql 30'
+
+      - script: 'docker container inspect schooldemosql'
+
       - task: Bash@3
         inputs:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
