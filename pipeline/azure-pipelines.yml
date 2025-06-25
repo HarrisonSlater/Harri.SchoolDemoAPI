@@ -222,6 +222,7 @@ stages:
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
   dependsOn: BuildSQLDatabase
+  condition: succeeded()
   jobs: 
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run E2E tests'
@@ -330,6 +331,7 @@ stages:
 - stage: 'DeployAndTestDocker'
   displayName: 'Deploy and Test Docker'
   dependsOn: BuildSQLDatabase
+  condition: succeeded()
   jobs: 
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run E2E tests'
