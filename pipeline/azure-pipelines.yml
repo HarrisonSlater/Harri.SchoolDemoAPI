@@ -184,10 +184,10 @@ stages:
           command: 'build'
           repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
           Dockerfile: './pipeline/docker/SQL-Database-Dockerfile'
-          buildContext: './pipeline/docker/build'
+          buildContext: '$(System.DefaultWorkingDirectory)'
           tags: latest
 
-      - script: 'ls ./pipeline/docker/build'
+      - script: 'ls $(System.DefaultWorkingDirectory)'
 
       
       - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d schooldemosql-database:latest'
