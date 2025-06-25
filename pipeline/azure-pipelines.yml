@@ -183,9 +183,12 @@ stages:
         inputs:
           command: 'build'
           repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
-          Dockerfile: 'docker/SQL-Database-Dockerfile'
-          buildContext: '$(System.DefaultWorkingDirectory)/docker/build'
+          Dockerfile: './pipeline/docker/SQL-Database-Dockerfile'
+          buildContext: './pipeline/docker/build'
           tags: latest
+
+      - script: 'ls ./pipeline/docker/build'
+
       
       - script: 'docker run -t schooldemosql  -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d schooldemosql-database:latest'
       
@@ -198,7 +201,7 @@ stages:
 
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
-  dependsOn: Build
+  dependsOn: BuildSQLDatabase
   jobs: 
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run E2E tests'
@@ -306,7 +309,7 @@ stages:
 
 - stage: 'DeployAndTestDocker'
   displayName: 'Deploy and Test Docker'
-  dependsOn: Build
+  dependsOn: BuildSQLDatabase
   jobs: 
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run E2E tests'
