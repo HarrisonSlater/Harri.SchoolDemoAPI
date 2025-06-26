@@ -3,10 +3,9 @@ using System.Linq;
 using System.Data;
 using Harri.SchoolDemoAPI.Models.Dto;
 using System.Threading.Tasks;
-using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using System;
-using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -21,9 +20,14 @@ namespace Harri.SchoolDemoAPI.Repository
 
         public async Task<int> AddStudent(NewStudentDto newStudent)
         {
+            if (newStudent.Name.IsNullOrEmpty()) throw new ArgumentNullException("Name must be set");
+
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var sId = (await connection.QueryAsync<int>("[SchoolDemo].CreateNewStudent", new { sName = newStudent.Name, newStudent.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
+                var query = @"INSERT INTO [SchoolDemo].Student VALUES (@Name, @GPA);
+                              SELECT SCOPE_IDENTITY()";
+
+                var sId = (await connection.QueryAsync<int>(query, new { Name = newStudent.Name, GPA = newStudent.GPA })).FirstOrDefault();
                 return sId;
             }
         }
@@ -32,7 +36,11 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var student = (await connection.QueryAsync<StudentDto?>("[SchoolDemo].GetStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault<StudentDto>();
+                var query = @"SELECT sID as sId, sName as Name, GPA 
+                              FROM [SchoolDemo].Student
+                              WHERE sId = @sId";
+
+                var student = (await connection.QueryAsync<StudentDto?>(query, new { sId = sId })).FirstOrDefault();
                 return student;
             }
         }
@@ -42,8 +50,22 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var success = (await connection.QueryAsync<bool>("[SchoolDemo].UpdateStudent", new { sId = sId, sName = student.Name, student.GPA }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
-                return success;
+                var studentExistsQuery = @"(SELECT * FROM [SchoolDemo].Student WHERE sId = @sId)";
+
+                bool studentExists = (await connection.QueryAsync(studentExistsQuery, new { sId = sId })).Any();
+
+                if (!studentExists)
+                {
+                    return false;
+                }
+
+                var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
+                                           SET sName = @Name, GPA = @GPA
+                                           WHERE sId = @sId";
+
+                (await connection.QueryAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId })).Any();
+
+                return true;
             }
         }
 
@@ -51,8 +73,27 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var success = (await connection.QueryAsync<bool?>("[SchoolDemo].DeleteStudent", new { sId }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
-                return success;
+                var studentExistsQuery = @"(SELECT * FROM [SchoolDemo].Student WHERE sId = @sId)";
+
+                bool studentExists = (await connection.QueryAsync(studentExistsQuery, new { sId = sId })).Any();
+
+                if (!studentExists)
+                {
+                    return false;
+                }
+
+                var deleteQuery = @"BEGIN TRY
+                                        DELETE FROM [SchoolDemo].Student
+                                        WHERE sID = @sId;
+
+                                        SELECT CAST(1 AS BIT);
+                                    END TRY
+                                    BEGIN CATCH
+                                        SELECT NULL
+                                    END CATCH";
+
+                var deleted = (await connection.QueryAsync<bool?>(deleteQuery, new { sId = sId })).FirstOrDefault();
+                return deleted;
             }
         }
 

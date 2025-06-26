@@ -16,7 +16,8 @@ variables:
   APIPortToTest: 5001
   APIUrlToTest: 'http://localhost:$(APIPortToTest)/' # variable that overrides testappsettings.json in E2E tests
   DockerNamespace: harrisonslater
-  DockerSQLImageName: harri-schooldemosql-database:latest
+  DockerSQLImageRepository: harri-schooldemosql-database
+  DockerSQLImageName: $(DockerSQLImageRepository):latest
   DockerImageRepository: harri-schooldemoapi
   DockerImageTag: $(Build.SourceBranchName)-$(Build.BuildNumber)
   DockerImageArtifactName: $(DockerImageRepository):$(DockerImageTag).tar.gz
@@ -66,7 +67,7 @@ stages:
       - task: PublishBuildArtifacts@1
         displayName: 'Publish pact file'
         inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDempApi.Client-SchoolDemoApi.json'
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/src/Tests/Contract/pacts/SchoolDemoApi.Client-SchoolDemoApi.json'
           ArtifactName: 'pact'
           publishLocation: 'Container'
     
@@ -85,8 +86,19 @@ stages:
           publishWebProjects: true
           arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Build/$(BuildConfiguration)'
           
+      - task: DotNetCoreCLI@2
+        displayName: 'dotnet publish - Database Migrations - $(BuildConfiguration)'
+        inputs:
+          command: 'publish'
+          publishWebProjects: false
+          projects: '**/Harri.SchoolDemoAPI.DatabaseMigrations.csproj'
+          arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/DatabaseMigrations/$(BuildConfiguration)'
+
       - publish: '$(Build.ArtifactStagingDirectory)/Build'
         artifact: build
+
+      - publish: '$(Build.ArtifactStagingDirectory)/DatabaseMigrations'
+        artifact: databaseMigrations
 
       - task: DotNetCoreCLI@2
         inputs:
@@ -144,9 +156,80 @@ stages:
       - publish: '$(Build.ArtifactStagingDirectory)/Docker'
         artifact: dockerBuild
 
+- stage: 'BuildSQLDatabase'
+  displayName: 'Build SQL Database'
+  dependsOn: Build
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  jobs: 
+    - job: 'BuildSQLDatabaseJob'
+      displayName: 'Build and push SQL database from main'
+      steps:
+      - checkout: self
+        sparseCheckoutDirectories: pipeline
+
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/Harri.SchoolDemoAPI.DatabaseMigrations.zip'
+          destinationFolder: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract'
+          cleanDestinationFolder: false
+          overwriteExistingFiles: false
+
+      - task: Docker@2
+        inputs:
+          command: 'build'
+          repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
+          Dockerfile: './pipeline/docker/SQL-Database-Dockerfile'
+          buildContext: '$(System.DefaultWorkingDirectory)'
+          tags: latest
+
+#      - script: 'docker image ls'
+      
+      - script: 'docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 --name schooldemosql-base -d $(DockerNamespace)/$(DockerSQLImageName)'
+        displayName: docker run - School Demo SQL DB Container
+
+      - task: Bash@3
+        inputs:
+          filePath: './pipeline/scripts/wait-for-healthy-container.sh'
+          arguments: 'schooldemosql-base 45'
+        displayName: bash - Wait for healthy database
+
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          ls .
+          dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
+        displayName: Run DatabaseMigrations
+        
+      # this docker commit saves the above database migration changes into a new image
+      - script: 'docker commit schooldemosql-base $(DockerNamespace)/$(DockerSQLImageName)'
+      
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Docker Hub'
+          repository: '$(DockerNamespace)/$(DockerSQLImageRepository)'
+          command: 'push'
+          tags: latest
+
+#      - script: 'docker container inspect schooldemosql-base'
+
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
-  dependsOn: Build
+  dependsOn: 
+    - Build
+    - BuildSQLDatabase
+  condition: |
+    and
+    (
+      in(dependencies.Build.result, 'Succeeded', 'SucceededWithIssues'),
+      in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+    )
   jobs: 
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run E2E tests'
@@ -160,13 +243,25 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
 
-#      - script: 'ls $(System.DefaultWorkingDirectory)'
-#      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
 
       - task: ExtractFiles@1
         inputs:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
           destinationFolder: '$(System.DefaultWorkingDirectory)/Extract'
+          cleanDestinationFolder: false
+          overwriteExistingFiles: false
+              
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/Harri.SchoolDemoAPI.DatabaseMigrations.zip'
+          destinationFolder: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract'
           cleanDestinationFolder: false
           overwriteExistingFiles: false
 
@@ -188,7 +283,12 @@ stages:
         displayName: Run SchoolDemoAPI $(BuildConfiguration) build
           
       - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
-#      - script: 'curl -X GET -S -L $(APIUrlToTest)students/123'
+
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
+        displayName: Run DatabaseMigrations
+
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
         inputs:
@@ -215,7 +315,15 @@ stages:
 
 - stage: 'DeployAndTestDocker'
   displayName: 'Deploy and Test Docker'
-  dependsOn: Build
+  dependsOn: 
+    - Build
+    - BuildSQLDatabase
+  condition: |
+    and
+    (
+      in(dependencies.Build.result, 'Succeeded', 'SucceededWithIssues'),
+      in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+    )
   jobs: 
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run E2E tests'
@@ -245,15 +353,31 @@ stages:
       - script: 'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d $(DockerNamespace)/$(DockerSQLImageName)'
         displayName: docker run - School Demo SQL DB Container
       
-      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway harrisonslater/$(DockerImageName)'
+      - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway --name schooldemorestapi harrisonslater/$(DockerImageName)'
         displayName: docker run - School Demo API Container
 
+# scripts for debugging api container issues
 #      - script: 'docker stats --no-stream'
 #      - script: 'docker network ls'
 #      - script: 'docker network inspect bridge'
 #      - script: 'sleep 5'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S $(APIUrlToTest)students/123'
+#      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
+
+      - task: Bash@3
+        inputs:
+          filePath: './pipeline/scripts/wait-for-healthy-container.sh'
+          arguments: 'schooldemorestapi 45'
+        displayName: bash - Wait for healthy REST API container
+
+      - task: DotNetCoreCLI@2
+        displayName: dotnet test - Integration
+        inputs:
+          command: 'test'
+          arguments: '--collect "Code Coverage" --settings:CodeCoverage.runsettings'
+          projects: '**/Harri.SchoolDemoAPI.Tests.Integration.csproj'
+          testRunTitle: 'Integration Tests'
 
       - task: FileTransform@1
         displayName: testappsettings.json transform
@@ -261,9 +385,6 @@ stages:
           folderPath: '$(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
           fileType: 'json'
           targetFiles: 'testappsettings.json'
-
-      - script: sleep 10 #ensure School Demo API container is running
-      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
       
       - task: DotNetCoreCLI@2
         displayName: dotnet test - E2E

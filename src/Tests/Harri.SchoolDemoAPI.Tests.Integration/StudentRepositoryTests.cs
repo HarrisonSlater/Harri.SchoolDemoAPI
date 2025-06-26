@@ -65,7 +65,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var action = async () => await _studentRepository.AddStudent(newStudent);
 
             // Assert
-            await action.Should().ThrowAsync<SqlException>();
+            await action.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [TestCase("New Test Student 2 - Updated Name", 3.75)]
@@ -173,6 +173,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Assert
             success.Should().Be(false);
         }
+
+        //TODO after impelementing Applications respository, add delete conflict test (where a student is being deleted but has existing applications)
 
         [Test]
         public async Task GetAllStudents_ShouldGetAllStudents()
