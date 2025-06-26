@@ -15,7 +15,6 @@ All test projects are run as part of the Azure DevOps pipeline as part of the Bu
 ## 🚧 Work In Progress - API
 So far the /students/ API is complete: [StudentsApiController.cs](src/Harri.SchoolDemoAPI/Controllers/StudentsApiController.cs)
 
-
 ## Table of Contents
 - [JSON API Request/Response examples](#json-api-requestresponse-examples)
 - [Running the SchoolDemo REST Web API](#running-the-schooldemo-rest-web-api)
@@ -369,7 +368,7 @@ The database required by the SchoolDemoAPI is available as a linux container ima
 
 And to run the database container:
 
-> `docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
+> `docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
 
 # Build pipeline
 Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
