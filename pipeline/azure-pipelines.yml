@@ -342,12 +342,14 @@ stages:
       - script: 'docker run -d -p $(APIPortToTest):8080 --add-host=host.docker.internal:host-gateway --name schooldemorestapi harrisonslater/$(DockerImageName)'
         displayName: docker run - School Demo API Container
 
+# scripts for debugging api container issues
 #      - script: 'docker stats --no-stream'
 #      - script: 'docker network ls'
 #      - script: 'docker network inspect bridge'
 #      - script: 'sleep 5'
 #      - script: 'curl -X GET -S -L $(APIUrlToTest)openapi'
 #      - script: 'curl -X GET -S $(APIUrlToTest)students/123'
+#      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 
       - task: Bash@3
         inputs:
@@ -355,7 +357,6 @@ stages:
           arguments: 'schooldemorestapi 45'
         displayName: bash - Wait for healthy REST API container
 
-#      - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
 
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
