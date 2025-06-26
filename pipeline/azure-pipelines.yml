@@ -221,8 +221,15 @@ stages:
 
 - stage: 'DeployAndTest'
   displayName: 'Deploy and Test'
-  dependsOn: BuildSQLDatabase
-  condition: in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+  dependsOn: 
+    - Build
+    - BuildSQLDatabase
+  condition: |
+    and
+    (
+      in(dependencies.Build.result, 'Succeeded', 'SucceededWithIssues'),
+      in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+    )
   jobs: 
     - job: 'DeployAndTestJob'
       displayName: 'Deploy (in-agent) and run E2E tests'
@@ -308,8 +315,15 @@ stages:
 
 - stage: 'DeployAndTestDocker'
   displayName: 'Deploy and Test Docker'
-  dependsOn: BuildSQLDatabase
-  condition: in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+  dependsOn: 
+    - Build
+    - BuildSQLDatabase
+  condition: |
+    and
+    (
+      in(dependencies.Build.result, 'Succeeded', 'SucceededWithIssues'),
+      in(dependencies.BuildSQLDatabase.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
+    )
   jobs: 
     - job: 'DeployAndTestDockerJob'
       displayName: 'Deploy Docker container (in-agent) and run E2E tests'
@@ -356,7 +370,6 @@ stages:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
           arguments: 'schooldemorestapi 45'
         displayName: bash - Wait for healthy REST API container
-
 
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
