@@ -25,7 +25,8 @@ namespace Harri.SchoolDemoAPI.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var query = @"INSERT INTO [SchoolDemo].Student VALUES (@Name, @GPA);
+                var query = @"INSERT INTO [SchoolDemo].Student (sName, GPA)
+                              VALUES (@Name, @GPA);
                               SELECT SCOPE_IDENTITY()";
 
                 var sId = (await connection.QueryAsync<int>(query, new { Name = newStudent.Name, GPA = newStudent.GPA })).FirstOrDefault();
