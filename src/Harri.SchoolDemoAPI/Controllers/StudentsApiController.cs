@@ -13,6 +13,7 @@ using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
 using System.Configuration;
 using Harri.SchoolDemoAPI.Results;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -85,16 +86,17 @@ namespace Harri.SchoolDemoAPI.Controllers
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
             var result = await _studentService.UpdateStudent(sId, student);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
 
-            return result.Match<IActionResult>(
-                onSuccess: Ok,
-                onFailure: error => error.Code switch
-                {
-                    StudentErrors.StudentNotFound.ErrorCode => NotFound(),
-                    StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
-                    _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
-                }
-            );
+            return result.MatchError<IActionResult>(error => error.Code switch
+            {
+                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
+                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
+            });
         }
 
         /// <summary>

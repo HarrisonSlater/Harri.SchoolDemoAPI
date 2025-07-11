@@ -1,5 +1,4 @@
 ﻿// See: https://www.milanjovanovic.tech/blog/functional-error-handling-in-dotnet-with-the-result-pattern
-// Extended with array of onFailure
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +12,13 @@ namespace Harri.SchoolDemoAPI.Results
             Func<Error, T> onFailure)
         {
             return result.IsSuccess ? onSuccess() : onFailure(result.Error);
+        }
+
+        public static T MatchError<T>(
+            this Result result,
+            Func<Error, T> errorSwitch)
+        {
+            return errorSwitch(result.Error);
         }
     }
 }
