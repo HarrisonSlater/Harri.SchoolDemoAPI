@@ -47,7 +47,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student/*, byte[] rowVersion*/)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
@@ -57,16 +57,23 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 if (!studentExists)
                 {
-                    return Result.Failure(StudentErrors.StudentNotFound(sId));
+                    return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
                 }
 
                 var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
                                            SET sName = @Name, GPA = @GPA
                                            WHERE sId = @sId";
+                /* and rowVer = @rowVersion*/
 
-                (await connection.QueryAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId })).Any();
-
-                return Result.Success();
+                var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId }));
+                if(updatedRows == 0) {
+                    // The only way this can happen is if this student was changed between studentExistsQuery and studentUpdateQuery 
+                    return Result.Failure(StudentErrors.StudentUpdateConflict.Error(sId));
+                }
+                else
+                {
+                    return Result.Success();
+                }
             }
         }
 
