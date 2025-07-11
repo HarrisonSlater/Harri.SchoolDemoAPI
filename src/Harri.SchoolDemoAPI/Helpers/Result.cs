@@ -1,11 +1,26 @@
 ﻿// See: https://www.milanjovanovic.tech/blog/functional-error-handling-in-dotnet-with-the-result-pattern
+// Extended with generic Value
 using System;
 
 namespace Harri.SchoolDemoAPI.Helpers
 {
+    public class Result<T> : Result
+    {
+        private Result(bool isSuccess, Error error, T value) : base(isSuccess, error)
+        {
+            Value = value;
+        }
+
+        public static Result<T> Success(T value) => new(true, Error.None, value);
+
+        public static Result<T> Failure(Error error, T value = default) => new(false, error, value);
+
+        public T Value { get; private set; }
+    }
+
     public class Result
     {
-        private Result(bool isSuccess, Error error)
+        protected Result(bool isSuccess, Error error)
         {
             if (isSuccess && error != Error.None ||
                 !isSuccess && error == Error.None)
