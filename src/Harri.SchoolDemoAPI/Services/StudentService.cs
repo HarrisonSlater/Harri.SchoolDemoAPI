@@ -1,6 +1,7 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
+using Harri.SchoolDemoAPI.Results;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,8 +26,7 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.GetStudent(sId);
         }
 
-
-        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student)
         {
             return await _studentRepository.UpdateStudent(sId, student);
         }

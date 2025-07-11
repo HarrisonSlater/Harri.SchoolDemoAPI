@@ -90,7 +90,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var success = await _studentRepository.UpdateStudent(sId, studentUpdateDto);
 
             // Assert
-            success.Should().BeTrue();
+            success.IsSuccess.Should().BeTrue();
 
             var updatedStudent = await _studentRepository.GetStudent(sId);
 
@@ -133,7 +133,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var success = await _studentRepository.UpdateStudent(nonExistantSId, studentUpdateDto);
 
             // Assert
-            success.Should().BeFalse();
+            success.IsSuccess.Should().BeFalse();
         }
 
         [Test]

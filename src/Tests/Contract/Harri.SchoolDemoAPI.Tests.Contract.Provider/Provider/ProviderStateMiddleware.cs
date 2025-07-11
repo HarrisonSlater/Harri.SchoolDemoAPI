@@ -4,6 +4,7 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Results;
 using Harri.SchoolDemoAPI.Tests.Common;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -68,7 +69,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(false));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(Result.Failure(StudentErrors.StudentNotFound(0))));
             return Task.CompletedTask;
         }
 
@@ -90,7 +91,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var expectedUpdatedStudent = GetStateObject<UpdateStudentDto>(parameters);
 
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>()))
-            .Returns(Task.FromResult(true))
+            .Returns(Task.FromResult(Result.Success()))
             .Callback<int, UpdateStudentDto>((id, us) =>
             {
                 id.Should().Be(sId?.GetInt32());

@@ -2,7 +2,7 @@
 // Extended with generic Value
 using System;
 
-namespace Harri.SchoolDemoAPI.Helpers
+namespace Harri.SchoolDemoAPI.Results
 {
     public class Result<T> : Result
     {

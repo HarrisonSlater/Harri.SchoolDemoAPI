@@ -1,4 +1,5 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
+using Harri.SchoolDemoAPI.Results;
 using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Repository
@@ -8,7 +9,7 @@ namespace Harri.SchoolDemoAPI.Repository
         Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
         Task<StudentDto?> GetStudent(int sId);
-        Task<bool> UpdateStudent(int sId, UpdateStudentDto newStudent);
+        Task<Result> UpdateStudent(int sId, UpdateStudentDto newStudent);
 
         Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto);
     }

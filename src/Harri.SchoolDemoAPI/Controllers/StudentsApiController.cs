@@ -82,13 +82,13 @@ namespace Harri.SchoolDemoAPI.Controllers
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
             var success = await _studentService.UpdateStudent(sId, student);
-            if (success)
+            if (success.IsSuccess)
             {
-                return Ok(success);
+                return Ok();
             }
             else
             {
-                return NotFound(success);
+                return NotFound();
             }
         }
 

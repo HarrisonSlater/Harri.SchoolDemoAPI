@@ -64,16 +64,16 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Update
-        public async Task<bool?> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
         {
             var restResponse = await UpdateStudentRestResponse(sId, student);
-            return restResponse.Data;
+            return restResponse.IsSuccessStatusCode;
         }
 
-        public async Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student)
+        public async Task<RestResponse> UpdateStudentRestResponse(int sId, UpdateStudentDto student)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student);
-            var restResponse = await _restClient.ExecutePutAsync<bool?>(request);
+            var restResponse = await _restClient.ExecutePutAsync(request);
             return restResponse;
         }
 

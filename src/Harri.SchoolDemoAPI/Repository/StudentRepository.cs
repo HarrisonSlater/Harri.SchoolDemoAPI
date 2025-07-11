@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Harri.SchoolDemoAPI.Models;
 using System;
 using Microsoft.IdentityModel.Tokens;
+using Harri.SchoolDemoAPI.Results;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -45,8 +46,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-
-        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
@@ -56,7 +56,7 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 if (!studentExists)
                 {
-                    return false;
+                    return Result.Failure(StudentErrors.StudentNotFound(sId));
                 }
 
                 var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
@@ -65,7 +65,7 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 (await connection.QueryAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId })).Any();
 
-                return true;
+                return Result.Success();
             }
         }
 

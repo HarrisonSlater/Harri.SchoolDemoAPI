@@ -174,7 +174,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         public async Task UpdateStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndUpdatesStudent(int sId, string? name, decimal? GPA)
         {
             _pact.UponReceiving($"a request to update a student with sId")
-                    .Given("a student with sId exists and will be updated", new UpdateStudentDto() { Name = name, GPA = GPA }, new ("sId", sId.ToString()))
+                    .Given("a student with sId exists and will be updated", new UpdateStudentDto() { Name = name, GPA = GPA }, new("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -183,9 +183,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(true));
+                 .WithStatus(HttpStatusCode.OK);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -231,7 +229,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
-                response.Data.Should().BeNull();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
                 response.ShouldContainErrorMessageForProperty(expectedPropertyError);
@@ -251,9 +248,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(false));
+                 .WithStatus(HttpStatusCode.NotFound);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -261,7 +256,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
-                response.Data.Should().BeFalse();
                 response.StatusCode.Should().Be(HttpStatusCode.NotFound);
             });
         }

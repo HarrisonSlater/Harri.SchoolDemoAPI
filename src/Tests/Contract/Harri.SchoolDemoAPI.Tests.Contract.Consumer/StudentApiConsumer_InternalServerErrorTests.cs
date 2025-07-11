@@ -145,7 +145,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             }
             else
             {
-                responseObject.Should().BeNull();
+                responseObject.Should().BeOneOf(null, false);
             }
         }
     }

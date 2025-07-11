@@ -2443,29 +2443,6 @@
         "path": "/students/4567"
       },
       "response": {
-        "body": {
-          "content": false,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "status": 404
       },
       "type": "Synchronous/HTTP"
@@ -2577,29 +2554,6 @@
         "path": "/students/123"
       },
       "response": {
-        "body": {
-          "content": true,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "status": 200
       },
       "type": "Synchronous/HTTP"
@@ -2651,29 +2605,6 @@
         "path": "/students/4567"
       },
       "response": {
-        "body": {
-          "content": true,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "status": 200
       },
       "type": "Synchronous/HTTP"

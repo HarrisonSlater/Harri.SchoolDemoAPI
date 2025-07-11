@@ -16,7 +16,7 @@ namespace Harri.SchoolDemoAPI.Client
         Task<RestResponse<PagedList<StudentDto>>> GetStudentsRestResponse(int? sId = null, string? name = null, GPAQueryDto? gpaQuery = null, SortOrder? orderBy = null, string? sortColumn = null, int? page = null, int? pageSize = null);
         Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
         Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student);
-        Task<bool?> UpdateStudent(int sId, UpdateStudentDto student);
-        Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student);
+        Task<bool> UpdateStudent(int sId, UpdateStudentDto student);
+        Task<RestResponse> UpdateStudentRestResponse(int sId, UpdateStudentDto student);
     }
 }
