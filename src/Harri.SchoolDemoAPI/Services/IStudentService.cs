@@ -11,8 +11,8 @@ namespace Harri.SchoolDemoAPI.Services
         Task<int> AddStudent(NewStudentDto newStudent);
         Task<bool?> DeleteStudent(int sId);
         Task<StudentDto?> GetStudent(int sId);
-        Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student);
-        Task<Result> UpdateStudent(int sId, UpdateStudentDto student);
+        Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion);
+        Task<Result> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion);
 
         Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto);
     }

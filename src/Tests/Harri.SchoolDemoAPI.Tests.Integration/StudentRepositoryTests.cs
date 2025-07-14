@@ -2,6 +2,7 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Repository;
+using Harri.SchoolDemoAPI.Results;
 using Harri.SchoolDemoAPI.Tests.Integration.TestBase;
 using Microsoft.Data.SqlClient;
 
@@ -49,7 +50,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             var student = await _studentRepository.GetStudent(id);
             student.Should().NotBeNull();
-            student.Should().BeEquivalentTo(expectedStudent);
+            student!.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(s => s.RowVersion));
+            student!.RowVersion.Should().NotBeNull();
 
             await CleanUpTestStudent(student!.SId!.Value);
         }
@@ -68,14 +70,25 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             await action.Should().ThrowAsync<ArgumentNullException>();
         }
 
+        private async Task<StudentDto> CreateStudentAndGetRowVersion(NewStudentDto newStudentDto)
+        {
+            var sId = await _studentRepository.AddStudent(newStudentDto);
+            sId.Should().BeGreaterThan(0);
+
+            var student = await _studentRepository.GetStudent(sId);
+
+            if (student?.RowVersion is null) throw new ArgumentNullException("RowVersion cannot be null for test");
+            if (student?.SId is null) throw new ArgumentNullException("sId cannot be null for test");
+            return student;
+        }
+
         [TestCase("New Test Student 2 - Updated Name", 3.75)]
         [TestCase("New Test Student 2 - Updated Name", null)]
         public async Task UpdateStudent_ShouldUpdateExistingStudent(string? name, decimal? gpa)
         {
             // Arrange 
-            var newStudent = new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m };
-            var sId = await _studentRepository.AddStudent(newStudent);
-            sId.Should().BeGreaterThan(0);
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
+            int sId = student.SId!.Value;
 
             var studentUpdateDto = new UpdateStudentDto() { Name = name, GPA = gpa };
 
@@ -87,7 +100,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             };
 
             // Act
-            var success = await _studentRepository.UpdateStudent(sId, studentUpdateDto);
+            var success = await _studentRepository.UpdateStudent(sId, studentUpdateDto, student.RowVersion!);
 
             // Assert
             success.IsSuccess.Should().BeTrue();
@@ -95,7 +108,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var updatedStudent = await _studentRepository.GetStudent(sId);
 
             updatedStudent.Should().NotBeNull();
-            updatedStudent.Should().BeEquivalentTo(expectedStudent);
+            updatedStudent.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(x => x.RowVersion));
+            updatedStudent!.RowVersion.Should().NotBeNull();
 
             await CleanUpTestStudent(sId);
         }
@@ -103,17 +117,16 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         [TestCase(null, null)]
         [TestCase(null, 3.75)]
 
-        public async Task UpdateStudent_ShouldThrow_WhenUpdatingExistingStudent(string? name, decimal? gpa)
+        public async Task UpdateStudent_ShouldThrow_WhenIncorrectlyUpdatingExistingStudent(string? name, decimal? gpa)
         {
             // Arrange 
-            var newStudent = new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m };
-            var sId = await _studentRepository.AddStudent(newStudent);
-            sId.Should().BeGreaterThan(0);
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
+            int sId = student.SId!.Value;
 
             var studentUpdateDto = new UpdateStudentDto() { Name = name, GPA = gpa };
 
             // Act
-            var action = async () => await _studentRepository.UpdateStudent(sId, studentUpdateDto);
+            var action = async () => await _studentRepository.UpdateStudent(sId, studentUpdateDto, student.RowVersion!);
 
             // Assert
             await action.Should().ThrowAsync<SqlException>();
@@ -122,7 +135,24 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
         }
 
         [Test]
-        public async Task UpdateStudent_ShouldReturnFalse_WhenUpdatingNonExistantStudent()
+        public async Task UpdateStudent_ShouldReturnFailure_WhenUpdatingStudentWithNonMatchingRowVersion()
+        {
+            // Arrange 
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 3", GPA = 3.71m });
+            int sId = student.SId!.Value;
+
+            var studentUpdateDto = new UpdateStudentDto() { Name = "Test Student 3 - Updated" };
+
+            // Act
+            var result = await _studentRepository.UpdateStudent(sId, studentUpdateDto, new byte[8]);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo(StudentErrors.StudentRowVersionMismatch.Error(sId));
+        }
+
+        [Test]
+        public async Task UpdateStudent_ShouldReturnFailure_WhenUpdatingNonExistantStudent()
         {
             // Arrange 
             var nonExistantSId = -1001;
@@ -130,10 +160,11 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var studentUpdateDto = new UpdateStudentDto() { Name = "Test Student" };
 
             // Act
-            var success = await _studentRepository.UpdateStudent(nonExistantSId, studentUpdateDto);
+            var result = await _studentRepository.UpdateStudent(nonExistantSId, studentUpdateDto, new byte[8]);
 
             // Assert
-            success.IsSuccess.Should().BeFalse();
+            result.IsSuccess.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo(StudentErrors.StudentNotFound.Error(nonExistantSId));
         }
 
         [Test]

@@ -38,7 +38,7 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var query = @"SELECT sID as sId, sName as Name, GPA 
+                var query = @"SELECT sID as SId, sName as Name, GPA, rowVer as RowVersion
                               FROM [SchoolDemo].Student
                               WHERE sId = @sId";
 
@@ -47,25 +47,30 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student/*, byte[] rowVersion*/)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var studentExistsQuery = @"(SELECT * FROM [SchoolDemo].Student WHERE sId = @sId)";
+                var studentExistsQuery = @"(SELECT rowVer FROM [SchoolDemo].Student WHERE sId = @sId)";
 
-                bool studentExists = (await connection.QueryAsync(studentExistsQuery, new { sId = sId })).Any();
+                var studentRowVer = (await connection.QuerySingleOrDefaultAsync<byte[]>(studentExistsQuery, new { sId = sId }));
 
-                if (!studentExists)
+                if (studentRowVer is null)
                 {
                     return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
+                }
+                else if (!studentRowVer.SequenceEqual(rowVersion))
+                {
+                    return Result.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
                 }
 
                 var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
                                            SET sName = @Name, GPA = @GPA
-                                           WHERE sId = @sId";
+                                           WHERE sId = @sId
+                                           AND rowVer = @RowVersion";
                 /* and rowVer = @rowVersion*/
 
-                var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId }));
+                var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId, RowVersion = rowVersion}));
                 if(updatedRows == 0) {
                     // The only way this can happen is if this student was changed between studentExistsQuery and studentUpdateQuery 
                     return Result.Failure(StudentErrors.StudentUpdateConflict.Error(sId));

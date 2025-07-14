@@ -26,9 +26,9 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.GetStudent(sId);
         }
 
-        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
-            return await _studentRepository.UpdateStudent(sId, student);
+            return await _studentRepository.UpdateStudent(sId, student, rowVersion);
         }
 
         public async Task<bool?> DeleteStudent(int sId)
@@ -36,13 +36,13 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.DeleteStudent(sId);
         }
 
-        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
+        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
         {
             var existingStudent = await _studentRepository.GetStudent(sId);
             if (existingStudent is not null)
             {
                 student.ApplyChangesTo(existingStudent);
-                await _studentRepository.UpdateStudent(sId, existingStudent.AsUpdateStudentDto());
+                await _studentRepository.UpdateStudent(sId, existingStudent.AsUpdateStudentDto(), rowVersion);
                 return existingStudent;
             }
             else

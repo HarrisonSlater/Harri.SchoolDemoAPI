@@ -10,10 +10,9 @@ using Harri.SchoolDemoAPI.Services;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
-using System.Configuration;
 using Harri.SchoolDemoAPI.Results;
 using System;
-using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -65,6 +64,8 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
+            //TODO contract tests for etag
+
             var result = await _studentService.GetStudent(sId);
             if (result is null) {
                 return NotFound();
@@ -85,7 +86,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "UpdateStudent")]
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
-            var result = await _studentService.UpdateStudent(sId, student);
+            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
+
+            var result = await _studentService.UpdateStudent(sId, student, rowVersion);
             if (result.IsSuccess)
             {
                 return Ok();
@@ -113,12 +116,14 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "PatchStudent")]
         public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
         {
+            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);// TODO
+
             if (!student.OptionalName.HasValue && !student.OptionalGPA.HasValue)
             {
                 return BadRequest();
             }
 
-            var patchedStudent = await _studentService.PatchStudent(sId, student);
+            var patchedStudent = await _studentService.PatchStudent(sId, student, rowVersion);
             if (patchedStudent is not null)
             {
                 return Ok(patchedStudent);

@@ -204,7 +204,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             IDictionary<string, object?> expectedErrors = new ExpandoObject();
             expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
 
-            _pact.UponReceiving($"a bad request to update a student with sId and invalid name {testCase}")
+            _pact.UponReceiving($"a bad request to update a student with sId {testCase}")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -235,11 +235,18 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        [TestCase(4567, "Mocky Mockson", 3.81)]
-        public async Task UpdateStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
+        [TestCase("a student with sId does not exist", HttpStatusCode.NotFound)]
+        [TestCase("a student with sId exists but a race condition occurs at the database level", HttpStatusCode.Conflict)]
+        [TestCase("a student with sId exists but was updated before us", HttpStatusCode.PreconditionFailed)]
+        [TestCase("a student with sId exists but our request is missing an ETag", HttpStatusCode.PreconditionRequired)]
+        public async Task UpdateStudent_WhenCalledWithNonExistantStudentId_ReturnsStatusCode(string given, HttpStatusCode expectedStatusCode)
         {
-            _pact.UponReceiving($"a request to update a non-existant student with sId {sId} and invalid name")
-                .Given("a student with sId does not exist")
+            var sId = 4567;
+            var name = "Mocky Mockson";
+            var GPA = 3.81m;
+
+            _pact.UponReceiving($"a request to update a student with sId {sId}")
+                .Given(given)
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
                     .WithHeader("Content-Type", "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
@@ -248,7 +255,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound);
+                 .WithStatus(expectedStatusCode);
 
             await _pact.VerifyAsync(async ctx =>
             {
@@ -256,7 +263,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
 
                 // Client Assertions
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                response.StatusCode.Should().Be(expectedStatusCode);
             });
         }
 

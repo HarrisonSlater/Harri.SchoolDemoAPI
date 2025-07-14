@@ -44,18 +44,19 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             // Arrange
             var sid = 123;
+            var rowVersion = new byte[] { };
 
             _mockStudentRepo.Setup(s => s.GetStudent(123)).ReturnsAsync(existingStudent);
 
             // Act
-            var response = await _studentService.PatchStudent(sid, patchDto);
+            var response = await _studentService.PatchStudent(sid, patchDto, rowVersion);
 
             // Assert
             response.Should().NotBeNull();
 
             response.Should().BeEquivalentTo(expectedPatchedStudent);
 
-            _mockStudentRepo.Verify(x => x.UpdateStudent(sid, It.Is<UpdateStudentDto>(s => s.Name == existingStudent.Name && s.GPA == existingStudent.GPA)));
+            _mockStudentRepo.Verify(x => x.UpdateStudent(sid, It.Is<UpdateStudentDto>(s => s.Name == existingStudent.Name && s.GPA == existingStudent.GPA), rowVersion));
         }
 
         [Test]
@@ -63,11 +64,12 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             // Arrange
             var sid = 123;
+            var rowVersion = new byte[] { };
 
             _mockStudentRepo.Setup(s => s.GetStudent(123)).ReturnsAsync((StudentDto?)null);
 
             // Act
-            var response = await _studentService.PatchStudent(sid, new StudentPatchDto() { Name = "Student Name Patch"});
+            var response = await _studentService.PatchStudent(sid, new StudentPatchDto() { Name = "Student Name Patch"}, rowVersion);
 
             // Assert
             response.Should().BeNull();

@@ -17,5 +17,11 @@ namespace Harri.SchoolDemoAPI.Results
             public const string ErrorCode = "StudentUpdateConflict";
             public static Error Error(int id) => new(ErrorCode, $"Student {id} updated by another user");
         }
+
+        public static class StudentRowVersionMismatch
+        {
+            public const string ErrorCode = "StudentRowVersionMismatch";
+            public static Error Error(int id) => new(ErrorCode, $"Student {id} row version mismatch");
+        }
     }
 }
