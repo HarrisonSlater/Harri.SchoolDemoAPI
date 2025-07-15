@@ -51,7 +51,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var student = await _studentRepository.GetStudent(id);
             student.Should().NotBeNull();
             student!.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(s => s.RowVersion));
-            student!.RowVersion.Should().NotBeNull();
+            student!.RowVersion.Should().NotBeNullOrEmpty();
 
             await CleanUpTestStudent(student!.SId!.Value);
         }
@@ -82,6 +82,17 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             return student;
         }
 
+        private async Task AssertRowVersionIsUnmodified(StudentDto student)
+        {
+            var previousVersion = student.RowVersion;
+
+            var newVersion = (await _studentRepository.GetStudent(student.SId!.Value))?.RowVersion;
+
+            previousVersion.Should().NotBeNullOrEmpty();
+            newVersion.Should().NotBeNullOrEmpty();
+            previousVersion.Should().BeEquivalentTo(newVersion);
+        }
+
         [TestCase("New Test Student 2 - Updated Name", 3.75)]
         [TestCase("New Test Student 2 - Updated Name", null)]
         public async Task UpdateStudent_ShouldUpdateExistingStudent(string? name, decimal? gpa)
@@ -109,7 +120,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             updatedStudent.Should().NotBeNull();
             updatedStudent.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(x => x.RowVersion));
-            updatedStudent!.RowVersion.Should().NotBeNull();
+            updatedStudent!.RowVersion.Should().NotBeNullOrEmpty()
+                .And.NotBeEquivalentTo(student.RowVersion);
 
             await CleanUpTestStudent(sId);
         }
@@ -130,6 +142,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
             // Assert
             await action.Should().ThrowAsync<SqlException>();
+            await AssertRowVersionIsUnmodified(student);
 
             await CleanUpTestStudent(sId);
         }
@@ -149,6 +162,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Assert
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeEquivalentTo(StudentErrors.StudentRowVersionMismatch.Error(sId));
+            await AssertRowVersionIsUnmodified(student);
         }
 
         [Test]
@@ -166,6 +180,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeEquivalentTo(StudentErrors.StudentNotFound.Error(nonExistantSId));
         }
+        //TODO PATCH tests for updating students 
 
         [Test]
         public async Task DeleteStudent_ShouldDeleteStudent()
