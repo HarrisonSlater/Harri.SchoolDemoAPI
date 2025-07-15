@@ -53,6 +53,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var sId = await _client.AddStudent(newStudent);
             sId.Should().NotBeNull();
 
+            var retrievedStudent = await _client.GetStudent(sId.Value);
+
             var studentUpdateDto = new UpdateStudentDto() { Name = "New Test Student 2 - Updated Name", GPA = 3.75m };
 
             var expectedStudent = new StudentDto()
@@ -63,7 +65,7 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             };
 
             // Act
-            var success = await _client.UpdateStudent(sId.Value, studentUpdateDto);
+            var success = await _client.UpdateStudent(sId.Value, studentUpdateDto, retrievedStudent.RowVersion!);
 
             // Assert
             success.Should().BeTrue();
@@ -102,8 +104,9 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             sId.Should().NotBeNull();
             expectedStudent.SId = sId;
 
+            var retrievedStudent = await _client.GetStudent(sId.Value);
             // Act
-            var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto);
+            var patchedStudent = await _client.PatchStudent(sId.Value, studentPatchDto, retrievedStudent.RowVersion!);
             patchedStudent.Should().NotBeNull();
 
             // Assert
