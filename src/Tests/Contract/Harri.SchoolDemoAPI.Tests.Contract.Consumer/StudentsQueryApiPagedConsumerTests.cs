@@ -5,6 +5,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Common;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
+using Microsoft.Net.Http.Headers;
 using RestSharp;
 using System.Net;
 using System.Text.Json;
@@ -32,7 +33,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(page: page, pageSize: pageSize)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedStudentsAcrossMultiplePagesJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -123,7 +124,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(sId, name, gpaQuery, orderBy.ToString(), sortColumn, page, pageSize)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>

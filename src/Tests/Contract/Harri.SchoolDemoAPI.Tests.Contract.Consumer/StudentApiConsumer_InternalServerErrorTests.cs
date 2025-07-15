@@ -10,7 +10,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
     public class StudentApiConsumer_InternalServerErrorTests : ConsumerTestBase
     {
-        // 500 Server error cases
+        // These tests are to ensure that the client does not throw an exception when the server returns a 500 error.
         private static IEnumerable<TestCaseData> StudentApiClientOperationsTestCases()
         {
             var sId = 123;
@@ -56,7 +56,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactRequest = _pact.UponReceiving($"a request to {operationName}")
                         .Given("the api returns a 500 internal server error")
                         .WithRequest(operationMethod, operationRoute)
-                        .WithHeader("Content-Type", "application/json; charset=utf-8")
+                        .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                         .WithJsonBody(jsonBody)
                     .WillRespond()
                     .WithStatus(HttpStatusCode.InternalServerError);
@@ -86,7 +86,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var pactRequest = _pact.UponReceiving($"a request to {operationName}")
                         .Given("the api returns a 500 internal server error")
                         .WithRequest(operationMethod, operationRoute)
-                        .WithHeader("Content-Type", "application/json; charset=utf-8")
+                        .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                         .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded) 
                         .WithJsonBody(jsonBody)
                     .WillRespond()

@@ -2,6 +2,7 @@
 using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.HealthCheckClient;
 using HealthChecks.UI.Core;
+using Microsoft.Net.Http.Headers;
 using PactNet.Matchers;
 using System.Net;
 
@@ -17,7 +18,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Get, $"/health")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json")
+                 .WithHeader(HeaderNames.ContentType, "application/json")
                  .WithJsonBody(new
                  {
                      status = Match.Equality("Healthy"),
@@ -63,7 +64,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Get, $"/health")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.ServiceUnavailable)
-                 .WithHeader("Content-Type", "application/json")
+                 .WithHeader(HeaderNames.ContentType, "application/json")
                  .WithJsonBody(new
                  {
                      status = Match.Equality("Unhealthy"),

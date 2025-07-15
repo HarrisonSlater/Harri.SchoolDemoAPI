@@ -258,6 +258,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
 

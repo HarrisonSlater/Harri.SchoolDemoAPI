@@ -40,7 +40,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             var student = await _client.GetStudent(id.Value);
             student.Should().NotBeNull();
-            student.Should().BeEquivalentTo(expectedStudent);
+            student.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(s => s.RowVersion));
+            student.RowVersion.Should().NotBeNullOrEmpty();
 
             await CleanUpTestStudent(student.SId.Value);
         }
@@ -73,7 +74,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
             var updatedStudent = await _client.GetStudent(sId.Value);
 
             updatedStudent.Should().NotBeNull();
-            updatedStudent.Should().BeEquivalentTo(expectedStudent);
+            updatedStudent.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(s => s.RowVersion));
+            updatedStudent.RowVersion.Should().NotBeNullOrEmpty();
 
             await CleanUpTestStudent(sId.Value);
         }
@@ -114,7 +116,8 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
 
             var student = await _client.GetStudent(sId.Value);
             student.Should().NotBeNull();
-            student.Should().BeEquivalentTo(expectedStudent);
+            student.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(s => s.RowVersion));
+            student.RowVersion.Should().NotBeNullOrEmpty();
 
             await CleanUpTestStudent(student.SId.Value);
         }

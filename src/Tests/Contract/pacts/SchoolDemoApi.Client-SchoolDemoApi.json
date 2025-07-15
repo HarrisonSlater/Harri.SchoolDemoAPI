@@ -2083,6 +2083,70 @@
       "type": "Synchronous/HTTP"
     },
     {
+      "description": "a request to patch a student",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with rest response",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the api returns a 500 internal server error"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "name": "Test Student"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "method": "PATCH",
+        "path": "/students/123"
+      },
+      "response": {
+        "status": 500
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
       "description": "a request to patch a student with sId",
       "pending": false,
       "providerStates": [
