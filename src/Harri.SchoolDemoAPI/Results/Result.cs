@@ -4,16 +4,22 @@ using System;
 
 namespace Harri.SchoolDemoAPI.Results
 {
-    public class Result<T> : Result
+    public class ResultWith<T> : Result
     {
-        private Result(bool isSuccess, Error error, T value) : base(isSuccess, error)
+        private ResultWith(bool isSuccess, Error error, T value) : base(isSuccess, error)
         {
             Value = value;
         }
 
-        public static Result<T> Success(T value) => new(true, Error.None, value);
+        private ResultWith(Result result) : base(result.IsSuccess, result.Error) { }
 
-        public static Result<T> Failure(Error error, T value = default) => new(false, error, value);
+
+        public static ResultWith<T> Success(T value) => new(true, Error.None, value);
+
+        public static ResultWith<T> Failure(Error error, T value = default) => new(false, error, value);
+
+        public static ResultWith<T> FromResult(Result result) => new(result);
+
 
         public T Value { get; private set; }
     }

@@ -64,12 +64,13 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
-            //TODO contract tests for etag
-
             var result = await _studentService.GetStudent(sId);
             if (result is null) {
                 return NotFound();
             }
+
+            Response.Headers[HeaderNames.ETag] = Convert.ToBase64String(result.RowVersion);
+
             return new ObjectResult(result);
         }
 
@@ -82,10 +83,17 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
+        /// <response code="428">PreconditionRequired, If-Match header missing</response>
+        /// <response code="412">PreconditionFailed, when If-Match header doesn't match retrieved user version</response>
         [HttpPut("{sId}")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
+            if (Request.Headers[HeaderNames.IfMatch].Count == 0)
+            {
+                return StatusCode(StatusCodes.Status428PreconditionRequired);
+            }
+
             var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
 
             var result = await _studentService.UpdateStudent(sId, student, rowVersion);
@@ -98,6 +106,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             {
                 StudentErrors.StudentNotFound.ErrorCode => NotFound(),
                 StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
                 _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
             });
         }
@@ -112,26 +121,38 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid request supplied</response>
         /// <response code="404">Student not found</response>
+        /// <response code="428">PreconditionRequired, If-Match header missing</response>
+        /// <response code="412">PreconditionFailed, when If-Match header doesn't match retrieved user version</response>
         [HttpPatch("{sId}")]
         [SwaggerOperation(OperationId = "PatchStudent")]
         public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
         {
-            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);// TODO
+            if (Request.Headers[HeaderNames.IfMatch].Count == 0)
+            {
+                return StatusCode(StatusCodes.Status428PreconditionRequired);
+            }
+
+            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
 
             if (!student.OptionalName.HasValue && !student.OptionalGPA.HasValue)
             {
                 return BadRequest();
             }
 
-            var patchedStudent = await _studentService.PatchStudent(sId, student, rowVersion);
-            if (patchedStudent is not null)
+            var patchedStudentResult = await _studentService.PatchStudent(sId, student, rowVersion);
+            if (patchedStudentResult.IsSuccess)
             {
-                return Ok(patchedStudent);
+                return Ok(patchedStudentResult.Value);
             }
-            else
+            
+            //TODO refactor
+            return patchedStudentResult.MatchError<IActionResult>(error => error.Code switch
             {
-                return NotFound();
-            }
+                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
+                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
+                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
+            });
         }
 
         /// <summary>

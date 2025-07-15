@@ -82,6 +82,20 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
+        //TODO refactor to single using statement
+        //TODO integration test this
+        public async Task<ResultWith<StudentDto>> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
+        {
+            var existingStudent = await GetStudent(sId);
+
+            if (existingStudent is null) return ResultWith<StudentDto>.Failure(StudentErrors.StudentNotFound.Error(sId));
+            if (!existingStudent.RowVersion.SequenceEqual(rowVersion)) return ResultWith<StudentDto>.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
+
+            student.ApplyChangesTo(existingStudent);
+            await UpdateStudent(sId, existingStudent.AsUpdateStudentDto(), rowVersion);
+            return ResultWith<StudentDto>.Success(existingStudent);
+        }
+
         public async Task<bool?> DeleteStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())

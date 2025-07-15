@@ -3,6 +3,8 @@ using Harri.SchoolDemoAPI.Client;
 using System.Net;
 using Harri.SchoolDemoAPI.Models.Dto;
 using RestSharp;
+using Harri.SchoolDemoAPI.Tests.Common;
+using Microsoft.Net.Http.Headers;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -39,17 +41,12 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         {
             var sId = 123;
             var sName = "Test Student";
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
             var jsonBody = new { name = "Test Student", GPA = (decimal?)null };
             var patchJsonBody = new { name = "Test Student" };
 
             yield return new TestCaseData((IStudentApi c) => c.AddStudent(new NewStudentDto() { Name = sName }), HttpMethod.Post, "/students/", "add a student", jsonBody);
             yield return new TestCaseData((IStudentApi c) => c.AddStudentRestResponse(new NewStudentDto() { Name = sName }), HttpMethod.Post, "/students/", "add a student with rest response", jsonBody);
-
-            yield return new TestCaseData((IStudentApi c) => c.PatchStudent(sId, new StudentPatchDto() { Name = sName }), HttpMethod.Patch, $"/students/{sId}", "patch a student", patchJsonBody);
-            yield return new TestCaseData((IStudentApi c) => c.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = sName }), HttpMethod.Patch, $"/students/{sId}", "patch a student with rest response", patchJsonBody);
-
-            yield return new TestCaseData((IStudentApi c) => c.UpdateStudent(sId, new UpdateStudentDto() { Name = sName }), HttpMethod.Put, $"/students/{sId}", "update a student", jsonBody);
-            yield return new TestCaseData((IStudentApi c) => c.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = sName }), HttpMethod.Put, $"/students/{sId}", "update a student with rest response", jsonBody);
         }
 
         [TestCaseSource(nameof(WithBody_StudentApiClientOperationsTestCases))]
@@ -60,6 +57,37 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                         .Given("the api returns a 500 internal server error")
                         .WithRequest(operationMethod, operationRoute)
                         .WithHeader("Content-Type", "application/json; charset=utf-8")
+                        .WithJsonBody(jsonBody)
+                    .WillRespond()
+                    .WithStatus(HttpStatusCode.InternalServerError);
+
+            await VerifyClientOperation(clientOperation);
+        }
+
+        private static IEnumerable<TestCaseData> WithBodyAndHeader_StudentApiClientOperationsTestCases()
+        {
+            var sId = 123;
+            var sName = "Test Student";
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+            var jsonBody = new { name = "Test Student", GPA = (decimal?)null };
+            var patchJsonBody = new { name = "Test Student" };
+
+            yield return new TestCaseData((IStudentApi c) => c.PatchStudent(sId, new StudentPatchDto() { Name = sName }, rowVersion), HttpMethod.Patch, $"/students/{sId}", "patch a student", patchJsonBody);
+            yield return new TestCaseData((IStudentApi c) => c.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = sName }, rowVersion), HttpMethod.Patch, $"/students/{sId}", "patch a student with rest response", patchJsonBody);
+
+            yield return new TestCaseData((IStudentApi c) => c.UpdateStudent(sId, new UpdateStudentDto() { Name = sName }, rowVersion), HttpMethod.Put, $"/students/{sId}", "update a student", jsonBody);
+            yield return new TestCaseData((IStudentApi c) => c.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = sName }, rowVersion), HttpMethod.Put, $"/students/{sId}", "update a student with rest response", jsonBody);
+        }
+
+        [TestCaseSource(nameof(WithBodyAndHeader_StudentApiClientOperationsTestCases))]
+        public async Task StudentApiClientOperations_WhenCalled_WithBodyAndIfMatchHeader_AndServiceReturns500_DoNotThrow(Func<IStudentApi, dynamic> clientOperation,
+           HttpMethod operationMethod, string operationRoute, string operationName, object jsonBody)
+        {
+            var pactRequest = _pact.UponReceiving($"a request to {operationName}")
+                        .Given("the api returns a 500 internal server error")
+                        .WithRequest(operationMethod, operationRoute)
+                        .WithHeader("Content-Type", "application/json; charset=utf-8")
+                        .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded) 
                         .WithJsonBody(jsonBody)
                     .WillRespond()
                     .WithStatus(HttpStatusCode.InternalServerError);
@@ -95,6 +123,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             yield return new TestCaseData((IStudentApi c) => c.DeleteStudent(sId), HttpMethod.Delete, $"/students/{sId}", "delete a student");
         }
 
+        //TODO refactor these
         [TestCaseSource(nameof(BoolResponse_StudentApiClientOperationsTestCases))]
         public async Task BoolResponse_StudentApiClientOperations_WhenCalled_AndServiceReturns500_DoNotThrow(Func<IStudentApi, dynamic> clientOperation,
             HttpMethod operationMethod, string operationRoute, string operationName)
@@ -124,7 +153,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        public async Task VerifyClientOperation(Func<IStudentApi, dynamic> clientOperation)
+        private async Task VerifyClientOperation(Func<IStudentApi, dynamic> clientOperation)
         {
             await _pact.VerifyAsync(async ctx =>
             {
@@ -136,7 +165,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        public void AssertResponseObject(object? responseObject)
+        private void AssertResponseObject(object? responseObject)
         {
             if (responseObject is RestResponse restResponse)
             {

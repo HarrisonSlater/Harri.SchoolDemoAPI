@@ -10,6 +10,7 @@ namespace Harri.SchoolDemoAPI.Repository
         Task<bool?> DeleteStudent(int sId);
         Task<StudentDto?> GetStudent(int sId);
         Task<Result> UpdateStudent(int sId, UpdateStudentDto newStudent, byte[] rowVersion);
+        Task<ResultWith<StudentDto>> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion);
 
         Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto);
     }

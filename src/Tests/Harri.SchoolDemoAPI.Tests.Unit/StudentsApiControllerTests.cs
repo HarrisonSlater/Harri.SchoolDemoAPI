@@ -1,8 +1,8 @@
 using FluentAssertions;
 using Harri.SchoolDemoAPI.Controllers;
 using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -19,6 +19,9 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
         {
             _mockStudentService = new Mock<IStudentService>();
             _controller = new StudentsApiController(_mockStudentService.Object);
+
+            _controller.ControllerContext = new ControllerContext();
+            _controller.ControllerContext.HttpContext = new DefaultHttpContext();
         }
 
         [TestCase(null)]

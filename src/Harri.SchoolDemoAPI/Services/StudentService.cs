@@ -1,12 +1,11 @@
 ﻿using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Repository;
 using Harri.SchoolDemoAPI.Results;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Harri.SchoolDemoAPI.Services
 {
+    //TODO remove this class and use the repository directly in the controller
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
@@ -36,19 +35,9 @@ namespace Harri.SchoolDemoAPI.Services
             return await _studentRepository.DeleteStudent(sId);
         }
 
-        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
+        public async Task<ResultWith<StudentDto>> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
         {
-            var existingStudent = await _studentRepository.GetStudent(sId);
-            if (existingStudent is not null)
-            {
-                student.ApplyChangesTo(existingStudent);
-                await _studentRepository.UpdateStudent(sId, existingStudent.AsUpdateStudentDto(), rowVersion);
-                return existingStudent;
-            }
-            else
-            {
-                return null;
-            }
+             return await _studentRepository.PatchStudent(sId, student, rowVersion);
         }
 
         public async Task<PagedList<StudentDto>> GetStudents(GetStudentsQueryDto getStudentsQueryDto)

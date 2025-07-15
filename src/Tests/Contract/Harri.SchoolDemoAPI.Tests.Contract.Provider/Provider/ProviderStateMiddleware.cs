@@ -42,10 +42,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
                 ["a student with sId {sIdNew} will be created"] = EnsureStudentWillBeCreated,
                 ["a student with sId exists and will be updated"] = EnsureStudentWillBeUpdated,
                 ["a student with sId will be updated"] = EnsureStudentWillBeUpdated,
+                ["a student with sId will be patched"] = EnsureStudentWillBePatched,
                 ["no student will be updated"] = EnsureNoStudentWillBeUpdated,
                 ["a student with sId exists but a race condition occurs at the database level"] = EnsureUpdatingStudentReturnsFailureResultConflict,
                 ["a student with sId exists but was updated before us"] = EnsureUpdatingStudentReturnsFailureResultRowVersionMismatch,
-                ["a student with sId exists but our request is missing an ETag"] = EnsureNoStudentWillBeUpdated,
+                ["a student with sId exists but our request is missing an If-Match header"] = EnsureNoStudentWillBeUpdated,
                 ["no student will be deleted"] = EnsureNoStudentWillBeDeleted,
                 ["a student with sId exists and will be deleted"] = EnsureStudentWillBeDeleted,
                 ["a student with sId does not exist and will not be deleted"] = EnsureStudentDoesNotExistAndWillBeNotDeleted,
@@ -64,6 +65,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
             var studentToMock = GetStateObject<StudentDto>(parameters);
+            studentToMock.RowVersion = MockStudentTestFixture.MockRowVersion;
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
             return Task.CompletedTask;
@@ -93,11 +95,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             return Task.CompletedTask;
         }
 
-        //TODO this method could be refactored
         private void EnsureUpdatingStudentReturnsFailureResult(Result resultToReturn)
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(resultToReturn));
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(ResultWith<StudentDto>.FromResult(resultToReturn)));
         }
 
         private Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
@@ -113,10 +115,28 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>()))
             .Returns(Task.FromResult(Result.Success()))
-            .Callback<int, UpdateStudentDto>((id, us) =>
+            .Callback<int, UpdateStudentDto, byte[]>((id, us, rowVersion) =>
             {
                 id.Should().Be(sId?.GetInt32());
                 us.Should().BeEquivalentTo(expectedUpdatedStudent);
+                rowVersion.Should().BeEquivalentTo(MockStudentTestFixture.MockRowVersion);
+            });
+
+            return Task.CompletedTask;
+        }
+        private Task EnsureStudentWillBePatched(IDictionary<string, object> parameters)
+        {
+            var sIdString = (JsonElement?)parameters["sId"];
+            var sId = sIdString?.GetInt32();
+            var expectedUpdatedStudent = GetStateObject<StudentPatchDto>(parameters);
+
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>()))
+            .Returns(Task.FromResult(ResultWith<StudentDto>.Success(new StudentDto() { SId = sId, Name = expectedUpdatedStudent.Name, GPA = expectedUpdatedStudent.GPA })))
+            .Callback<int, StudentPatchDto, byte[]>((id, patchDto, rowVersion) =>
+            {
+                id.Should().Be(sId);
+                patchDto.Should().BeEquivalentTo(expectedUpdatedStudent);
+                rowVersion.Should().BeEquivalentTo(MockStudentTestFixture.MockRowVersion);
             });
 
             return Task.CompletedTask;
