@@ -1,5 +1,5 @@
 ﻿// See: https://www.milanjovanovic.tech/blog/functional-error-handling-in-dotnet-with-the-result-pattern
-// Extended with generic Value
+// Extended with generic Value in ResultWith<T> 
 using System;
 
 namespace Harri.SchoolDemoAPI.Results
