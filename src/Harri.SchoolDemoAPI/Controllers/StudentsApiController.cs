@@ -102,13 +102,7 @@ namespace Harri.SchoolDemoAPI.Controllers
                 return Ok();
             }
 
-            return result.MatchError<IActionResult>(error => error.Code switch
-            {
-                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
-                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
-                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
-                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
-            });
+            return MatchError(result);
         }
 
         /// <summary>
@@ -144,19 +138,10 @@ namespace Harri.SchoolDemoAPI.Controllers
             {
                 return Ok(patchedStudentResult.Value);
             }
-            
-            //TODO refactor
-            return patchedStudentResult.MatchError<IActionResult>(error => error.Code switch
-            {
-                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
-                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
-                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
-                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
-            });
+
+            return MatchError(patchedStudentResult);
         }
 
-        /// <summary>
-        /// Delete a student
         /// </summary>
         /// <remarks>Delete a student by sId</remarks>
         /// <param name="sId">ID of student to delete</param>
@@ -181,6 +166,17 @@ namespace Harri.SchoolDemoAPI.Controllers
             {
                 return NotFound();
             }
+        }
+
+        private IActionResult MatchError(Result result)
+        {
+            return result.MatchError<IActionResult>(error => error.Code switch
+            {
+                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
+                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
+                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
+            });
         }
 
         /// <summary>
