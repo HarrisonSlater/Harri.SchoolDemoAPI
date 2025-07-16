@@ -82,7 +82,6 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        //TODO refactor to single using statement
         public async Task<ResultWith<StudentDto>> PatchStudent(int sId, PatchStudentDto student, byte[] rowVersion)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
