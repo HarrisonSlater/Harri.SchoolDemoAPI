@@ -123,7 +123,6 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             yield return new TestCaseData((IStudentApi c) => c.DeleteStudent(sId), HttpMethod.Delete, $"/students/{sId}", "delete a student");
         }
 
-        //TODO refactor these
         [TestCaseSource(nameof(BoolResponse_StudentApiClientOperationsTestCases))]
         public async Task BoolResponse_StudentApiClientOperations_WhenCalled_AndServiceReturns500_DoNotThrow(Func<IStudentApi, dynamic> clientOperation,
             HttpMethod operationMethod, string operationRoute, string operationName)
