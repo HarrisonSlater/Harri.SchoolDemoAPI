@@ -10,6 +10,8 @@ namespace Harri.SchoolDemoAPI.Tests.Unit
     [TestFixture]
     public class StudentRepositoryTests
     {
+        // Cannot unit test dapper queries without a real database connection
+        // See integration tests for full testing of repository methods
         private StudentRepository _studentRepository;
 
         [SetUp]
