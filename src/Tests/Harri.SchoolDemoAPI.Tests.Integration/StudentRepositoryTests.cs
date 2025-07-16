@@ -163,6 +163,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeEquivalentTo(StudentErrors.StudentRowVersionMismatch.Error(sId));
             await AssertRowVersionIsUnmodified(student);
+
+            await CleanUpTestStudent(student!.SId!.Value);
         }
 
         [Test]
@@ -260,6 +262,8 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeEquivalentTo(StudentErrors.StudentRowVersionMismatch.Error(sId));
             await AssertRowVersionIsUnmodified(student);
+
+            await CleanUpTestStudent(student!.SId!.Value);
         }
 
         [Test]
