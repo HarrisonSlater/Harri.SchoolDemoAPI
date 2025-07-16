@@ -99,13 +99,13 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Patch
-        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
+        public async Task<StudentDto?> PatchStudent(int sId, PatchStudentDto student, byte[] rowVersion)
         {
             var restResponse = await PatchStudentRestResponse(sId, student, rowVersion);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student, byte[] rowVersion)
+        public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, PatchStudentDto student, byte[] rowVersion)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
             request.Method = Method.Patch;

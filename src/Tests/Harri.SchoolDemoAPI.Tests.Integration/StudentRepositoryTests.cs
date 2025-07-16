@@ -185,15 +185,15 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> PatchStudentTestCases()
         {
-            yield return new TestCaseData(new StudentPatchDto() {});
-            yield return new TestCaseData(new StudentPatchDto() { Name = "New Test Student 2 - Patched" });
-            yield return new TestCaseData(new StudentPatchDto() { Name = "New Test Student 2 - Patched", GPA = 4.32m });
-            yield return new TestCaseData(new StudentPatchDto() { GPA = 4.32m });
-            yield return new TestCaseData(new StudentPatchDto() { GPA = null });
+            yield return new TestCaseData(new PatchStudentDto() {});
+            yield return new TestCaseData(new PatchStudentDto() { Name = "New Test Student 2 - Patched" });
+            yield return new TestCaseData(new PatchStudentDto() { Name = "New Test Student 2 - Patched", GPA = 4.32m });
+            yield return new TestCaseData(new PatchStudentDto() { GPA = 4.32m });
+            yield return new TestCaseData(new PatchStudentDto() { GPA = null });
         }
 
         [TestCaseSource(nameof(PatchStudentTestCases))]
-        public async Task UpdateStudent_ShouldPatchExistingStudent(StudentPatchDto studentPatchDto)
+        public async Task UpdateStudent_ShouldPatchExistingStudent(PatchStudentDto studentPatchDto)
         {
             // Arrange 
             var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
@@ -225,12 +225,12 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
 
         private static IEnumerable<TestCaseData> PatchStudentInvalidTestCases()
         {
-            yield return new TestCaseData(new StudentPatchDto() { Name = null });
-            yield return new TestCaseData(new StudentPatchDto() { Name = null, GPA = 4.32m });
+            yield return new TestCaseData(new PatchStudentDto() { Name = null });
+            yield return new TestCaseData(new PatchStudentDto() { Name = null, GPA = 4.32m });
         }
 
         [TestCaseSource(nameof(PatchStudentInvalidTestCases))]
-        public async Task PatchStudent_ShouldThrow_WhenIncorrectlyUpdatingExistingStudent(StudentPatchDto studentPatchDto)
+        public async Task PatchStudent_ShouldThrow_WhenIncorrectlyUpdatingExistingStudent(PatchStudentDto studentPatchDto)
         {
             // Arrange 
             var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
@@ -253,7 +253,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 3", GPA = 3.71m });
             int sId = student.SId!.Value;
 
-            var studentPatchDto = new StudentPatchDto() { Name = "Test Student 3 - Patchd" };
+            var studentPatchDto = new PatchStudentDto() { Name = "Test Student 3 - Patchd" };
 
             // Act
             var result = await _studentRepository.PatchStudent(sId, studentPatchDto, new byte[8]);
@@ -272,7 +272,7 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             // Arrange 
             var nonExistantSId = -1001;
 
-            var studentPatchDto = new StudentPatchDto() { Name = "Test Student" };
+            var studentPatchDto = new PatchStudentDto() { Name = "Test Student" };
 
             // Act
             var result = await _studentRepository.PatchStudent(nonExistantSId, studentPatchDto, new byte[8]);

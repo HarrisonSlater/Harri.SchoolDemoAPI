@@ -125,7 +125,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="412">PreconditionFailed, when If-Match header doesn't match retrieved user version</response>
         [HttpPatch("{sId}")]
         [SwaggerOperation(OperationId = "PatchStudent")]
-        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
+        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] PatchStudentDto student)
         {
             if (Request.Headers[HeaderNames.IfMatch].Count == 0)
             {

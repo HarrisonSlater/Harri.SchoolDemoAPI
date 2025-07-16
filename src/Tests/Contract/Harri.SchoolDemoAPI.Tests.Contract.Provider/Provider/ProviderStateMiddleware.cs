@@ -99,7 +99,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(resultToReturn));
-            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(ResultWith<StudentDto>.FromResult(resultToReturn)));
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(ResultWith<StudentDto>.FromResult(resultToReturn)));
         }
 
         private Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
@@ -128,11 +128,11 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sIdString = (JsonElement?)parameters["sId"];
             var sId = sIdString?.GetInt32();
-            var expectedUpdatedStudent = GetStateObject<StudentPatchDto>(parameters);
+            var expectedUpdatedStudent = GetStateObject<PatchStudentDto>(parameters);
 
-            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>()))
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>()))
             .Returns(Task.FromResult(ResultWith<StudentDto>.Success(new StudentDto() { SId = sId, Name = expectedUpdatedStudent.Name, GPA = expectedUpdatedStudent.GPA })))
-            .Callback<int, StudentPatchDto, byte[]>((id, patchDto, rowVersion) =>
+            .Callback<int, PatchStudentDto, byte[]>((id, patchDto, rowVersion) =>
             {
                 id.Should().Be(sId);
                 patchDto.Should().BeEquivalentTo(expectedUpdatedStudent);
@@ -258,7 +258,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<StudentPatchDto>(), It.IsAny<byte[]>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
 

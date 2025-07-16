@@ -9,8 +9,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     /// DTO for patching a student
     /// </summary>
     /// Only properties that are explicitly set are serialized using the <see cref="GetObjectToSerialize"/> method
-    //TODO rename to PatchStudentDto
-    public class StudentPatchDto
+    public class PatchStudentDto
     {
         [OptionalNotNullOrWhitespace]
         [JsonIgnore]

@@ -83,23 +83,23 @@ namespace Harri.SchoolDemoAPI.Tests.E2E
         private static IEnumerable<TestCaseData> PatchStudentTestCases()
         {
             var newStudent1 = new NewStudentDto() { Name = "Test Student 3", GPA = 3.55m };
-            var newStudent1PatchDto = new StudentPatchDto() { GPA = 3.99m };
+            var newStudent1PatchDto = new PatchStudentDto() { GPA = 3.99m };
             var expectedStudent1 = new StudentDto() { Name = newStudent1.Name, GPA = newStudent1PatchDto.GPA, };
             yield return new TestCaseData(newStudent1, newStudent1PatchDto, expectedStudent1);
 
             var newStudent2 = new NewStudentDto() { Name = "Test Student 4", GPA = 3.45m };
-            var newStudent2PatchDto = new StudentPatchDto() { Name = "Test Student 4 - PATCHED" };
+            var newStudent2PatchDto = new PatchStudentDto() { Name = "Test Student 4 - PATCHED" };
             var expectedStudent2 = new StudentDto() { Name = newStudent2PatchDto.Name, GPA = newStudent2.GPA, };
             yield return new TestCaseData(newStudent2, newStudent2PatchDto, expectedStudent2);
 
             var newStudent3 = new NewStudentDto() { Name = "Test Student 5", GPA = 3.35m };
-            var newStudent3PatchDto = new StudentPatchDto() { Name = "Test Student 5 - PATCHED", GPA = 4 };
+            var newStudent3PatchDto = new PatchStudentDto() { Name = "Test Student 5 - PATCHED", GPA = 4 };
             var expectedStudent3 = new StudentDto() { Name = newStudent3PatchDto.Name, GPA = newStudent3PatchDto.GPA, };
             yield return new TestCaseData(newStudent3, newStudent3PatchDto, expectedStudent3);
         }
 
         [TestCaseSource(nameof(PatchStudentTestCases))]
-        public async Task PatchStudent_ShouldUpdateOnlyGPAOnExistingStudent(NewStudentDto newStudent, StudentPatchDto studentPatchDto, StudentDto expectedStudent)
+        public async Task PatchStudent_ShouldUpdateOnlyGPAOnExistingStudent(NewStudentDto newStudent, PatchStudentDto studentPatchDto, StudentDto expectedStudent)
         {
             // Arrange
             var sId = await _client.AddStudent(newStudent);

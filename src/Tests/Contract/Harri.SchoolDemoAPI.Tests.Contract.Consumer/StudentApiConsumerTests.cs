@@ -401,7 +401,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             var newName = "Mocky McMockName";
             var newGPA = 3.81m;
             _pact.UponReceiving($"a request to patch a student with sId")
-                    .Given("a student with sId will be patched", new StudentPatchDto() { Name = newName, GPA = newGPA }, new ("sId", sId.ToString()))
+                    .Given("a student with sId will be patched", new PatchStudentDto() { Name = newName, GPA = newGPA }, new ("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
                     .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                     .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
@@ -423,7 +423,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.PatchStudent(sId, new StudentPatchDto() { Name = newName, GPA = newGPA }, MockStudentTestFixture.MockRowVersion);
+                var student = await client.PatchStudent(sId, new PatchStudentDto() { Name = newName, GPA = newGPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 student.Should().BeEquivalentTo(new StudentDto()
@@ -467,7 +467,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -502,7 +502,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -532,7 +532,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
