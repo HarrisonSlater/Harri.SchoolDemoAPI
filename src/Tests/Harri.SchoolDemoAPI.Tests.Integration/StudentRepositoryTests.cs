@@ -180,7 +180,103 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             result.IsSuccess.Should().BeFalse();
             result.Error.Should().BeEquivalentTo(StudentErrors.StudentNotFound.Error(nonExistantSId));
         }
-        //TODO PATCH tests for updating students 
+
+        private static IEnumerable<TestCaseData> PatchStudentTestCases()
+        {
+            yield return new TestCaseData(new StudentPatchDto() {});
+            yield return new TestCaseData(new StudentPatchDto() { Name = "New Test Student 2 - Patched" });
+            yield return new TestCaseData(new StudentPatchDto() { Name = "New Test Student 2 - Patched", GPA = 4.32m });
+            yield return new TestCaseData(new StudentPatchDto() { GPA = 4.32m });
+            yield return new TestCaseData(new StudentPatchDto() { GPA = null });
+        }
+
+        [TestCaseSource(nameof(PatchStudentTestCases))]
+        public async Task UpdateStudent_ShouldPatchExistingStudent(StudentPatchDto studentPatchDto)
+        {
+            // Arrange 
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
+            int sId = student.SId!.Value;
+
+            var expectedStudent = new StudentDto()
+            {
+                SId = sId,
+                Name = studentPatchDto.OptionalName.HasValue ? studentPatchDto.Name : student.Name,
+                GPA = studentPatchDto.OptionalGPA.HasValue ? studentPatchDto.GPA : student.GPA,
+            };
+
+            // Act
+            var success = await _studentRepository.PatchStudent(sId, studentPatchDto, student.RowVersion!);
+
+            // Assert
+            success.IsSuccess.Should().BeTrue();
+
+            var updatedStudent = await _studentRepository.GetStudent(sId);
+
+            updatedStudent.Should().NotBeNull();
+            updatedStudent.Should().BeEquivalentTo(expectedStudent, options => options.Excluding(x => x.RowVersion));
+            updatedStudent!.RowVersion.Should().NotBeNullOrEmpty()
+                .And.NotBeEquivalentTo(student.RowVersion);
+
+            await CleanUpTestStudent(sId);
+
+        }
+
+        private static IEnumerable<TestCaseData> PatchStudentInvalidTestCases()
+        {
+            yield return new TestCaseData(new StudentPatchDto() { Name = null });
+            yield return new TestCaseData(new StudentPatchDto() { Name = null, GPA = 4.32m });
+        }
+
+        [TestCaseSource(nameof(PatchStudentInvalidTestCases))]
+        public async Task PatchStudent_ShouldThrow_WhenIncorrectlyUpdatingExistingStudent(StudentPatchDto studentPatchDto)
+        {
+            // Arrange 
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 2", GPA = 3.71m });
+            int sId = student.SId!.Value;
+
+            // Act
+            var action = async () => await _studentRepository.PatchStudent(sId, studentPatchDto, student.RowVersion!);
+
+            // Assert
+            await action.Should().ThrowAsync<SqlException>();
+            await AssertRowVersionIsUnmodified(student);
+
+            await CleanUpTestStudent(sId);
+        }
+
+        [Test]
+        public async Task PatchStudent_ShouldReturnFailure_WhenPatchinghStudentWithNonMatchingRowVersion()
+        {
+            // Arrange 
+            var student = await CreateStudentAndGetRowVersion(new NewStudentDto() { Name = "New Test Student 3", GPA = 3.71m });
+            int sId = student.SId!.Value;
+
+            var studentPatchDto = new StudentPatchDto() { Name = "Test Student 3 - Patchd" };
+
+            // Act
+            var result = await _studentRepository.PatchStudent(sId, studentPatchDto, new byte[8]);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo(StudentErrors.StudentRowVersionMismatch.Error(sId));
+            await AssertRowVersionIsUnmodified(student);
+        }
+
+        [Test]
+        public async Task PatchStudent_ShouldReturnFailure_WhenPatchingNonExistantStudent()
+        {
+            // Arrange 
+            var nonExistantSId = -1001;
+
+            var studentPatchDto = new StudentPatchDto() { Name = "Test Student" };
+
+            // Act
+            var result = await _studentRepository.PatchStudent(nonExistantSId, studentPatchDto, new byte[8]);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Error.Should().BeEquivalentTo(StudentErrors.StudentNotFound.Error(nonExistantSId));
+        }
 
         [Test]
         public async Task DeleteStudent_ShouldDeleteStudent()

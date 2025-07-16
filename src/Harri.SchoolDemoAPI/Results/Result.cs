@@ -12,6 +12,10 @@ namespace Harri.SchoolDemoAPI.Results
         }
 
         private ResultWith(Result result) : base(result.IsSuccess, result.Error) { }
+        private ResultWith(Result result, T value) : base(result.IsSuccess, result.Error) 
+        {
+            Value = value;
+        }
 
 
         public static ResultWith<T> Success(T value) => new(true, Error.None, value);
@@ -19,7 +23,7 @@ namespace Harri.SchoolDemoAPI.Results
         public static ResultWith<T> Failure(Error error, T value = default) => new(false, error, value);
 
         public static ResultWith<T> FromResult(Result result) => new(result);
-
+        public static ResultWith<T> FromResult(Result result, T value) => new(result, value);
 
         public T Value { get; private set; }
     }

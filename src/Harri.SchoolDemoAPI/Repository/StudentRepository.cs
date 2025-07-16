@@ -38,62 +38,62 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var query = @"SELECT sID as SId, sName as Name, GPA, rowVer as RowVersion
-                              FROM [SchoolDemo].Student
-                              WHERE sId = @sId";
-
-                var student = (await connection.QueryAsync<StudentDto?>(query, new { sId = sId })).FirstOrDefault();
-                return student;
+                return await GetStudentInternal(sId, connection);
             }
+        }
+        private async Task<StudentDto?> GetStudentInternal(int sId, IDbConnection connection)
+        {
+            var query = @"SELECT sID as SId, sName as Name, GPA, rowVer as RowVersion
+                          FROM [SchoolDemo].Student
+                          WHERE sId = @sId";
+            var student = await connection.QuerySingleOrDefaultAsync<StudentDto?>(query, new { sId = sId });
+            return student;
         }
 
         public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var studentExistsQuery = @"(SELECT rowVer FROM [SchoolDemo].Student WHERE sId = @sId)";
+                var existingStudent = await GetStudentInternal(sId, connection);
 
-                var studentRowVer = (await connection.QuerySingleOrDefaultAsync<byte[]>(studentExistsQuery, new { sId = sId }));
+                return await UpdateStudentInternal(sId, student, rowVersion, existingStudent, connection);
+            }
+        }
 
-                if (studentRowVer is null)
-                {
-                    return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
-                }
-                else if (!studentRowVer.SequenceEqual(rowVersion))
-                {
-                    return Result.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
-                }
+        private static async Task<Result> UpdateStudentInternal(int sId, UpdateStudentDto student, byte[] rowVersion, StudentDto? existingStudent, IDbConnection connection)
+        {
+            var studentRowVer = existingStudent?.RowVersion;
+            if (studentRowVer is null) return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
+            else if (!studentRowVer.SequenceEqual(rowVersion)) return Result.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
 
-                var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
+            var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
                                            SET sName = @Name, GPA = @GPA
                                            WHERE sId = @sId
                                            AND rowVer = @RowVersion";
-                /* and rowVer = @rowVersion*/
-
-                var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId, RowVersion = rowVersion}));
-                if(updatedRows == 0) {
-                    // The only way this can happen is if this student was changed between studentExistsQuery and studentUpdateQuery 
-                    return Result.Failure(StudentErrors.StudentUpdateConflict.Error(sId));
-                }
-                else
-                {
-                    return Result.Success();
-                }
+            var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId, RowVersion = rowVersion }));
+            if (updatedRows == 0)
+            {
+                // The only way this can happen is if this student was changed between GetStudentInternal and studentUpdateQuery 
+                return Result.Failure(StudentErrors.StudentUpdateConflict.Error(sId));
+            }
+            else
+            {
+                return Result.Success();
             }
         }
 
         //TODO refactor to single using statement
-        //TODO integration test this
         public async Task<ResultWith<StudentDto>> PatchStudent(int sId, StudentPatchDto student, byte[] rowVersion)
         {
-            var existingStudent = await GetStudent(sId);
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var existingStudent = await GetStudentInternal(sId, connection);
+                student.ApplyChangesTo(existingStudent);
 
-            if (existingStudent is null) return ResultWith<StudentDto>.Failure(StudentErrors.StudentNotFound.Error(sId));
-            if (!existingStudent.RowVersion.SequenceEqual(rowVersion)) return ResultWith<StudentDto>.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
+                var result = await UpdateStudentInternal(sId, existingStudent?.AsUpdateStudentDto(), rowVersion, existingStudent, connection);
 
-            student.ApplyChangesTo(existingStudent);
-            await UpdateStudent(sId, existingStudent.AsUpdateStudentDto(), rowVersion);
-            return ResultWith<StudentDto>.Success(existingStudent);
+                return ResultWith<StudentDto>.FromResult(result, existingStudent);
+            }
         }
 
         public async Task<bool?> DeleteStudent(int sId)
