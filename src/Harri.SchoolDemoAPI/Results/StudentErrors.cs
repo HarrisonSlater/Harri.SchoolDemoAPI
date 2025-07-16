@@ -18,6 +18,12 @@ namespace Harri.SchoolDemoAPI.Results
             public static Error Error(int id) => new(ErrorCode, $"Student {id} updated by another user");
         }
 
+        public static class StudentDeleteConflict
+        {
+            public const string ErrorCode = "StudentDeleteConflict";
+            public static Error Error(int id) => new(ErrorCode, $"Student {id} cannot be deleted in the database");
+        }
+
         public static class StudentRowVersionMismatch
         {
             public const string ErrorCode = "StudentRowVersionMismatch";

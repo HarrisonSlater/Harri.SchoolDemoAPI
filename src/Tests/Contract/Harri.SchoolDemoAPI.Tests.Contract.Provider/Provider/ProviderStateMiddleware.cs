@@ -157,7 +157,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
 
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)true))
+                .Returns(Task.FromResult(Result.Success()))
                 .Callback<int>(sId => sId.Should().Be(sId));
 
             return Task.CompletedTask;
@@ -167,7 +167,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)false))
+                .Returns(Task.FromResult(Result.Failure(StudentErrors.StudentNotFound.Error(sId))))
                 .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 
@@ -177,7 +177,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)null))
+                .Returns(Task.FromResult(Result.Failure(StudentErrors.StudentDeleteConflict.Error(sId))))
                 .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 

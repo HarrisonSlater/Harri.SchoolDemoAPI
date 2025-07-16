@@ -2158,7 +2158,7 @@
               "GPA": 3.81,
               "name": "Mocky McMockName"
             },
-            "stateObjectType": "StudentPatchDto"
+            "stateObjectType": "PatchStudentDto"
           }
         }
       ],

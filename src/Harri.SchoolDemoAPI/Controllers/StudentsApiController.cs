@@ -6,13 +6,13 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Services;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
 using Harri.SchoolDemoAPI.Results;
 using System;
 using Microsoft.Net.Http.Headers;
+using Harri.SchoolDemoAPI.Repository;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -26,11 +26,11 @@ namespace Harri.SchoolDemoAPI.Controllers
     [Tags("Student")]
     public class StudentsApiController : ControllerBase
     {
-        private readonly IStudentService _studentService;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentsApiController(IStudentService studentService)
+        public StudentsApiController(IStudentRepository studentRepository)
         {
-            _studentService = studentService;
+            _studentRepository = studentRepository;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public async Task<IActionResult> AddStudent([FromBody]NewStudentDto newStudent)
         {
-            var result = await _studentService.AddStudent(newStudent);
+            var result = await _studentRepository.AddStudent(newStudent);
 
             return new ObjectResult(result);
         }
@@ -64,7 +64,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
-            var result = await _studentService.GetStudent(sId);
+            var result = await _studentRepository.GetStudent(sId);
             if (result is null) {
                 return NotFound();
             }
@@ -96,7 +96,7 @@ namespace Harri.SchoolDemoAPI.Controllers
 
             var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
 
-            var result = await _studentService.UpdateStudent(sId, student, rowVersion);
+            var result = await _studentRepository.UpdateStudent(sId, student, rowVersion);
             if (result.IsSuccess)
             {
                 return Ok();
@@ -133,7 +133,7 @@ namespace Harri.SchoolDemoAPI.Controllers
                 return BadRequest();
             }
 
-            var patchedStudentResult = await _studentService.PatchStudent(sId, student, rowVersion);
+            var patchedStudentResult = await _studentRepository.PatchStudent(sId, student, rowVersion);
             if (patchedStudentResult.IsSuccess)
             {
                 return Ok(patchedStudentResult.Value);
@@ -153,19 +153,9 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "DeleteStudent")]
         public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveInt] int sId)
         {
-            var success = await _studentService.DeleteStudent(sId);
-            if (success is null) {
-                // Return conflict when student cannot be deleted due to applications referencing that student exist
-                return Conflict();
-            }
-            else if (success.Value)
-            {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+            var result = await _studentRepository.DeleteStudent(sId);
+
+            return result.IsSuccess ? Ok() : MatchError(result);
         }
 
         private IActionResult MatchError(Result result)
@@ -174,6 +164,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             {
                 StudentErrors.StudentNotFound.ErrorCode => NotFound(),
                 StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentDeleteConflict.ErrorCode => Conflict(),
                 StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
                 _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
             });
@@ -207,7 +198,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = APIDefaults.Query.Page,
             [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = APIDefaults.Query.PageSize)
         {
-            var students = await _studentService.GetStudents(new GetStudentsQueryDto() 
+            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
             {
                 SId = sId,
                 Name = name,

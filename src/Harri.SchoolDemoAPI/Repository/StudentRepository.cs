@@ -95,7 +95,7 @@ namespace Harri.SchoolDemoAPI.Repository
             }
         }
 
-        public async Task<bool?> DeleteStudent(int sId)
+        public async Task<Result> DeleteStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
@@ -105,7 +105,7 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 if (!studentExists)
                 {
-                    return false;
+                    return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
                 }
 
                 var deleteQuery = @"BEGIN TRY
@@ -119,7 +119,14 @@ namespace Harri.SchoolDemoAPI.Repository
                                     END CATCH";
 
                 var deleted = (await connection.QueryAsync<bool?>(deleteQuery, new { sId = sId })).FirstOrDefault();
-                return deleted;
+                if (deleted is true)
+                {
+                    return Result.Success();
+                }
+                else
+                {
+                    return Result.Failure(StudentErrors.StudentDeleteConflict.Error(sId));
+                }
             }
         }
 
