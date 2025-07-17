@@ -450,7 +450,7 @@ stages:
 
       steps:
       - checkout: none
-      - task: NuGetToolInstaller@1
+
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
@@ -458,13 +458,13 @@ stages:
           artifactName: 'nuget'
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: true
-
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         inputs:
           command: 'push'
           packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
           nuGetFeedType: 'external'
           publishFeedCredentials: 'Nuget.org harri.dev Connection'
+          requestTimeout: 30000
 
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
