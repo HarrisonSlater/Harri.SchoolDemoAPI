@@ -298,10 +298,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             student.Should().NotBeNull();
 
             // Act
-            var success = await _studentRepository.DeleteStudent(sId);
+            var result = await _studentRepository.DeleteStudent(sId);
 
             // Assert
-            success.Should().Be(true);
+            result.IsSuccess.Should().Be(true);
 
             var studentResponse = await _studentRepository.GetStudent(sId);
             studentResponse.Should().BeNull();
@@ -314,10 +314,10 @@ namespace Harri.SchoolDemoAPI.Tests.Integration
             var nonExistantSId = -1001;
 
             // Act
-            var success = await _studentRepository.DeleteStudent(nonExistantSId);
+            var result = await _studentRepository.DeleteStudent(nonExistantSId);
 
             // Assert
-            success.Should().Be(false);
+            result.IsFailure.Should().Be(true);
         }
 
         //TODO after impelementing Applications respository, add delete conflict test (where a student is being deleted but has existing applications)
