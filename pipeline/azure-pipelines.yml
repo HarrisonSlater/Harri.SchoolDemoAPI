@@ -466,7 +466,7 @@ stages:
           arguments: >
             push $(System.DefaultWorkingDirectory)/**/*.nupkg
             -s https://api.nuget.org/v3/index.json
-            -k $(NugetAPIKey) 
+            -k $(NugetAPIKey) --skip-duplicate
 
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
