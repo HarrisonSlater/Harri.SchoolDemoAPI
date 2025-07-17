@@ -443,7 +443,7 @@ stages:
 - stage: 'PublishNuget'
   displayName: 'Publish nuget'
   dependsOn: DeployAndTest
-  condition: in(dependencies.DeployAndTest.result, 'Succeeded', 'SucceededWithIssues')
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   jobs: 
     - job: 'PublishNuget'
       displayName: 'Publish nuget package to Nuget.org'
