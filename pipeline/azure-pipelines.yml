@@ -6,7 +6,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-24.04'
 
 variables:
   Solution: '**/*.sln'
@@ -442,15 +442,15 @@ stages:
 
 - stage: 'PublishNuget'
   displayName: 'Publish nuget'
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   dependsOn: DeployAndTest
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
   jobs: 
     - job: 'PublishNuget'
       displayName: 'Publish nuget package to Nuget.org'
 
       steps:
       - checkout: none
-      - task: NuGetToolInstaller@1
+
       - task: DownloadBuildArtifacts@1
         inputs:
           buildType: 'current'
@@ -458,13 +458,15 @@ stages:
           artifactName: 'nuget'
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: true
-
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
+        displayName: Push Nuget Package
         inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'Nuget.org harri.dev Connection'
+          command: custom
+          custom: nuget
+          arguments: >
+            push $(System.DefaultWorkingDirectory)/**/*.symbols.nupkg
+            -s https://api.nuget.org/v3/index.json
+            -k $(NugetAPIKey) --skip-duplicate
 
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
