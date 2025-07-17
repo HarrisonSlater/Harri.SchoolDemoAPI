@@ -459,12 +459,14 @@ stages:
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: true
       - task: DotNetCoreCLI@2
+        displayName: Push Nuget Package
         inputs:
-          command: 'push'
-          packagesToPush: '$(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'Nuget.org harri.dev Connection'
-          requestTimeout: 30000
+          command: custom
+          custom: nuget
+          arguments: >
+            push $(System.DefaultWorkingDirectory)/**/*.nupkg;!$(System.DefaultWorkingDirectory)/**/*.symbols.nupkg
+            -s https://api.nuget.org/v3/index.json
+            -k $(NugetAPIKey) 
 
 - stage: 'PostGithubCommitStatus'
   displayName: 'Github Commit Status'
