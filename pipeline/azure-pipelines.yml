@@ -443,6 +443,7 @@ stages:
 - stage: 'PublishNuget'
   displayName: 'Publish nuget'
   dependsOn: DeployAndTest
+  condition: succeeded()
   jobs: 
     - job: 'PublishNuget'
       displayName: 'Publish nuget package to Nuget.org'
