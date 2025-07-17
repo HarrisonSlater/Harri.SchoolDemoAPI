@@ -6,6 +6,7 @@ using Harri.SchoolDemoAPI.Client;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
 using Harri.SchoolDemoAPI.Tests.Common;
+using Microsoft.Net.Http.Headers;
 
 namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 {
@@ -21,7 +22,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Get, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ETag, MockStudentTestFixture.MockRowVersionBase64Encoded)
                  .WithJsonBody(new
                  {
                      sId = Match.Equality(sId),
@@ -40,6 +42,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 student.SId.Should().NotBeNull().And.Be(sId);
                 student.Name.Should().NotBeNullOrEmpty().And.Be(name);
                 student.GPA.Should().Be(GPA);
+
+                student.RowVersion.Should().NotBeNull().And.BeEquivalentTo(MockStudentTestFixture.MockRowVersion);
             });
         }
 
@@ -107,7 +111,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             _pact.UponReceiving($"a request to add a new student with name {name}")
                     .Given("a student with sId {sIdNew} will be created", new NewStudentDto() {Name = name, GPA = GPA }, new ("sIdNew", sIdNew.ToString()))
                     .WithRequest(HttpMethod.Post, $"/students/")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
@@ -115,7 +119,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     }))
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(Match.Equality(sIdNew));
 
             await _pact.VerifyAsync(async ctx =>
@@ -140,7 +144,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
 
             _pact.UponReceiving($"an invalid request to add a new student {testCase}")
                     .WithRequest(HttpMethod.Post, $"/students/")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
@@ -148,7 +152,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     }))
                  .WillRespond()
                  .WithStatus(HttpStatusCode.BadRequest)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(new
                  {
                      title = Match.Type("title"),
@@ -173,24 +177,25 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCase(123, "Mocky", 3.81)]
         public async Task UpdateStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndUpdatesStudent(int sId, string? name, decimal? GPA)
         {
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+
             _pact.UponReceiving($"a request to update a student with sId")
-                    .Given("a student with sId exists and will be updated", new UpdateStudentDto() { Name = name, GPA = GPA }, new ("sId", sId.ToString()))
+                    .Given("a student with sId exists and will be updated", new UpdateStudentDto() { Name = name, GPA = GPA }, new("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(true));
+                 .WithStatus(HttpStatusCode.OK);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.UpdateStudent(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
+                var student = await client.UpdateStudent(sId, new UpdateStudentDto() { Name = name, GPA = GPA }, rowVersion);
 
                 // Client Assertions
                 student.Should().Be(true);
@@ -203,13 +208,14 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
         [TestCase(4567, "Test Student", 3.811, "GPA", 4)]
         public async Task UpdateStudent_WhenCalledWithAnInvalidName_Returns400(int sId, string? name, decimal? GPA, string expectedPropertyError, int testCase)
         {
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
             IDictionary<string, object?> expectedErrors = new ExpandoObject();
             expectedErrors[expectedPropertyError] = new dynamic[] { Match.Type("error message") };
 
-            _pact.UponReceiving($"a bad request to update a student with sId and invalid name {testCase}")
+            _pact.UponReceiving($"a bad request to update a student with sId {testCase}")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
@@ -217,7 +223,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     }))
                  .WillRespond()
                  .WithStatus(HttpStatusCode.BadRequest)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(new
                  {
                      title = Match.Type("title"),
@@ -228,44 +234,77 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA }, rowVersion);
 
                 // Client Assertions
-                response.Data.Should().BeNull();
                 response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
                 response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
 
-        [TestCase(4567, "Mocky Mockson", 3.81)]
-        public async Task UpdateStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
+        [TestCase("a student with sId does not exist", HttpStatusCode.NotFound)]
+        [TestCase("a student with sId exists but a race condition occurs at the database level", HttpStatusCode.Conflict)]
+        [TestCase("a student with sId exists but was updated before us", HttpStatusCode.PreconditionFailed)]
+        public async Task UpdateStudent_WhenCalled_ReturnsStatusCode(string given, HttpStatusCode expectedStatusCode)
         {
-            _pact.UponReceiving($"a request to update a non-existant student with sId {sId} and invalid name")
-                .Given("a student with sId does not exist")
+            var sId = 4567;
+            var name = "Mocky Mockson";
+            var GPA = 3.81m;
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+
+            _pact.UponReceiving($"a request to update a student with sId {sId}")
+                .Given(given)
                     .WithRequest(HttpMethod.Put, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(Match.Equality(false));
+                 .WithStatus(expectedStatusCode);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA });
+                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA }, rowVersion);
 
                 // Client Assertions
-                response.Data.Should().BeFalse();
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                response.StatusCode.Should().Be(expectedStatusCode);
             });
         }
 
+        [Test]
+        public async Task UpdateStudent_WhenCalledWithoutIfMatchHeader_Returns428()
+        {
+            var sId = 4567;
+            var name = "Mocky Mockson";
+            var GPA = 3.81m;
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+
+            _pact.UponReceiving($"a request to update a student with sId {sId}")
+                .Given("a student with sId exists but our request is missing an If-Match header")
+                    .WithRequest(HttpMethod.Put, $"/students/{sId}")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithJsonBody(Match.Equality(new
+                    {
+                        name = name,
+                        GPA = GPA
+                    }))
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.PreconditionRequired);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.UpdateStudentRestResponse(sId, new UpdateStudentDto() { Name = name, GPA = GPA }, rowVersion);
+
+                // Client Assertions
+                response.StatusCode.Should().Be(HttpStatusCode.PreconditionRequired);
+            });
+        }
         [TestCase(123)]
         [TestCase(456)]
         public async Task DeleteStudent_WhenCalledWithValidStudentId_ReturnsSuccess_AndDeletesStudent(int sId)
@@ -332,7 +371,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Delete, $"/students/{sId}")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.BadRequest)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(new
                  {
                      title = Match.Type("title"),
@@ -355,81 +394,43 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             });
         }
 
-        // PatchStudent
-        [TestCase(123, "Mocky")]
-        public async Task PatchStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndPatchesStudentName(int sId, string newName)
+        [Test]
+        public async Task PatchStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndPatchesStudent()
         {
-            var existingName = "EXISTING STUDENT NAME";
-            var existingGPA = 3.91m;
+            var sId = 123;
+            var newName = "Mocky McMockName";
+            var newGPA = 3.81m;
             _pact.UponReceiving($"a request to patch a student with sId")
-                    .Given("a student with sId exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
-                    .Given("a student with sId will be updated", new UpdateStudentDto() { Name = newName, GPA = existingGPA }, new ("sId", sId.ToString()))
+                    .Given("a student with sId will be patched", new PatchStudentDto() { Name = newName, GPA = newGPA }, new ("sId", sId.ToString()))
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
                     .WithJsonBody(Match.Equality(new
                     {
-                        name = newName
+                        name = newName,
+                        GPA = newGPA
                     }))
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(new
                  {
                      sId = Match.Equality(sId),
                      name = Match.Equality(newName),
-                     GPA = Match.Equality(existingGPA)
+                     GPA = Match.Equality(newGPA)
                  });
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.PatchStudent(sId, new StudentPatchDto() { Name = newName });
+                var student = await client.PatchStudent(sId, new PatchStudentDto() { Name = newName, GPA = newGPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 student.Should().BeEquivalentTo(new StudentDto()
                 {
                     SId = sId,
                     Name = newName,
-                    GPA = existingGPA
-                });
-            });
-        }
-
-        [TestCase(456, 3.52)]
-        public async Task PatchStudent_WhenCalledWithValidStudent_ReturnsSuccess_AndPatchesStudentGPA(int sId, decimal gpa)
-        {
-            var existingName = "EXISTING STUDENT NAME";
-            var existingGPA = 3.91m;
-            _pact.UponReceiving($"a request to patch a student with sId")
-                    .Given("a student with sId exists", new StudentDto() { SId = sId, Name = existingName, GPA = existingGPA })
-                    .Given("a student with sId will be updated", new UpdateStudentDto() { Name = existingName, GPA = gpa }, new ("sId", sId.ToString()))
-                    .WithRequest(HttpMethod.Patch, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
-                    .WithJsonBody(Match.Equality(new
-                    {
-                        GPA = gpa
-                    }))
-                 .WillRespond()
-                 .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
-                 .WithJsonBody(new
-                 {
-                     sId = Match.Equality(sId),
-                     name = Match.Equality(existingName),
-                     GPA = Match.Equality(gpa)
-                 });
-
-            await _pact.VerifyAsync(async ctx =>
-            {
-                var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var student = await client.PatchStudent(sId, new StudentPatchDto() { GPA = gpa });
-
-                // Client Assertions
-                student.Should().BeEquivalentTo(new StudentDto()
-                {
-                    SId = sId,
-                    Name = existingName,
-                    GPA = gpa
+                    GPA = newGPA
                 });
             });
         }
@@ -446,7 +447,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             _pact.UponReceiving($"a bad request to patch a student with sId")
                 .Given("no student will be updated")
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
@@ -454,7 +456,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     }))
                  .WillRespond()
                  .WithStatus(HttpStatusCode.BadRequest)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(new
                  {
                      title = Match.Type("title"),
@@ -465,7 +467,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = name, GPA = GPA });
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
@@ -474,30 +476,67 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                 response.ShouldContainErrorMessageForProperty(expectedPropertyError);
             });
         }
-
-        [TestCase(4567, "Mocky Mockson", 3.81)]
-        public async Task PatchStudent_WhenCalledWithNonExistantStudentId_Returns404(int sId, string? name, decimal? GPA)
+       
+        [TestCase("a student with sId does not exist", HttpStatusCode.NotFound)]
+        [TestCase("a student with sId exists but a race condition occurs at the database level", HttpStatusCode.Conflict)]
+        [TestCase("a student with sId exists but was updated before us", HttpStatusCode.PreconditionFailed)]
+        public async Task PatchStudent_WhenCalledWithNonExistantStudentId_ReturnsStatusCode(string given, HttpStatusCode expectedStatusCode)
         {
-            _pact.UponReceiving($"a request to patch a non-existant student with sId {sId}")
-                .Given("a student with sId does not exist")
+            var sId = 4567;
+            var name = "Mocky Mockson";
+            var GPA = 3.81m;
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+            _pact.UponReceiving($"a request to patch a student with sId {sId}")
+                .Given(given)
                     .WithRequest(HttpMethod.Patch, $"/students/{sId}")
-                    .WithHeader("Content-Type", "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithHeader(HeaderNames.IfMatch, MockStudentTestFixture.MockRowVersionBase64Encoded)
                     .WithJsonBody(Match.Equality(new
                     {
                         name = name,
                         GPA = GPA
                     }))
                  .WillRespond()
-                 .WithStatus(HttpStatusCode.NotFound);
+                 .WithStatus(expectedStatusCode);
 
             await _pact.VerifyAsync(async ctx =>
             {
                 var client = new StudentApiClient(ctx.MockServerUri.ToString());
-                var response = await client.PatchStudentRestResponse(sId, new StudentPatchDto() { Name = name, GPA = GPA });
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
 
                 // Client Assertions
                 response.Data.Should().BeNull();
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+                response.StatusCode.Should().Be(expectedStatusCode);
+            });
+        }
+
+        [Test]
+        public async Task PatchStudent_WhenCalledWithoutIfMatchHeader_Returns428()
+        {
+            var sId = 4567;
+            var name = "Mocky Mockson";
+            var GPA = 3.81m;
+            var rowVersion = MockStudentTestFixture.MockRowVersion;
+            _pact.UponReceiving($"a request to patch a student with sId {sId}")
+                .Given("a student with sId exists but our request is missing an If-Match header")
+                    .WithRequest(HttpMethod.Patch, $"/students/{sId}")
+                    .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
+                    .WithJsonBody(Match.Equality(new
+                    {
+                        name = name,
+                        GPA = GPA
+                    }))
+                 .WillRespond()
+                 .WithStatus(HttpStatusCode.PreconditionRequired);
+
+            await _pact.VerifyAsync(async ctx =>
+            {
+                var client = new StudentApiClient(ctx.MockServerUri.ToString());
+                var response = await client.PatchStudentRestResponse(sId, new PatchStudentDto() { Name = name, GPA = GPA }, MockStudentTestFixture.MockRowVersion);
+
+                // Client Assertions
+                response.Data.Should().BeNull();
+                response.StatusCode.Should().Be(HttpStatusCode.PreconditionRequired);
             });
         }
 
@@ -510,7 +549,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithRequest(HttpMethod.Get, $"/students/")
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>

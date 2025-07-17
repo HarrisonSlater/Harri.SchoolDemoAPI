@@ -6,10 +6,13 @@ using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using Harri.SchoolDemoAPI.Models.Attributes;
 using Harri.SchoolDemoAPI.Models.Dto;
-using Harri.SchoolDemoAPI.Services;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Attributes.SortColumn;
+using Harri.SchoolDemoAPI.Results;
+using System;
+using Microsoft.Net.Http.Headers;
+using Harri.SchoolDemoAPI.Repository;
 
 namespace Harri.SchoolDemoAPI.Controllers
 {
@@ -23,11 +26,11 @@ namespace Harri.SchoolDemoAPI.Controllers
     [Tags("Student")]
     public class StudentsApiController : ControllerBase
     {
-        private readonly IStudentService _studentService;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentsApiController(IStudentService studentService)
+        public StudentsApiController(IStudentRepository studentRepository)
         {
-            _studentService = studentService;
+            _studentRepository = studentRepository;
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(int), description: "Successful operation")]
         public async Task<IActionResult> AddStudent([FromBody]NewStudentDto newStudent)
         {
-            var result = await _studentService.AddStudent(newStudent);
+            var result = await _studentRepository.AddStudent(newStudent);
 
             return new ObjectResult(result);
         }
@@ -61,10 +64,13 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(StudentDto), description: "Successful operation")]
         public async Task<IActionResult> GetStudent([FromRoute(Name = "sId")][Required][PositiveInt] int sId)
         {
-            var result = await _studentService.GetStudent(sId);
+            var result = await _studentRepository.GetStudent(sId);
             if (result is null) {
                 return NotFound();
             }
+
+            Response.Headers[HeaderNames.ETag] = Convert.ToBase64String(result.RowVersion);
+
             return new ObjectResult(result);
         }
 
@@ -77,19 +83,26 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid ID supplied</response>
         /// <response code="404">Student not found</response>
+        /// <response code="428">PreconditionRequired, If-Match header missing</response>
+        /// <response code="412">PreconditionFailed, when If-Match header doesn't match retrieved user version</response>
         [HttpPut("{sId}")]
         [SwaggerOperation(OperationId = "UpdateStudent")]
         public async Task<IActionResult> UpdateStudent([FromRoute][Required][PositiveInt] int sId, [FromBody] UpdateStudentDto student)
         {
-            var success = await _studentService.UpdateStudent(sId, student);
-            if (success)
+            if (Request.Headers[HeaderNames.IfMatch].Count == 0)
             {
-                return Ok(success);
+                return StatusCode(StatusCodes.Status428PreconditionRequired);
             }
-            else
+
+            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
+
+            var result = await _studentRepository.UpdateStudent(sId, student, rowVersion);
+            if (result.IsSuccess)
             {
-                return NotFound(success);
+                return Ok();
             }
+
+            return MatchError(result);
         }
 
         /// <summary>
@@ -102,28 +115,33 @@ namespace Harri.SchoolDemoAPI.Controllers
         /// <response code="200">Successful operation</response>
         /// <response code="400">Invalid request supplied</response>
         /// <response code="404">Student not found</response>
+        /// <response code="428">PreconditionRequired, If-Match header missing</response>
+        /// <response code="412">PreconditionFailed, when If-Match header doesn't match retrieved user version</response>
         [HttpPatch("{sId}")]
         [SwaggerOperation(OperationId = "PatchStudent")]
-        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] StudentPatchDto student)
+        public async Task<IActionResult> PatchStudent([FromRoute][Required][PositiveInt]int sId, [FromBody] PatchStudentDto student)
         {
+            if (Request.Headers[HeaderNames.IfMatch].Count == 0)
+            {
+                return StatusCode(StatusCodes.Status428PreconditionRequired);
+            }
+
+            var rowVersion = Convert.FromBase64String(Request.Headers[HeaderNames.IfMatch]);
+
             if (!student.OptionalName.HasValue && !student.OptionalGPA.HasValue)
             {
                 return BadRequest();
             }
 
-            var patchedStudent = await _studentService.PatchStudent(sId, student);
-            if (patchedStudent is not null)
+            var patchedStudentResult = await _studentRepository.PatchStudent(sId, student, rowVersion);
+            if (patchedStudentResult.IsSuccess)
             {
-                return Ok(patchedStudent);
+                return Ok(patchedStudentResult.Value);
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return MatchError(patchedStudentResult);
         }
 
-        /// <summary>
-        /// Delete a student
         /// </summary>
         /// <remarks>Delete a student by sId</remarks>
         /// <param name="sId">ID of student to delete</param>
@@ -135,19 +153,21 @@ namespace Harri.SchoolDemoAPI.Controllers
         [SwaggerOperation(OperationId = "DeleteStudent")]
         public async Task<IActionResult> DeleteStudent([FromRoute][Required][PositiveInt] int sId)
         {
-            var success = await _studentService.DeleteStudent(sId);
-            if (success is null) {
-                // Return conflict when student cannot be deleted due to applications referencing that student exist
-                return Conflict();
-            }
-            else if (success.Value)
+            var result = await _studentRepository.DeleteStudent(sId);
+
+            return result.IsSuccess ? Ok() : MatchError(result);
+        }
+
+        private IActionResult MatchError(Result result)
+        {
+            return result.MatchError<IActionResult>(error => error.Code switch
             {
-                return Ok();
-            }
-            else
-            {
-                return NotFound();
-            }
+                StudentErrors.StudentNotFound.ErrorCode => NotFound(),
+                StudentErrors.StudentUpdateConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentDeleteConflict.ErrorCode => Conflict(),
+                StudentErrors.StudentRowVersionMismatch.ErrorCode => StatusCode(StatusCodes.Status412PreconditionFailed),
+                _ => throw new InvalidOperationException($"Unexpected error code: {error.Code}")
+            });
         }
 
         /// <summary>
@@ -178,7 +198,7 @@ namespace Harri.SchoolDemoAPI.Controllers
             [FromQuery(Name = APIConstants.Query.Page)][PositiveInt] int page = APIDefaults.Query.Page,
             [FromQuery(Name = APIConstants.Query.PageSize)][PositiveInt] int pageSize = APIDefaults.Query.PageSize)
         {
-            var students = await _studentService.GetStudents(new GetStudentsQueryDto() 
+            var students = await _studentRepository.GetStudents(new GetStudentsQueryDto() 
             {
                 SId = sId,
                 Name = name,

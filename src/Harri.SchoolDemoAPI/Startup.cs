@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
-using Harri.SchoolDemoAPI.Services;
 using Harri.SchoolDemoAPI.Repository;
 using HealthChecks.UI.Client;
 
@@ -124,7 +123,6 @@ namespace Harri.SchoolDemoAPI
 
             // Dependency Injection
             services.AddScoped<IStudentRepository, StudentRepository>();
-            services.AddScoped<IStudentService, StudentService>();
             services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(sqlServerConnectionString));
         }
 

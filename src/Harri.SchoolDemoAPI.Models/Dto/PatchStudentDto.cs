@@ -9,7 +9,7 @@ namespace Harri.SchoolDemoAPI.Models.Dto
     /// DTO for patching a student
     /// </summary>
     /// Only properties that are explicitly set are serialized using the <see cref="GetObjectToSerialize"/> method
-    public class StudentPatchDto
+    public class PatchStudentDto
     {
         [OptionalNotNullOrWhitespace]
         [JsonIgnore]
@@ -44,6 +44,8 @@ namespace Harri.SchoolDemoAPI.Models.Dto
 
         public void ApplyChangesTo(StudentDto student)
         {
+            if (student is null) return;
+
             if (OptionalName.HasValue) 
             {
                 student.Name = OptionalName.Value;

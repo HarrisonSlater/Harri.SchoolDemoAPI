@@ -122,5 +122,8 @@ namespace Harri.SchoolDemoAPI.Tests.Common
             pageSize = 3,
             totalCount = 9
         };
+
+        public static readonly byte[] MockRowVersion = new byte[] { 0, 0, 3, 4, 5, 6, 7, 255 };
+        public static readonly string MockRowVersionBase64Encoded = "AAADBAUGB/8=";
     }
 }

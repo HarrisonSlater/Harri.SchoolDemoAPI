@@ -4,6 +4,7 @@ using FluentAssertions;
 using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Harri.SchoolDemoAPI.Results;
 using Harri.SchoolDemoAPI.Tests.Common;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -34,32 +35,37 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         public ProviderStateMiddleware(RequestDelegate next)
         {
             _next = next;
-            this.providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
+            providerStates = new Dictionary<string, Func<IDictionary<string, object>, Task>>
             {
-                ["a student with sId exists"] = this.EnsureStudentExists,
-                ["a student with sId does not exist"] = this.EnsureStudentDoesNotExist,
-                ["a student with sId {sIdNew} will be created"] = this.EnsureStudentWillBeCreated,
-                ["a student with sId exists and will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["a student with sId will be updated"] = this.EnsureStudentWillBeUpdated,
-                ["no student will be updated"] = this.EnsureNoStudentWillBeUpdated,
-                ["no student will be deleted"] = this.EnsureNoStudentWillBeDeleted,
-                ["a student with sId exists and will be deleted"] = this.EnsureStudentWillBeDeleted,
-                ["a student with sId does not exist and will not be deleted"] = this.EnsureStudentDoesNotExistAndWillBeNotDeleted,
-                ["a student with sId exists but can not be deleted"] = this.EnsureStudentHasConflictAndCanNotNotDeleted,
-                ["some students exist"] = this.EnsureSomeStudentsExist,
-                ["no students exist"] = this.EnsureNoStudentsExist,
-                ["some students exist for querying"] = this.EnsureStudentsExistForQuerying,
-                ["some students exist for querying across multiple pages"] = this.EnsureStudentsExistForQueryingAcrossMultiplePages,
-                ["no students exist for querying"] = this.EnsureNoStudentsExistForQuerying,
-                ["the api returns a 500 internal server error"] = this.TheApiReturnsA500InternalServerError,
-                ["the api is healthy"] = this.TheApiIsHealthy,
-                ["the api is unhealthy"] = this.TheApiIsUnhealthy
+                ["a student with sId exists"] = EnsureStudentExists,
+                ["a student with sId does not exist"] = EnsureStudentDoesNotExist,
+                ["a student with sId {sIdNew} will be created"] = EnsureStudentWillBeCreated,
+                ["a student with sId exists and will be updated"] = EnsureStudentWillBeUpdated,
+                ["a student with sId will be updated"] = EnsureStudentWillBeUpdated,
+                ["a student with sId will be patched"] = EnsureStudentWillBePatched,
+                ["no student will be updated"] = EnsureNoStudentWillBeUpdated,
+                ["a student with sId exists but a race condition occurs at the database level"] = EnsureUpdatingStudentReturnsFailureResultConflict,
+                ["a student with sId exists but was updated before us"] = EnsureUpdatingStudentReturnsFailureResultRowVersionMismatch,
+                ["a student with sId exists but our request is missing an If-Match header"] = EnsureNoStudentWillBeUpdated,
+                ["no student will be deleted"] = EnsureNoStudentWillBeDeleted,
+                ["a student with sId exists and will be deleted"] = EnsureStudentWillBeDeleted,
+                ["a student with sId does not exist and will not be deleted"] = EnsureStudentDoesNotExistAndWillBeNotDeleted,
+                ["a student with sId exists but can not be deleted"] = EnsureStudentHasConflictAndCanNotNotDeleted,
+                ["some students exist"] = EnsureSomeStudentsExist,
+                ["no students exist"] = EnsureNoStudentsExist,
+                ["some students exist for querying"] = EnsureStudentsExistForQuerying,
+                ["some students exist for querying across multiple pages"] = EnsureStudentsExistForQueryingAcrossMultiplePages,
+                ["no students exist for querying"] = EnsureNoStudentsExistForQuerying,
+                ["the api returns a 500 internal server error"] = TheApiReturnsA500InternalServerError,
+                ["the api is healthy"] = TheApiIsHealthy,
+                ["the api is unhealthy"] = TheApiIsUnhealthy
             };
         }
 
         private Task EnsureStudentExists(IDictionary<string, object> parameters)
         {
             var studentToMock = GetStateObject<StudentDto>(parameters);
+            studentToMock.RowVersion = MockStudentTestFixture.MockRowVersion;
 
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult((StudentDto?)studentToMock));
             return Task.CompletedTask;
@@ -67,15 +73,33 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
 
         private Task EnsureStudentDoesNotExist(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Returns(Task.FromResult(false));
+            EnsureUpdatingStudentReturnsFailureResult(Result.Failure(StudentErrors.StudentNotFound.Error(0)));
             return Task.CompletedTask;
         }
 
         private Task EnsureNoStudentWillBeUpdated(IDictionary<string, object> parameters)
         {
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(new Exception("UpdateStudent should not be called"));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Throws(new Exception("UpdateStudent should not be called"));
             return Task.CompletedTask;
+        }
+
+        private Task EnsureUpdatingStudentReturnsFailureResultConflict(IDictionary<string, object> parameters)
+        {
+            EnsureUpdatingStudentReturnsFailureResult(Result.Failure(StudentErrors.StudentUpdateConflict.Error(0)));
+            return Task.CompletedTask;
+        }
+
+        private Task EnsureUpdatingStudentReturnsFailureResultRowVersionMismatch(IDictionary<string, object> parameters)
+        {
+            EnsureUpdatingStudentReturnsFailureResult(Result.Failure(StudentErrors.StudentRowVersionMismatch.Error(0)));
+            return Task.CompletedTask;
+        }
+
+        private void EnsureUpdatingStudentReturnsFailureResult(Result resultToReturn)
+        {
+            TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Returns(Task.FromResult<StudentDto?>(null));
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(resultToReturn));
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>())).Returns(Task.FromResult(ResultWith<StudentDto>.FromResult(resultToReturn)));
         }
 
         private Task EnsureNoStudentWillBeDeleted(IDictionary<string, object> parameters)
@@ -89,12 +113,30 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             var sId = (JsonElement?)parameters["sId"];
             var expectedUpdatedStudent = GetStateObject<UpdateStudentDto>(parameters);
 
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>()))
-            .Returns(Task.FromResult(true))
-            .Callback<int, UpdateStudentDto>((id, us) =>
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>()))
+            .Returns(Task.FromResult(Result.Success()))
+            .Callback<int, UpdateStudentDto, byte[]>((id, us, rowVersion) =>
             {
                 id.Should().Be(sId?.GetInt32());
                 us.Should().BeEquivalentTo(expectedUpdatedStudent);
+                rowVersion.Should().BeEquivalentTo(MockStudentTestFixture.MockRowVersion);
+            });
+
+            return Task.CompletedTask;
+        }
+        private Task EnsureStudentWillBePatched(IDictionary<string, object> parameters)
+        {
+            var sIdString = (JsonElement?)parameters["sId"];
+            var sId = sIdString?.GetInt32();
+            var expectedUpdatedStudent = GetStateObject<PatchStudentDto>(parameters);
+
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>()))
+            .Returns(Task.FromResult(ResultWith<StudentDto>.Success(new StudentDto() { SId = sId, Name = expectedUpdatedStudent.Name, GPA = expectedUpdatedStudent.GPA })))
+            .Callback<int, PatchStudentDto, byte[]>((id, patchDto, rowVersion) =>
+            {
+                id.Should().Be(sId);
+                patchDto.Should().BeEquivalentTo(expectedUpdatedStudent);
+                rowVersion.Should().BeEquivalentTo(MockStudentTestFixture.MockRowVersion);
             });
 
             return Task.CompletedTask;
@@ -115,7 +157,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
 
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)true))
+                .Returns(Task.FromResult(Result.Success()))
                 .Callback<int>(sId => sId.Should().Be(sId));
 
             return Task.CompletedTask;
@@ -125,7 +167,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)false))
+                .Returns(Task.FromResult(Result.Failure(StudentErrors.StudentNotFound.Error(sId))))
                 .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 
@@ -135,7 +177,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
         {
             var sId = GetStateObject<int>(parameters);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>()))
-                .Returns(Task.FromResult((bool?)null))
+                .Returns(Task.FromResult(Result.Failure(StudentErrors.StudentDeleteConflict.Error(sId))))
                 .Callback<int>(sId => sId.Should().Be(sId));
             return Task.CompletedTask;
 
@@ -215,7 +257,8 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Provider
             TestStartup.MockStudentRepo.Setup(s => s.AddStudent(It.IsAny<NewStudentDto>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.DeleteStudent(It.IsAny<int>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudent(It.IsAny<int>())).Throws(testException);
-            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.UpdateStudent(It.IsAny<int>(), It.IsAny<UpdateStudentDto>(), It.IsAny<byte[]>())).Throws(testException);
+            TestStartup.MockStudentRepo.Setup(s => s.PatchStudent(It.IsAny<int>(), It.IsAny<PatchStudentDto>(), It.IsAny<byte[]>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
             TestStartup.MockStudentRepo.Setup(s => s.GetStudents(It.IsAny<GetStudentsQueryDto>())).Throws(testException);
 

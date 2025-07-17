@@ -143,6 +143,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -516,7 +519,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to update a student with sId and invalid name 1",
+      "description": "a bad request to update a student with sId 1",
       "pending": false,
       "providerStates": [
         {
@@ -614,7 +617,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to update a student with sId and invalid name 2",
+      "description": "a bad request to update a student with sId 2",
       "pending": false,
       "providerStates": [
         {
@@ -712,7 +715,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to update a student with sId and invalid name 3",
+      "description": "a bad request to update a student with sId 3",
       "pending": false,
       "providerStates": [
         {
@@ -810,7 +813,7 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a bad request to update a student with sId and invalid name 4",
+      "description": "a bad request to update a student with sId 4",
       "pending": false,
       "providerStates": [
         {
@@ -1444,6 +1447,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "ETag": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -1512,6 +1518,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "ETag": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -1630,6 +1639,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "ETag": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -2071,49 +2083,6 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to patch a non-existant student with sId 4567",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "a student with sId does not exist"
-        }
-      ],
-      "request": {
-        "body": {
-          "content": {
-            "GPA": 3.81,
-            "name": "Mocky Mockson"
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PATCH",
-        "path": "/students/4567"
-      },
-      "response": {
-        "status": 404
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
       "description": "a request to patch a student",
       "pending": false,
       "providerStates": [
@@ -2132,6 +2101,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "method": "PATCH",
@@ -2161,6 +2133,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "method": "PATCH",
@@ -2176,32 +2151,22 @@
       "pending": false,
       "providerStates": [
         {
-          "name": "a student with sId exists",
-          "params": {
-            "stateObject": {
-              "GPA": 3.91,
-              "name": "EXISTING STUDENT NAME",
-              "sId": 123
-            },
-            "stateObjectType": "StudentDto"
-          }
-        },
-        {
-          "name": "a student with sId will be updated",
+          "name": "a student with sId will be patched",
           "params": {
             "sId": 123,
             "stateObject": {
-              "GPA": 3.91,
-              "name": "Mocky"
+              "GPA": 3.81,
+              "name": "Mocky McMockName"
             },
-            "stateObjectType": "UpdateStudentDto"
+            "stateObjectType": "PatchStudentDto"
           }
         }
       ],
       "request": {
         "body": {
           "content": {
-            "name": "Mocky"
+            "GPA": 3.81,
+            "name": "Mocky McMockName"
           },
           "contentType": "application/json",
           "encoded": false
@@ -2209,6 +2174,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -2230,8 +2198,8 @@
       "response": {
         "body": {
           "content": {
-            "GPA": 3.91,
-            "name": "Mocky",
+            "GPA": 3.81,
+            "name": "Mocky McMockName",
             "sId": 123
           },
           "contentType": "application/json",
@@ -2276,140 +2244,11 @@
       "type": "Synchronous/HTTP"
     },
     {
-      "description": "a request to patch a student with sId",
+      "description": "a request to patch a student with sId 4567",
       "pending": false,
       "providerStates": [
         {
-          "name": "a student with sId exists",
-          "params": {
-            "stateObject": {
-              "GPA": 3.91,
-              "name": "EXISTING STUDENT NAME",
-              "sId": 456
-            },
-            "stateObjectType": "StudentDto"
-          }
-        },
-        {
-          "name": "a student with sId will be updated",
-          "params": {
-            "sId": 456,
-            "stateObject": {
-              "GPA": 3.52,
-              "name": "EXISTING STUDENT NAME"
-            },
-            "stateObjectType": "UpdateStudentDto"
-          }
-        }
-      ],
-      "request": {
-        "body": {
-          "content": {
-            "GPA": 3.52
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "method": "PATCH",
-        "path": "/students/456"
-      },
-      "response": {
-        "body": {
-          "content": {
-            "GPA": 3.52,
-            "name": "EXISTING STUDENT NAME",
-            "sId": 456
-          },
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$.GPA": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.name": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            },
-            "$.sId": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
-        "status": 200
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to query students by name and GPA",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "no students exist for querying"
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "path": "/students/",
-        "query": {
-          "GPA.eq": [
-            "4"
-          ],
-          "name": [
-            "Test Student"
-          ]
-        }
-      },
-      "response": {
-        "status": 204
-      },
-      "type": "Synchronous/HTTP"
-    },
-    {
-      "description": "a request to update a non-existant student with sId 4567 and invalid name",
-      "pending": false,
-      "providerStates": [
-        {
-          "name": "a student with sId does not exist"
+          "name": "a student with sId exists but our request is missing an If-Match header"
         }
       ],
       "request": {
@@ -2439,18 +2278,37 @@
           },
           "header": {}
         },
-        "method": "PUT",
+        "method": "PATCH",
         "path": "/students/4567"
       },
       "response": {
+        "status": 428
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId exists but was updated before us"
+        }
+      ],
+      "request": {
         "body": {
-          "content": false,
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
           "contentType": "application/json",
           "encoded": false
         },
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -2466,7 +2324,128 @@
           },
           "header": {}
         },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 412
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId exists but a race condition occurs at the database level"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 409
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to patch a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PATCH",
+        "path": "/students/4567"
+      },
+      "response": {
         "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to query students by name and GPA",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "no students exist for querying"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/students/",
+        "query": {
+          "GPA.eq": [
+            "4"
+          ],
+          "name": [
+            "Test Student"
+          ]
+        }
+      },
+      "response": {
+        "status": 204
       },
       "type": "Synchronous/HTTP"
     },
@@ -2490,6 +2469,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "method": "PUT",
@@ -2520,6 +2502,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "method": "PUT",
@@ -2558,6 +2543,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -2577,29 +2565,6 @@
         "path": "/students/123"
       },
       "response": {
-        "body": {
-          "content": true,
-          "contentType": "application/json",
-          "encoded": false
-        },
-        "headers": {
-          "Content-Type": [
-            "application/json; charset=utf-8"
-          ]
-        },
-        "matchingRules": {
-          "body": {
-            "$": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "equality"
-                }
-              ]
-            }
-          },
-          "header": {}
-        },
         "status": 200
       },
       "type": "Synchronous/HTTP"
@@ -2632,6 +2597,9 @@
         "headers": {
           "Content-Type": [
             "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
           ]
         },
         "matchingRules": {
@@ -2651,8 +2619,24 @@
         "path": "/students/4567"
       },
       "response": {
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId exists but our request is missing an If-Match header"
+        }
+      ],
+      "request": {
         "body": {
-          "content": true,
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
           "contentType": "application/json",
           "encoded": false
         },
@@ -2674,7 +2658,149 @@
           },
           "header": {}
         },
-        "status": 200
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 428
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId exists but was updated before us"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 412
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId exists but a race condition occurs at the database level"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 409
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "a request to update a student with sId 4567",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "a student with sId does not exist"
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "GPA": 3.81,
+            "name": "Mocky Mockson"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json; charset=utf-8"
+          ],
+          "If-Match": [
+            "AAADBAUGB/8="
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "equality"
+                }
+              ]
+            }
+          },
+          "header": {}
+        },
+        "method": "PUT",
+        "path": "/students/4567"
+      },
+      "response": {
+        "status": 404
       },
       "type": "Synchronous/HTTP"
     },

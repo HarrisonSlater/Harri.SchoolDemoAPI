@@ -1,6 +1,7 @@
 ﻿using Harri.SchoolDemoAPI.Models;
 using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
+using Microsoft.Net.Http.Headers;
 using RestSharp;
 
 namespace Harri.SchoolDemoAPI.Client
@@ -49,6 +50,8 @@ namespace Harri.SchoolDemoAPI.Client
         public async Task<StudentDto?> GetStudent(int sId)
         {
             var restResponse = await GetStudentRestResponse(sId);
+            SetRowVersionFromETagHeader(restResponse);
+
             return restResponse.Data;
         }
 
@@ -64,16 +67,18 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Update
-        public async Task<bool?> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
-            var restResponse = await UpdateStudentRestResponse(sId, student);
-            return restResponse.Data;
+            var restResponse = await UpdateStudentRestResponse(sId, student, rowVersion);
+            return restResponse.IsSuccessStatusCode;
         }
 
-        public async Task<RestResponse<bool?>> UpdateStudentRestResponse(int sId, UpdateStudentDto student)
+        public async Task<RestResponse> UpdateStudentRestResponse(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student);
-            var restResponse = await _restClient.ExecutePutAsync<bool?>(request);
+            SetIfMatchHeader(request, rowVersion);
+
+            var restResponse = await _restClient.ExecutePutAsync(request);
             return restResponse;
         }
 
@@ -94,16 +99,17 @@ namespace Harri.SchoolDemoAPI.Client
         }
 
         // Patch
-        public async Task<StudentDto?> PatchStudent(int sId, StudentPatchDto student)
+        public async Task<StudentDto?> PatchStudent(int sId, PatchStudentDto student, byte[] rowVersion)
         {
-            var restResponse = await PatchStudentRestResponse(sId, student);
+            var restResponse = await PatchStudentRestResponse(sId, student, rowVersion);
             return restResponse.Data;
         }
 
-        public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, StudentPatchDto student)
+        public async Task<RestResponse<StudentDto?>> PatchStudentRestResponse(int sId, PatchStudentDto student, byte[] rowVersion)
         {
             var request = new RestRequest(BaseRoute + "{sId}").AddUrlSegment("sId", sId).AddBody(student.GetObjectToSerialize());
             request.Method = Method.Patch;
+            SetIfMatchHeader(request, rowVersion);
 
             var restResponse = await _restClient.ExecuteAsync<StudentDto?>(request);
             if (!restResponse.IsSuccessStatusCode)
@@ -176,6 +182,23 @@ namespace Harri.SchoolDemoAPI.Client
                 restResponse.Data = null;
             }
             return restResponse;
+        }
+
+        private void SetIfMatchHeader(RestRequest restRequest, byte[] rowVersion)
+        {
+            restRequest.AddHeader(HeaderNames.IfMatch, Convert.ToBase64String(rowVersion));
+        }
+
+        private void SetRowVersionFromETagHeader(RestResponse<StudentDto> restResponse)
+        {
+            if (restResponse.Data is not null)
+            {
+                var rowVer = restResponse.GetHeaderValue(HeaderNames.ETag);
+                if (rowVer is not null)
+                {
+                    restResponse.Data.RowVersion = Convert.FromBase64String(rowVer);
+                }
+            }
         }
     }
 }

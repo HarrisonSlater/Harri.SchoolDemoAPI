@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Harri.SchoolDemoAPI.Models;
 using System;
 using Microsoft.IdentityModel.Tokens;
+using Harri.SchoolDemoAPI.Results;
 
 namespace Harri.SchoolDemoAPI.Repository
 {
@@ -24,7 +25,8 @@ namespace Harri.SchoolDemoAPI.Repository
 
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var query = @"INSERT INTO [SchoolDemo].Student VALUES (@Name, @GPA);
+                var query = @"INSERT INTO [SchoolDemo].Student (sName, GPA)
+                              VALUES (@Name, @GPA);
                               SELECT SCOPE_IDENTITY()";
 
                 var sId = (await connection.QueryAsync<int>(query, new { Name = newStudent.Name, GPA = newStudent.GPA })).FirstOrDefault();
@@ -36,40 +38,64 @@ namespace Harri.SchoolDemoAPI.Repository
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var query = @"SELECT sID as sId, sName as Name, GPA 
-                              FROM [SchoolDemo].Student
-                              WHERE sId = @sId";
-
-                var student = (await connection.QueryAsync<StudentDto?>(query, new { sId = sId })).FirstOrDefault();
-                return student;
+                return await GetStudentInternal(sId, connection);
             }
         }
+        private async Task<StudentDto?> GetStudentInternal(int sId, IDbConnection connection)
+        {
+            var query = @"SELECT sID as SId, sName as Name, GPA, rowVer as RowVersion
+                          FROM [SchoolDemo].Student
+                          WHERE sId = @sId";
+            var student = await connection.QuerySingleOrDefaultAsync<StudentDto?>(query, new { sId = sId });
+            return student;
+        }
 
-
-        public async Task<bool> UpdateStudent(int sId, UpdateStudentDto student)
+        public async Task<Result> UpdateStudent(int sId, UpdateStudentDto student, byte[] rowVersion)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
-                var studentExistsQuery = @"(SELECT * FROM [SchoolDemo].Student WHERE sId = @sId)";
+                var existingStudent = await GetStudentInternal(sId, connection);
 
-                bool studentExists = (await connection.QueryAsync(studentExistsQuery, new { sId = sId })).Any();
+                return await UpdateStudentInternal(sId, student, rowVersion, existingStudent, connection);
+            }
+        }
 
-                if (!studentExists)
-                {
-                    return false;
-                }
+        private static async Task<Result> UpdateStudentInternal(int sId, UpdateStudentDto student, byte[] rowVersion, StudentDto? existingStudent, IDbConnection connection)
+        {
+            var studentRowVer = existingStudent?.RowVersion;
+            if (studentRowVer is null) return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
+            else if (!studentRowVer.SequenceEqual(rowVersion)) return Result.Failure(StudentErrors.StudentRowVersionMismatch.Error(sId));
 
-                var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
+            var studentUpdateQuery = @"UPDATE [SchoolDemo].Student
                                            SET sName = @Name, GPA = @GPA
-                                           WHERE sId = @sId";
-
-                (await connection.QueryAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId })).Any();
-
-                return true;
+                                           WHERE sId = @sId
+                                           AND rowVer = @RowVersion";
+            var updatedRows = (await connection.ExecuteAsync(studentUpdateQuery, new { Name = student.Name, GPA = student.GPA, sId = sId, RowVersion = rowVersion }));
+            if (updatedRows == 0)
+            {
+                // The only way this can happen is if this student was changed between GetStudentInternal and studentUpdateQuery 
+                return Result.Failure(StudentErrors.StudentUpdateConflict.Error(sId));
+            }
+            else
+            {
+                return Result.Success();
             }
         }
 
-        public async Task<bool?> DeleteStudent(int sId)
+        public async Task<ResultWith<StudentDto>> PatchStudent(int sId, PatchStudentDto student, byte[] rowVersion)
+        {
+            using (var connection = _dbConnectionFactory.GetConnection())
+            {
+                var existingStudent = await GetStudentInternal(sId, connection);
+                student.ApplyChangesTo(existingStudent);
+
+                var result = await UpdateStudentInternal(sId, existingStudent?.AsUpdateStudentDto(), rowVersion, existingStudent, connection);
+
+                return ResultWith<StudentDto>.FromResult(result, existingStudent);
+            }
+        }
+
+        public async Task<Result> DeleteStudent(int sId)
         {
             using (var connection = _dbConnectionFactory.GetConnection())
             {
@@ -79,7 +105,7 @@ namespace Harri.SchoolDemoAPI.Repository
 
                 if (!studentExists)
                 {
-                    return false;
+                    return Result.Failure(StudentErrors.StudentNotFound.Error(sId));
                 }
 
                 var deleteQuery = @"BEGIN TRY
@@ -93,7 +119,14 @@ namespace Harri.SchoolDemoAPI.Repository
                                     END CATCH";
 
                 var deleted = (await connection.QueryAsync<bool?>(deleteQuery, new { sId = sId })).FirstOrDefault();
-                return deleted;
+                if (deleted is true)
+                {
+                    return Result.Success();
+                }
+                else
+                {
+                    return Result.Failure(StudentErrors.StudentDeleteConflict.Error(sId));
+                }
             }
         }
 

@@ -34,6 +34,9 @@ namespace Harri.SchoolDemoAPI.Models.Dto
         [DecimalPrecision(3, 2)]
         public decimal? GPA { get; set; }
 
+        [JsonIgnore]
+        public byte[]? RowVersion { get; set; }
+
         public UpdateStudentDto AsUpdateStudentDto()
         {
             return new UpdateStudentDto()

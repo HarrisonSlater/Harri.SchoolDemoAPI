@@ -5,6 +5,7 @@ using Harri.SchoolDemoAPI.Models.Dto;
 using Harri.SchoolDemoAPI.Models.Enums;
 using Harri.SchoolDemoAPI.Tests.Common;
 using Harri.SchoolDemoAPI.Tests.Contract.Consumer.Helpers;
+using Microsoft.Net.Http.Headers;
 using PactNet;
 using RestSharp;
 using System.Net;
@@ -99,7 +100,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(null, name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -121,7 +122,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(sId, name, gpaQuery)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -175,7 +176,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(null, name, gpaQuery, sortOrderString)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -203,7 +204,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .WithQuery(APIConstants.Query.OrderBy, sortOrderString)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -280,7 +281,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(null, name, gpaQuery, sortColumn: sortColumn)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>
@@ -334,7 +335,7 @@ namespace Harri.SchoolDemoAPI.Tests.Contract.Consumer
                     .SetQueryStringParameters(sId, name, gpaQuery, orderBy.ToString(), sortColumn: sortColumn)
                  .WillRespond()
                  .WithStatus(HttpStatusCode.OK)
-                 .WithHeader("Content-Type", "application/json; charset=utf-8")
+                 .WithHeader(HeaderNames.ContentType, "application/json; charset=utf-8")
                  .WithJsonBody(MockStudentTestFixture.ExpectedPagedStudentsJsonBody);
 
             await _pact.VerifyAsync(async ctx =>

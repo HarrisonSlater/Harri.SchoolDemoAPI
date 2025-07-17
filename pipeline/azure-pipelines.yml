@@ -256,14 +256,12 @@ stages:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.zip'
           destinationFolder: '$(System.DefaultWorkingDirectory)/Extract'
           cleanDestinationFolder: false
-          overwriteExistingFiles: false
               
       - task: ExtractFiles@1
         inputs:
           archiveFilePatterns: '**/Harri.SchoolDemoAPI.DatabaseMigrations.zip'
           destinationFolder: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract'
           cleanDestinationFolder: false
-          overwriteExistingFiles: false
 
       - task: DockerInstaller@0
         inputs:
@@ -283,6 +281,8 @@ stages:
         displayName: Run SchoolDemoAPI $(BuildConfiguration) build
           
       - script: curl -X GET -S -L $(APIUrlToTest)health --max-time 15 --fail
+        displayName: bash - Wait for healthy REST API with curl
+
 
       - script: | 
           cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
@@ -336,6 +336,19 @@ stages:
           artifactName: 'dockerBuild'
           downloadPath: '$(System.DefaultWorkingDirectory)'
           cleanDestinationFolder: false
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'databaseMigrations'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+          cleanDestinationFolder: false
+              
+      - task: ExtractFiles@1
+        inputs:
+          archiveFilePatterns: '**/Harri.SchoolDemoAPI.DatabaseMigrations.zip'
+          destinationFolder: '$(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract'
+          cleanDestinationFolder: false
 
 #      - script: 'ls $(System.DefaultWorkingDirectory)'
 #      - script: 'ls $(Build.Repository.LocalPath)/src/Tests/Harri.SchoolDemoAPI.Tests.E2E'
@@ -370,6 +383,11 @@ stages:
           filePath: './pipeline/scripts/wait-for-healthy-container.sh'
           arguments: 'schooldemorestapi 45'
         displayName: bash - Wait for healthy REST API container
+
+      - script: | 
+          cd $(System.DefaultWorkingDirectory)/DatabaseMigrationsExtract/
+          dotnet ./Harri.SchoolDemoAPI.DatabaseMigrations.dll
+        displayName: Run DatabaseMigrations
 
       - task: DotNetCoreCLI@2
         displayName: dotnet test - Integration
