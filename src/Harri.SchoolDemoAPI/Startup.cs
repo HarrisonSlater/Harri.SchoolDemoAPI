@@ -12,6 +12,7 @@ using Harri.SchoolDemoAPI.Filters;
 using Harri.SchoolDemoAPI.OpenApi;
 using Harri.SchoolDemoAPI.Repository;
 using HealthChecks.UI.Client;
+using Microsoft.Net.Http.Headers;
 
 namespace Harri.SchoolDemoAPI
 {
@@ -56,7 +57,8 @@ namespace Harri.SchoolDemoAPI
             
             services.AddCors(options => {
                 options.AddDefaultPolicy(
-                        policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }
+                        policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+                            .WithExposedHeaders(HeaderNames.ETag); }
                     );
             });
 
