@@ -1,4 +1,5 @@
 # Harri.SchoolDemoAPI - ASP.NET Core 8.0 REST API
+# TEST FORK EDIT
 
 **Harri.SchoolDemoAPI** is a demo REST API built with ASP.NET Core 8.0 that manages students, schools, and applications. It showcases modern .NET backend development practices, including comprehensive automated testing, containerization, structured logging, and CI/CD integration with Azure DevOps.
 
