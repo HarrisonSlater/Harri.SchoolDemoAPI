@@ -30,7 +30,7 @@ SQL[(SQL)]
 
 subgraph API[REST API]
 direction LR
-Controller---Service---Repository
+Controller---Repository
 end
 Client-- Network ---Controller
 Repository-- Network ---SQL
@@ -46,34 +46,9 @@ Repository-- Network ---SQL
 | PATCH     | [/students/{sId}](#patch-studentssid) |
 | DELETE    | [/students/{sId}](#delete-studentssid) |
 | GET       | [/students](#get-students-paginated-sortable-query-api) |
-## POST /students
-**Request:**
-```http
-POST /students
-```
-
-**Request Body:**
-```json
-{
-  "name": "Student Name"
-}
-```
-or with optional GPA:
-```json
-{
-  "name": "Student Name",
-  "GPA": 3.52
-}
-```
-**Response**  
-containing created student ID:
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-1348
-```
 ## GET /students/{sId}
+*Retrieves details of a specific student by ID*
+
 **Request:**
 ```http
 GET /students/1348
@@ -91,7 +66,7 @@ Content-Type: application/json
 }
 ```
 ## PUT /students/{sId}
-*(Update entire student record)*  
+*Replaces the details of an existing student*
 
 **Request:**
 ```http
@@ -111,7 +86,7 @@ HTTP/1.1 200 OK
 ```
 
 ## PATCH /students/{sId}
-*(Update partial student record)*
+*Partially updates details of an existing student*
 
 **Request:**
 ```http
@@ -138,6 +113,8 @@ Content-Type: application/json
 ```
 
 ## DELETE /students/{sId}
+*Deletes a student record*
+
 **Request:**
 ```http
 DELETE /students/1348
@@ -147,8 +124,39 @@ DELETE /students/1348
 HTTP/1.1 200 OK
 ```
 
-## GET /students (Paginated, Sortable, Query API)
-### By Id
+## POST /students
+*Creates a new student record*
+
+**Request:**
+```http
+POST /students
+```
+
+**Request Body:**
+```json
+{
+  "name": "Student Name"
+}
+```
+or with optional GPA:
+```json
+{
+  "name": "Student Name",
+  "GPA": 3.52
+}
+```
+**Response**  
+containing created student ID:
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+1348
+```
+
+## GET /students
+*Retrieves a paginated list of students, with optional filtering and sorting with query string parameters*
+### Example #1: By Id
 **Request:**
 ```http
 GET /students?sId=1
@@ -220,7 +228,7 @@ Content-Type: application/json
 }
 ```
 ---
-### By Name
+### Example #2: By Name
 **Request:**
 ```http
 GET /students?name=Ethan%20S&page=1&pageSize=3
@@ -257,7 +265,7 @@ Content-Type: application/json
 }
 ```
 ---
-### By GPA Greater Than, sorted
+### Example #3: By GPA Greater Than, sorted
 **Request:**
 ```http
 GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
