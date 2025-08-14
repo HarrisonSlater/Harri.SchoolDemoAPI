@@ -1,4 +1,6 @@
 # Azure DevOps SchoolDemoAPI Build Pipeline
+[The pipeline is defined in yaml here](./azure-pipelines.yml)
+with other pipeline resources in folders
 
 ## Table of Contents
 
@@ -15,6 +17,7 @@
 ---
 
 ## Overview
+
 * Build the .NET 8 REST API and its supporting libraries, 
 * Produce Docker + NuGet artifacts, 
 * Run Unit/Contract/Integration/E2E tests in the agent,
