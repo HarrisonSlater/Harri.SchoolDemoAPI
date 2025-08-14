@@ -2,6 +2,8 @@
 [The pipeline is defined in yaml here](./azure-pipelines.yml)
 with other pipeline resources in folders
 
+Currently this pipeline runs in a private Azure DevOps organization. If you would like to explore this pipeline and run it for yourself you can fork this repo and set one up for free.
+
 ## Table of Contents
 
 * Overview
@@ -24,6 +26,9 @@ with other pipeline resources in folders
 * and (on `main` branch) 
    * Publish Docker images and NuGet packages, 
    * Build and push SQL database as a pre-seeded Docker image.
+
+A successful pipeline run based on main looks like:
+![image](/docs/img/readme/ADOPipelineCapture.PNG)
 
 ### Key Features
 - Comprehensive testing (Unit, Integration, Contract, E2E)
