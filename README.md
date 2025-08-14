@@ -379,10 +379,7 @@ And to run the database container:
 > `docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
 
 # Build pipeline
-Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
-
-A successful pipeline run based on main looks like:
-![image](docs/img/readme/ADOPipelineCapture.PNG)
+See the [Azure DevOps SchoolDemoAPI Build Pipeline README.md](/pipeline/README.md)
 
 ## Pipeline deploying
 In a real world pipeline Deploy & Test would be separate stages where Deploy actually deploys to an environment. In this pipeline 'Deploy' just runs the container image / .NET dll in-agent. This is done to remove ongoing hosting costs
