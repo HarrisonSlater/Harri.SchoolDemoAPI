@@ -2,7 +2,9 @@
 
 **Harri.SchoolDemoAPI** is a demo REST API built with ASP.NET Core 8.0 that manages students, schools, and applications. It showcases modern .NET backend development practices, including comprehensive automated testing, containerization, structured logging, and CI/CD integration with Azure DevOps.
 
-Also see a front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
+> Also see: a front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
+
+> Also see: a Postman collection for this API, with Azure DevOps newman runner pipeline [Postman Collection](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.Postman/)
 
 # Automated Testing
 An emphasis on comprehensive automated testing has been used when developing this demo API. 
