@@ -2,7 +2,10 @@
 
 **Harri.SchoolDemoAPI** is a demo REST API built with ASP.NET Core 8.0 that manages students, schools, and applications. It showcases modern .NET backend development practices, including comprehensive automated testing, containerization, structured logging, and CI/CD integration with Azure DevOps.
 
-Also see a front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
+#### Related projects:
+> Front-end Blazor WASM SPA developed for this API here: [Blazor Admin UI](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.BlazorWASM/)
+
+> Postman collection for this API, with Azure DevOps newman runner pipeline [Postman Collection](https://github.com/HarrisonSlater/Harri.SchoolDemoAPI.Postman/)
 
 # Automated Testing
 An emphasis on comprehensive automated testing has been used when developing this demo API. 
@@ -30,7 +33,7 @@ SQL[(SQL)]
 
 subgraph API[REST API]
 direction LR
-Controller---Service---Repository
+Controller---Repository
 end
 Client-- Network ---Controller
 Repository-- Network ---SQL
@@ -46,34 +49,9 @@ Repository-- Network ---SQL
 | PATCH     | [/students/{sId}](#patch-studentssid) |
 | DELETE    | [/students/{sId}](#delete-studentssid) |
 | GET       | [/students](#get-students-paginated-sortable-query-api) |
-## POST /students
-**Request:**
-```http
-POST /students
-```
-
-**Request Body:**
-```json
-{
-  "name": "Student Name"
-}
-```
-or with optional GPA:
-```json
-{
-  "name": "Student Name",
-  "GPA": 3.52
-}
-```
-**Response**  
-containing created student ID:
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-1348
-```
 ## GET /students/{sId}
+*Retrieves details of a specific student by ID*
+
 **Request:**
 ```http
 GET /students/1348
@@ -91,7 +69,7 @@ Content-Type: application/json
 }
 ```
 ## PUT /students/{sId}
-*(Update entire student record)*  
+*Replaces the details of an existing student*
 
 **Request:**
 ```http
@@ -111,7 +89,7 @@ HTTP/1.1 200 OK
 ```
 
 ## PATCH /students/{sId}
-*(Update partial student record)*
+*Partially updates details of an existing student*
 
 **Request:**
 ```http
@@ -138,6 +116,8 @@ Content-Type: application/json
 ```
 
 ## DELETE /students/{sId}
+*Deletes a student record*
+
 **Request:**
 ```http
 DELETE /students/1348
@@ -147,8 +127,39 @@ DELETE /students/1348
 HTTP/1.1 200 OK
 ```
 
-## GET /students (Paginated, Sortable, Query API)
-### By Id
+## POST /students
+*Creates a new student record*
+
+**Request:**
+```http
+POST /students
+```
+
+**Request Body:**
+```json
+{
+  "name": "Student Name"
+}
+```
+or with optional GPA:
+```json
+{
+  "name": "Student Name",
+  "GPA": 3.52
+}
+```
+**Response**  
+containing created student ID:
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+1348
+```
+
+## GET /students
+*Retrieves a paginated list of students, with optional filtering and sorting with query string parameters*
+### Example #1: By Id
 **Request:**
 ```http
 GET /students?sId=1
@@ -220,7 +231,7 @@ Content-Type: application/json
 }
 ```
 ---
-### By Name
+### Example #2: By Name
 **Request:**
 ```http
 GET /students?name=Ethan%20S&page=1&pageSize=3
@@ -257,7 +268,7 @@ Content-Type: application/json
 }
 ```
 ---
-### By GPA Greater Than, sorted
+### Example #3: By GPA Greater Than, sorted
 **Request:**
 ```http
 GET /students?GPA.Gt=2&orderBy=ASC&sortColumn=GPA&page=1&pageSize=4
@@ -371,10 +382,7 @@ And to run the database container:
 > `docker run -e "MSSQL_SA_PASSWORD=p@ssw0rd" -p 1433:1433 -d harrisonslater/harri-schooldemosql-database:latest`
 
 # Build pipeline
-Azure DevOps pipeline defined [in yaml](https://github.com/HarrisonSlater/Harri.SchoolDemoApi/blob/main/pipeline/azure-pipelines.yml)
-
-A successful pipeline run based on main looks like:
-![image](docs/img/readme/ADOPipelineCapture.PNG)
+See the [Azure DevOps SchoolDemoAPI Build Pipeline README.md](/pipeline/README.md)
 
 ## Pipeline deploying
 In a real world pipeline Deploy & Test would be separate stages where Deploy actually deploys to an environment. In this pipeline 'Deploy' just runs the container image / .NET dll in-agent. This is done to remove ongoing hosting costs
